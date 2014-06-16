@@ -198,6 +198,40 @@ pub static FT_ENCODING_ADOBE_LATIN_1  : FT_Encoding = 1818326065;
 pub static FT_ENCODING_OLD_LATIN_2    : FT_Encoding = 1818326066;
 pub static FT_ENCODING_APPLE_ROMAN    : FT_Encoding = 1634889070;
 
+// Constants
+pub static FT_FACE_FLAG_SCALABLE         : FT_Long = 1 << 0;
+pub static FT_FACE_FLAG_FIXED_SIZES      : FT_Long = 1 << 1;
+pub static FT_FACE_FLAG_FIXED_WIDTH      : FT_Long = 1 << 2;
+pub static FT_FACE_FLAG_SFNT             : FT_Long = 1 << 3;
+pub static FT_FACE_FLAG_HORIZONTAL       : FT_Long = 1 << 4;
+pub static FT_FACE_FLAG_VERTICAL         : FT_Long = 1 << 5;
+pub static FT_FACE_FLAG_KERNING          : FT_Long = 1 << 6;
+pub static FT_FACE_FLAG_FAST_GLYPHS      : FT_Long = 1 << 7;
+pub static FT_FACE_FLAG_MULTIPLE_MASTERS : FT_Long = 1 << 8;
+pub static FT_FACE_FLAG_GLYPH_NAMES      : FT_Long = 1 << 9;
+pub static FT_FACE_FLAG_EXTERNAL_STREAM  : FT_Long = 1 << 10;
+pub static FT_FACE_FLAG_HINTER           : FT_Long = 1 << 11;
+pub static FT_FACE_FLAG_CID_KEYED        : FT_Long = 1 << 12;
+pub static FT_FACE_FLAG_TRICKY           : FT_Long = 1 << 13;
+pub static FT_FACE_FLAG_COLOR            : FT_Long = 1 << 14;
+
+pub static FT_STYLE_FLAG_ITALIC : FT_Long = 1 << 0;
+pub static FT_STYLE_FLAG_BOLD   : FT_Long = 1 << 1;
+
+pub static FT_OPEN_MEMORY   : FT_UInt = 0x1;
+pub static FT_OPEN_STREAM   : FT_UInt = 0x2;
+pub static FT_OPEN_PATHNAME : FT_UInt = 0x4;
+pub static FT_OPEN_DRIVER   : FT_UInt = 0x8;
+pub static FT_OPEN_PARAMS   : FT_UInt = 0x10;
+
+pub static FT_SUBGLYPH_FLAG_ARGS_ARE_WORDS     : FT_UInt = 1;
+pub static FT_SUBGLYPH_FLAG_ARGS_ARE_XY_VALUES : FT_UInt = 2;
+pub static FT_SUBGLYPH_FLAG_ROUND_XY_TO_GRID   : FT_UInt = 4;
+pub static FT_SUBGLYPH_FLAG_SCALE              : FT_UInt = 8;
+pub static FT_SUBGLYPH_FLAG_XY_SCALE           : FT_UInt = 0x40;
+pub static FT_SUBGLYPH_FLAG_2X2                : FT_UInt = 0x80;
+pub static FT_SUBGLYPH_FLAG_USE_MY_METRICS     : FT_UInt = 0x200;
+
 pub static FT_LOAD_DEFAULT                     : FT_Int32 = 0x0;
 pub static FT_LOAD_NO_SCALE                    : FT_Int32 = 0x1 << 0;
 pub static FT_LOAD_NO_HINTING                  : FT_Int32 = 0x1 << 1;
@@ -213,6 +247,15 @@ pub static FT_LOAD_IGNORE_TRANSFORM            : FT_Int32 = 0x1 << 11;
 pub static FT_LOAD_MONOCHROME                  : FT_Int32 = 0x1 << 12;
 pub static FT_LOAD_LINEAR_DESIGN               : FT_Int32 = 0x1 << 13;
 pub static FT_LOAD_NO_AUTOHINT                 : FT_Int32 = 0x1 << 15;
+// Bits 16..19 are used by `FT_LOAD_TARGET`
+pub static FT_LOAD_COLOR                       : FT_Int32 = 0x1 << 20;
+
+pub static FT_FSTYPE_INSTALLABLE_EMBEDDING        : FT_UShort = 0x0000;
+pub static FT_FSTYPE_RESTRICTED_LICENSE_EMBEDDING : FT_UShort = 0x0002;
+pub static FT_FSTYPE_PREVIEW_AND_PRINT_EMBEDDING  : FT_UShort = 0x0004;
+pub static FT_FSTYPE_EDITABLE_EMBEDDING           : FT_UShort = 0x0008;
+pub static FT_FSTYPE_NO_SUBSETTING                : FT_UShort = 0x0100;
+pub static FT_FSTYPE_BITMAP_EMBEDDING_ONLY        : FT_UShort = 0x0200;
 
 pub static FT_Err_Ok                            : FT_Error = 0;
 pub static FT_Err_Cannot_Open_Resource          : FT_Error = 1;
@@ -305,29 +348,40 @@ pub static FT_Err_Corrupted_Font_Glyphs         : FT_Error = 186;
 pub static FT_Err_Max                           : FT_Error = 187;
 
 // Objects
-pub type FT_Face = *FT_FaceRec;
-pub type FT_GlyphSlot = *FT_GlyphSlotRec;
-pub type FT_SubGlyph = *FT_SubGlyphRec;
-pub type FT_CharMap = *FT_CharMapRec;
-pub type FT_Size = *FT_SizeRec;
-pub type FT_Size_Internal = *FT_Size_InternalRec;
-pub type FT_Face_Internal = *FT_Face_InternalRec;
-pub type FT_Slot_Internal = *FT_Slot_InternalRec;
-pub type FT_Driver = *FT_DriverRec;
 pub type FT_Library = *FT_LibraryRec;
-pub type FT_Stream = *FT_StreamRec;
+pub type FT_Face = *FT_FaceRec;
+pub type FT_Size = *FT_SizeRec;
+pub type FT_GlyphSlot = *FT_GlyphSlotRec;
+pub type FT_CharMap = *FT_CharMapRec;
 pub type FT_Module = *FT_ModuleRec;
+pub type FT_Driver = *FT_DriverRec;
+pub type FT_Renderer = *FT_RendererRec;
+pub type FT_Size_Internal = *FT_Size_InternalRec;
+pub type FT_SubGlyph = *FT_SubGlyphRec;
+pub type FT_Slot_Internal = *FT_Slot_InternalRec;
+
+pub type FT_Face_Internal = *FT_Face_InternalRec;
+pub type FT_Stream = *FT_StreamRec;
 pub type FT_Memory = *FT_MemoryRec;
 pub type FT_ListNode = *FT_ListNodeRec;
 
 // Internal Types
 pub type FT_LibraryRec = c_void;
-pub type FT_DriverRec = c_void;
 pub type FT_ModuleRec = c_void;
-pub type FT_SubGlyphRec = c_void;
+pub type FT_DriverRec = c_void;
+pub type FT_RendererRec = c_void;
 pub type FT_Size_InternalRec = c_void;
-pub type FT_Face_InternalRec = c_void;
+pub type FT_SubGlyphRec = c_void;
 pub type FT_Slot_InternalRec = c_void;
+
+pub type FT_Face_InternalRec = c_void;
+
+pub struct FT_CharMapRec {
+    pub face: FT_Face,
+    pub encoding: FT_Encoding,
+    pub platform_id: FT_UShort,
+    pub encoding_id: FT_UShort,
+}
 
 pub struct FT_FaceRec {
     pub num_faces: FT_Long,
@@ -414,13 +468,6 @@ pub struct FT_GlyphSlotRec {
     pub internal: FT_Slot_Internal,
 }
 
-pub struct FT_CharMapRec {
-    pub face: FT_Face,
-    pub encoding: FT_Encoding,
-    pub platform_id: FT_UShort,
-    pub encoding_id: FT_UShort,
-}
-
 pub struct FT_SizeRec {
     pub face: FT_Face,
     pub generic: FT_Generic,
@@ -461,6 +508,92 @@ pub struct FT_ListNodeRec {
     pub data: *c_void,
 }
 
+// Macro functions
+#[inline(always)]
+pub fn FT_HAS_HORIZONTAL(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_HORIZONTAL != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_VERTICAL(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_VERTICAL != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_KERNING(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_KERNING != 0
+    }
+}
+
+
+#[inline(always)]
+pub fn FT_IS_SCALABLE(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_SCALABLE != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_IS_SFNT(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_SFNT != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_IS_FIXED_WIDTH(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_FIXED_WIDTH != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_FIXED_SIZES(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_FIXED_SIZES != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_GLYPH_NAMES(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_GLYPH_NAMES != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_MULTIPLE_MASTERS(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_MULTIPLE_MASTERS != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_IS_CID_KEYED(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_CID_KEYED != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_IS_TRICKY(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_TRICKY != 0
+    }
+}
+
+#[inline(always)]
+pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
+    unsafe {
+        (*face).face_flags & FT_FACE_FLAG_COLOR != 0
+    }
+}
+
 #[link(name = "freetype")]
 extern "C" {
     pub fn FT_Init_FreeType(alibrary: *FT_Library) -> FT_Error;
@@ -474,8 +607,8 @@ extern "C" {
     pub fn FT_Get_Char_Index(face: FT_Face, charcode: FT_ULong) -> FT_UInt;
     pub fn FT_Load_Glyph(face: FT_Face, glyph_index: FT_UInt, load_flags: FT_Int32) -> FT_Error;
     pub fn FT_Load_Char(face: FT_Face, char_code: FT_ULong, load_flags: FT_Int32) -> FT_Error;
+    pub fn FT_Set_Transform(face: FT_Face, matrix: *FT_Matrix, delta: *FT_Vector);
     pub fn FT_Render_Glyph(slot: FT_GlyphSlot, render_mode: FT_Render_Mode) -> FT_Error;
     pub fn FT_Select_CharMap(face: FT_Face, encoding: FT_Encoding) -> FT_Error;
-    pub fn FT_Set_Transform(face: FT_Face, matrix: *FT_Matrix, delta: *FT_Vector);
 }
 
