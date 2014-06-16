@@ -198,6 +198,19 @@ pub static FT_ENCODING_ADOBE_LATIN_1  : FT_Encoding = 1818326065;
 pub static FT_ENCODING_OLD_LATIN_2    : FT_Encoding = 1818326066;
 pub static FT_ENCODING_APPLE_ROMAN    : FT_Encoding = 1634889070;
 
+pub type FT_Size_Request_Type = c_uint;
+pub static FT_SIZE_REQUEST_TYPE_NOMINAL  : FT_Size_Request_Type = 0;
+pub static FT_SIZE_REQUEST_TYPE_REAL_DIM : FT_Size_Request_Type = 1;
+pub static FT_SIZE_REQUEST_TYPE_BBOX     : FT_Size_Request_Type = 2;
+pub static FT_SIZE_REQUEST_TYPE_CELL     : FT_Size_Request_Type = 3;
+pub static FT_SIZE_REQUEST_TYPE_SCALES   : FT_Size_Request_Type = 4;
+pub static FT_SIZE_REQUEST_TYPE_MAX      : FT_Size_Request_Type = 5;
+
+pub type FT_Kerning_Mode = c_uint;
+pub static FT_KERNING_DEFAULT  : FT_Kerning_Mode = 0;
+pub static FT_KERNING_UNFITTED : FT_Kerning_Mode = 1;
+pub static FT_KERNING_UNSCALED : FT_Kerning_Mode = 2;
+
 // Constants
 pub static FT_FACE_FLAG_SCALABLE         : FT_Long = 1 << 0;
 pub static FT_FACE_FLAG_FIXED_SIZES      : FT_Long = 1 << 1;
@@ -359,7 +372,7 @@ pub type FT_Renderer = *FT_RendererRec;
 pub type FT_Size_Internal = *FT_Size_InternalRec;
 pub type FT_SubGlyph = *FT_SubGlyphRec;
 pub type FT_Slot_Internal = *FT_Slot_InternalRec;
-
+pub type FT_Size_Request = *FT_Size_RequestRec;
 pub type FT_Face_Internal = *FT_Face_InternalRec;
 pub type FT_Stream = *FT_StreamRec;
 pub type FT_Memory = *FT_MemoryRec;
@@ -373,7 +386,6 @@ pub type FT_RendererRec = c_void;
 pub type FT_Size_InternalRec = c_void;
 pub type FT_SubGlyphRec = c_void;
 pub type FT_Slot_InternalRec = c_void;
-
 pub type FT_Face_InternalRec = c_void;
 
 pub struct FT_CharMapRec {
@@ -508,6 +520,14 @@ pub struct FT_ListNodeRec {
     pub data: *c_void,
 }
 
+pub struct FT_Size_RequestRec {
+    pub size_request_type: FT_Size_Request_Type, // type
+    pub width: FT_Long,
+    pub height: FT_Long,
+    pub horiResolution: FT_UInt,
+    pub vertResolution: FT_UInt,
+}
+
 // Macro functions
 #[inline(always)]
 pub fn FT_HAS_HORIZONTAL(face: FT_Face) -> bool {
@@ -529,7 +549,6 @@ pub fn FT_HAS_KERNING(face: FT_Face) -> bool {
         (*face).face_flags & FT_FACE_FLAG_KERNING != 0
     }
 }
-
 
 #[inline(always)]
 pub fn FT_IS_SCALABLE(face: FT_Face) -> bool {
@@ -601,14 +620,30 @@ extern "C" {
     pub fn FT_New_Face(library: FT_Library, filepathname: *u8, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
     pub fn FT_New_Memory_Face(library: FT_Library, file_base: *FT_Byte, file_size: FT_Long, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
     pub fn FT_Open_Face(library: FT_Library, args: *FT_Open_Args, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
+    pub fn FT_Attach_File(face: FT_Face, filepathname: *c_char) -> FT_Error;
+    pub fn FT_Attach_Stream(face: FT_Face, parameters: *FT_Open_Args) -> FT_Error;
+    pub fn FT_Reference_Face(face: FT_Face) -> FT_Error;
     pub fn FT_Done_Face(face: FT_Face) -> FT_Error;
+    pub fn FT_Select_Size(face: FT_Face, strike_index: FT_Int) -> FT_Error;
+    pub fn FT_Request_Size(face: FT_Face, req: FT_Size_Request) -> FT_Error;
     pub fn FT_Set_Char_Size(face: FT_Face, char_width: FT_F26Dot6, char_height: FT_F26Dot6, horz_resolution: FT_UInt, vert_resolution: FT_UInt) -> FT_Error;
     pub fn FT_Set_Pixel_Sizes(face: FT_Face, pixel_width: FT_UInt, pixel_height: FT_UInt) -> FT_Error;
-    pub fn FT_Get_Char_Index(face: FT_Face, charcode: FT_ULong) -> FT_UInt;
     pub fn FT_Load_Glyph(face: FT_Face, glyph_index: FT_UInt, load_flags: FT_Int32) -> FT_Error;
     pub fn FT_Load_Char(face: FT_Face, char_code: FT_ULong, load_flags: FT_Int32) -> FT_Error;
     pub fn FT_Set_Transform(face: FT_Face, matrix: *FT_Matrix, delta: *FT_Vector);
     pub fn FT_Render_Glyph(slot: FT_GlyphSlot, render_mode: FT_Render_Mode) -> FT_Error;
+    pub fn FT_Get_Kerning(face: FT_Face, left_glyph: FT_UInt, right_glyph: FT_UInt, kern_mode: FT_UInt, akerning: *FT_Vector) -> FT_Error;
+    pub fn FT_Get_Track_Kerning(face: FT_Face, point_size: FT_Fixed, degree: FT_Int, akerning: *FT_Fixed) -> FT_Error;
+    pub fn FT_Get_Glyph_Name(face: FT_Face, glyph_index: FT_UInt, buffer: FT_Pointer, buffer_max: FT_UInt) -> FT_Error;
+    pub fn FT_Get_Postscript_Name(face: FT_Face) -> *c_char;
     pub fn FT_Select_CharMap(face: FT_Face, encoding: FT_Encoding) -> FT_Error;
+    pub fn FT_Set_Charmap(face: FT_Face, charmap: FT_CharMap) -> FT_Error;
+    pub fn FT_Get_Charmap_Index(charmap: FT_CharMap) -> FT_Int;
+    pub fn FT_Get_Char_Index(face: FT_Face, charcode: FT_ULong) -> FT_UInt;
+    pub fn FT_Get_First_Char(face: FT_Face, agindex: *FT_UInt) -> FT_ULong;
+    pub fn FT_Get_Next_Char(face: FT_Face, char_code: FT_ULong, agindex: *FT_UInt) -> FT_ULong;
+    pub fn FT_Get_Name_Index(face: FT_Face, glyph_name: *FT_String) -> FT_UInt;
+    pub fn FT_Get_SubGlyph_Info(glyph: FT_GlyphSlot, sub_index: FT_UInt, p_index: *FT_Int, p_flags: *FT_UInt, p_arg1: *FT_Int, p_arg2: *FT_Int, p_transform: *FT_Matrix) -> FT_Error;
+    pub fn FT_Get_FSType_Flags(face: FT_Face) -> FT_UShort;
 }
 
