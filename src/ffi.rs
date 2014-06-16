@@ -4,21 +4,36 @@
 
 use libc::*;
 
-pub type FT_Error = c_int;
-pub type FT_String = c_char;
+// Basic Data Types
 pub type FT_Byte = c_uchar;
-pub type FT_Short = c_short;
-pub type FT_UShort = c_ushort;
+pub type FT_Bytes = *FT_Byte;
+pub type FT_Char = c_char;
 pub type FT_Int = c_int;
 pub type FT_UInt = c_uint;
+pub type FT_Int16 = c_short;
+pub type FT_UInt16 = c_ushort;
+pub type FT_Int32 = i32;
+pub type FT_UInt32 = u32;
+pub type FT_Int64 = i64;
+pub type FT_UInt64 = u64;
+pub type FT_Short = c_short;
+pub type FT_UShort = c_ushort;
 pub type FT_Long = c_long;
 pub type FT_ULong = c_ulong;
+pub type FT_Bool = c_uchar;
+pub type FT_Offset = size_t;
+pub type FT_PtrDist = ptrdiff_t;
+pub type FT_String = c_char;
+pub type FT_Tag = FT_UInt32;
+pub type FT_Error = c_int;
+pub type FT_Fixed = c_long;
 pub type FT_Pointer = *c_void;
 pub type FT_Pos = c_long;
-pub type FT_Generic_Finalizer = extern fn(*c_void);
+pub type FT_FWord = c_short;
+pub type FT_UFWord = c_ushort;
+pub type FT_F2Dot14 = c_short;
 pub type FT_F26Dot6 = c_long;
-pub type FT_Int32 = i32;
-pub type FT_Fixed = c_long;
+pub type FT_Generic_Finalizer = extern fn(*c_void);
 pub type FT_StreamDesc = *c_void;
 pub type FT_Stream_IoFunc = extern fn(FT_Stream, c_ulong, *c_uchar, c_ulong) -> c_ulong;
 pub type FT_Stream_CloseFunc = extern fn(FT_Stream);
@@ -26,29 +41,178 @@ pub type FT_Alloc_Func = extern fn(FT_Memory, c_long) -> *c_void;
 pub type FT_Free_Func = extern fn(FT_Memory, *c_void);
 pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *c_void) -> *c_void;
 
-pub type FT_Face = *FT_FaceRec;
-pub type FT_GlyphSlot = *FT_GlyphSlotRec;
-pub type FT_SubGlyph = *FT_SubGlyphRec;
-pub type FT_CharMap = *FT_CharMapRec;
-pub type FT_Size = *FT_SizeRec;
-pub type FT_Size_Internal = *FT_Size_InternalRec;
-pub type FT_Face_Internal = *FT_Face_InternalRec;
-pub type FT_Slot_Internal = *FT_Slot_InternalRec;
-pub type FT_Driver = *FT_DriverRec;
-pub type FT_Library = *FT_LibraryRec;
-pub type FT_Stream = *FT_StreamRec;
-pub type FT_Module = *FT_ModuleRec;
-pub type FT_Memory = *FT_MemoryRec;
-pub type FT_ListNode = *FT_ListNodeRec;
+// Structs
+pub struct FT_Vector {
+    pub x: FT_Pos,
+    pub y: FT_Pos,
+}
 
-// internal types
-pub type FT_LibraryRec = c_void;
-pub type FT_DriverRec = c_void;
-pub type FT_ModuleRec = c_void;
-pub type FT_SubGlyphRec = c_void;
-pub type FT_Size_InternalRec = c_void;
-pub type FT_Face_InternalRec = c_void;
-pub type FT_Slot_InternalRec = c_void;
+pub struct FT_BBox {
+    pub xMin: FT_Pos,
+    pub yMin: FT_Pos,
+    pub xMax: FT_Pos,
+    pub yMax: FT_Pos,
+}
+
+pub struct FT_Matrix {
+    pub xx: FT_Fixed,
+    pub xy: FT_Fixed,
+    pub yx: FT_Fixed,
+    pub yy: FT_Fixed,
+}
+
+pub struct FT_UnitVector {
+    pub x: FT_F2Dot14,
+    pub y: FT_F2Dot14,
+}
+
+pub struct FT_Bitmap {
+    pub rows: c_int,
+    pub width: c_int,
+    pub pitch: c_int,
+    pub buffer: *c_uchar,
+    pub num_grays: c_short,
+    pub pixel_mode: c_char,
+    pub palette_mode: c_char,
+    pub palette: *c_void,
+}
+
+pub struct FT_Data {
+    pub pointer: *FT_Byte,
+    pub length: FT_Int,
+}
+
+pub struct FT_Generic {
+    pub data: *c_void,
+    pub finalizer: FT_Generic_Finalizer,
+}
+
+pub struct FT_Size_Metrics {
+    pub x_ppem: FT_UShort,
+    pub y_ppem: FT_UShort,
+
+    pub x_scale: FT_Fixed,
+    pub y_scale: FT_Fixed,
+
+    pub ascender: FT_Pos,
+    pub descender: FT_Pos,
+    pub height: FT_Pos,
+    pub max_advance: FT_Pos
+}
+
+pub struct FT_Outline {
+    pub n_contours: c_short,
+    pub n_points: c_short,
+
+    pub points: *FT_Vector,
+    pub tags: *c_char,
+    pub contours: *c_short,
+
+    pub flags: c_int,
+}
+
+pub struct FT_Glyph_Metrics {
+    pub width: FT_Pos,
+    pub height: FT_Pos,
+
+    pub horiBearingX: FT_Pos,
+    pub horiBearingY: FT_Pos,
+    pub horiAdvance: FT_Pos,
+
+    pub vertBearingX: FT_Pos,
+    pub vertBearingY: FT_Pos,
+    pub vertAdvance: FT_Pos,
+}
+
+pub struct FT_Parameter {
+    pub tag: FT_ULong,
+    pub data: FT_Pointer,
+}
+
+pub struct FT_Open_Args {
+    pub flags: FT_UInt,
+    pub memory_base: *FT_Byte,
+    pub memory_size: FT_Long,
+    pub pathname: *mut FT_String,
+    pub stream: FT_Stream,
+    pub driver: FT_Module,
+    pub num_params: FT_Int,
+    pub params: *FT_Parameter,
+}
+
+pub struct FT_Bitmap_Size {
+    pub height: FT_Short,
+    pub width: FT_Short,
+
+    pub size: FT_Pos,
+
+    pub x_ppem: FT_Pos,
+    pub y_ppem: FT_Pos
+}
+
+// Enums
+pub type FT_Pixel_Mode = c_uint;
+pub static FT_PIXEL_MODE_NONE  : FT_Pixel_Mode = 0;
+pub static FT_PIXEL_MODE_MONO  : FT_Pixel_Mode = 1;
+pub static FT_PIXEL_MODE_GRAY  : FT_Pixel_Mode = 2;
+pub static FT_PIXEL_MODE_GRAY2 : FT_Pixel_Mode = 3;
+pub static FT_PIXEL_MODE_GRAY4 : FT_Pixel_Mode = 4;
+pub static FT_PIXEL_MODE_LCD   : FT_Pixel_Mode = 5;
+pub static FT_PIXEL_MODE_LCD_V : FT_Pixel_Mode = 6;
+pub static FT_PIXEL_MODE_BGRA  : FT_Pixel_Mode = 7;
+pub static FT_PIXEL_MODE_MAX   : FT_Pixel_Mode = 8;
+
+pub type FT_Glyph_Format = c_uint;
+pub static FT_GLYPH_FORMAT_NONE      : FT_Glyph_Format = 0;
+pub static FT_GLYPH_FORMAT_COMPOSITE : FT_Glyph_Format = 1668246896;
+pub static FT_GLYPH_FORMAT_BITMAP    : FT_Glyph_Format = 1651078259;
+pub static FT_GLYPH_FORMAT_OUTLINE   : FT_Glyph_Format = 1869968492;
+pub static FT_GLYPH_FORMAT_PLOTTER   : FT_Glyph_Format = 1886154612;
+
+pub type FT_Render_Mode = c_uint;
+pub static FT_RENDER_MODE_NORMAL : FT_Render_Mode = 0;
+pub static FT_RENDER_MODE_LIGHT  : FT_Render_Mode = 1;
+pub static FT_RENDER_MODE_MONO   : FT_Render_Mode = 2;
+pub static FT_RENDER_MODE_LCD    : FT_Render_Mode = 3;
+pub static FT_RENDER_MODE_LCD_V  : FT_Render_Mode = 4;
+pub static FT_RENDER_MODE_MAX    : FT_Render_Mode = FT_RENDER_MODE_LCD_V + 1;
+
+pub type FT_Encoding = c_uint;
+pub static FT_ENCODING_NONE           : FT_Encoding = 0;
+pub static FT_ENCODING_MS_SYMBOL      : FT_Encoding = 1937337698;
+pub static FT_ENCODING_UNICODE        : FT_Encoding = 1970170211;
+pub static FT_ENCODING_SJIS           : FT_Encoding = 1936353651;
+pub static FT_ENCODING_GB2312         : FT_Encoding = 1734484000;
+pub static FT_ENCODING_BIG5           : FT_Encoding = 1651074869;
+pub static FT_ENCODING_WANSUNG        : FT_Encoding = 2002873971;
+pub static FT_ENCODING_JOHAB          : FT_Encoding = 1785686113;
+pub static FT_ENCODING_MS_SJIS        : FT_Encoding = 1936353651;
+pub static FT_ENCODING_MS_GB2312      : FT_Encoding = 1734484000;
+pub static FT_ENCODING_MS_BIG5        : FT_Encoding = 1651074869;
+pub static FT_ENCODING_MS_WANSUNG     : FT_Encoding = 2002873971;
+pub static FT_ENCODING_MS_JOHAB       : FT_Encoding = 1785686113;
+pub static FT_ENCODING_ADOBE_STANDARD : FT_Encoding = 1094995778;
+pub static FT_ENCODING_ADOBE_EXPERT   : FT_Encoding = 1094992453;
+pub static FT_ENCODING_ADOBE_CUSTOM   : FT_Encoding = 1094992451;
+pub static FT_ENCODING_ADOBE_LATIN_1  : FT_Encoding = 1818326065;
+pub static FT_ENCODING_OLD_LATIN_2    : FT_Encoding = 1818326066;
+pub static FT_ENCODING_APPLE_ROMAN    : FT_Encoding = 1634889070;
+
+pub static FT_LOAD_DEFAULT                     : FT_Int32 = 0x0;
+pub static FT_LOAD_NO_SCALE                    : FT_Int32 = 0x1 << 0;
+pub static FT_LOAD_NO_HINTING                  : FT_Int32 = 0x1 << 1;
+pub static FT_LOAD_RENDER                      : FT_Int32 = 0x1 << 2;
+pub static FT_LOAD_NO_BITMAP                   : FT_Int32 = 0x1 << 3;
+pub static FT_LOAD_VERTICAL_LAYOUT             : FT_Int32 = 0x1 << 4;
+pub static FT_LOAD_FORCE_AUTOHINT              : FT_Int32 = 0x1 << 5;
+pub static FT_LOAD_CROP_BITMAP                 : FT_Int32 = 0x1 << 6;
+pub static FT_LOAD_PENDANTIC                   : FT_Int32 = 0x1 << 7;
+pub static FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH : FT_Int32 = 0x1 << 9;
+pub static FT_LOAD_NO_RECURSE                  : FT_Int32 = 0x1 << 10;
+pub static FT_LOAD_IGNORE_TRANSFORM            : FT_Int32 = 0x1 << 11;
+pub static FT_LOAD_MONOCHROME                  : FT_Int32 = 0x1 << 12;
+pub static FT_LOAD_LINEAR_DESIGN               : FT_Int32 = 0x1 << 13;
+pub static FT_LOAD_NO_AUTOHINT                 : FT_Int32 = 0x1 << 15;
 
 pub static FT_Err_Ok                            : FT_Error = 0;
 pub static FT_Err_Cannot_Open_Resource          : FT_Error = 1;
@@ -140,57 +304,30 @@ pub static FT_Err_Corrupted_Font_Header         : FT_Error = 185;
 pub static FT_Err_Corrupted_Font_Glyphs         : FT_Error = 186;
 pub static FT_Err_Max                           : FT_Error = 187;
 
-pub type FT_Render_Mode = c_uint;
-pub static FT_RENDER_MODE_NORMAL : FT_Render_Mode = 0;
-pub static FT_RENDER_MODE_LIGHT  : FT_Render_Mode = 1;
-pub static FT_RENDER_MODE_MONO   : FT_Render_Mode = 2;
-pub static FT_RENDER_MODE_LCD    : FT_Render_Mode = 3;
-pub static FT_RENDER_MODE_LCD_V  : FT_Render_Mode = 4;
-pub static FT_RENDER_MODE_MAX    : FT_Render_Mode = FT_RENDER_MODE_LCD_V + 1;
+// Objects
+pub type FT_Face = *FT_FaceRec;
+pub type FT_GlyphSlot = *FT_GlyphSlotRec;
+pub type FT_SubGlyph = *FT_SubGlyphRec;
+pub type FT_CharMap = *FT_CharMapRec;
+pub type FT_Size = *FT_SizeRec;
+pub type FT_Size_Internal = *FT_Size_InternalRec;
+pub type FT_Face_Internal = *FT_Face_InternalRec;
+pub type FT_Slot_Internal = *FT_Slot_InternalRec;
+pub type FT_Driver = *FT_DriverRec;
+pub type FT_Library = *FT_LibraryRec;
+pub type FT_Stream = *FT_StreamRec;
+pub type FT_Module = *FT_ModuleRec;
+pub type FT_Memory = *FT_MemoryRec;
+pub type FT_ListNode = *FT_ListNodeRec;
 
-pub type FT_Encoding = c_uint;
-pub static FT_ENCODING_NONE           : FT_Encoding = 0;
-pub static FT_ENCODING_MS_SYMBOL      : FT_Encoding = 1937337698;
-pub static FT_ENCODING_UNICODE        : FT_Encoding = 1970170211;
-pub static FT_ENCODING_SJIS           : FT_Encoding = 1936353651;
-pub static FT_ENCODING_GB2312         : FT_Encoding = 1734484000;
-pub static FT_ENCODING_BIG5           : FT_Encoding = 1651074869;
-pub static FT_ENCODING_WANSUNG        : FT_Encoding = 2002873971;
-pub static FT_ENCODING_JOHAB          : FT_Encoding = 1785686113;
-pub static FT_ENCODING_MS_SJIS        : FT_Encoding = 1936353651;
-pub static FT_ENCODING_MS_GB2312      : FT_Encoding = 1734484000;
-pub static FT_ENCODING_MS_BIG5        : FT_Encoding = 1651074869;
-pub static FT_ENCODING_MS_WANSUNG     : FT_Encoding = 2002873971;
-pub static FT_ENCODING_MS_JOHAB       : FT_Encoding = 1785686113;
-pub static FT_ENCODING_ADOBE_STANDARD : FT_Encoding = 1094995778;
-pub static FT_ENCODING_ADOBE_EXPERT   : FT_Encoding = 1094992453;
-pub static FT_ENCODING_ADOBE_CUSTOM   : FT_Encoding = 1094992451;
-pub static FT_ENCODING_ADOBE_LATIN_1  : FT_Encoding = 1818326065;
-pub static FT_ENCODING_OLD_LATIN_2    : FT_Encoding = 1818326066;
-pub static FT_ENCODING_APPLE_ROMAN    : FT_Encoding = 1634889070;
-
-pub static FT_LOAD_DEFAULT                     : FT_Int32 = 0x0;
-pub static FT_LOAD_NO_SCALE                    : FT_Int32 = 0x1 << 0;
-pub static FT_LOAD_NO_HINTING                  : FT_Int32 = 0x1 << 1;
-pub static FT_LOAD_RENDER                      : FT_Int32 = 0x1 << 2;
-pub static FT_LOAD_NO_BITMAP                   : FT_Int32 = 0x1 << 3;
-pub static FT_LOAD_VERTICAL_LAYOUT             : FT_Int32 = 0x1 << 4;
-pub static FT_LOAD_FORCE_AUTOHINT              : FT_Int32 = 0x1 << 5;
-pub static FT_LOAD_CROP_BITMAP                 : FT_Int32 = 0x1 << 6;
-pub static FT_LOAD_PENDANTIC                   : FT_Int32 = 0x1 << 7;
-pub static FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH : FT_Int32 = 0x1 << 9;
-pub static FT_LOAD_NO_RECURSE                  : FT_Int32 = 0x1 << 10;
-pub static FT_LOAD_IGNORE_TRANSFORM            : FT_Int32 = 0x1 << 11;
-pub static FT_LOAD_MONOCHROME                  : FT_Int32 = 0x1 << 12;
-pub static FT_LOAD_LINEAR_DESIGN               : FT_Int32 = 0x1 << 13;
-pub static FT_LOAD_NO_AUTOHINT                 : FT_Int32 = 0x1 << 15;
-
-pub type FT_Glyph_Format = c_uint;
-pub static FT_GLYPH_FORMAT_NONE      : FT_Glyph_Format = 0;
-pub static FT_GLYPH_FORMAT_COMPOSITE : FT_Glyph_Format = 1668246896;
-pub static FT_GLYPH_FORMAT_BITMAP    : FT_Glyph_Format = 1651078259;
-pub static FT_GLYPH_FORMAT_OUTLINE   : FT_Glyph_Format = 1869968492;
-pub static FT_GLYPH_FORMAT_PLOTTER   : FT_Glyph_Format = 1886154612;
+// Internal Types
+pub type FT_LibraryRec = c_void;
+pub type FT_DriverRec = c_void;
+pub type FT_ModuleRec = c_void;
+pub type FT_SubGlyphRec = c_void;
+pub type FT_Size_InternalRec = c_void;
+pub type FT_Face_InternalRec = c_void;
+pub type FT_Slot_InternalRec = c_void;
 
 pub struct FT_FaceRec {
     pub num_faces: FT_Long,
@@ -322,104 +459,6 @@ pub struct FT_ListNodeRec {
     pub prev: FT_ListNode,
     pub next: FT_ListNode,
     pub data: *c_void,
-}
-
-pub struct FT_Size_Metrics {
-    pub x_ppem: FT_UShort,
-    pub y_ppem: FT_UShort,
-
-    pub x_scale: FT_Fixed,
-    pub y_scale: FT_Fixed,
-
-    pub ascender: FT_Pos,
-    pub descender: FT_Pos,
-    pub height: FT_Pos,
-    pub max_advance: FT_Pos
-}
-
-pub struct FT_Outline {
-    pub n_contours: c_short,
-    pub n_points: c_short,
-
-    pub points: *FT_Vector,
-    pub tags: *c_char,
-    pub contours: *c_short,
-
-    pub flags: c_int,
-}
-
-pub struct FT_Bitmap {
-    pub rows: c_int,
-    pub width: c_int,
-    pub pitch: c_int,
-    pub buffer: *c_uchar,
-    pub num_grays: c_short,
-    pub pixel_mode: c_char,
-    pub palette_mode: c_char,
-    pub palette: *c_void,
-}
-
-pub struct FT_Glyph_Metrics {
-    pub width: FT_Pos,
-    pub height: FT_Pos,
-
-    pub horiBearingX: FT_Pos,
-    pub horiBearingY: FT_Pos,
-    pub horiAdvance: FT_Pos,
-
-    pub vertBearingX: FT_Pos,
-    pub vertBearingY: FT_Pos,
-    pub vertAdvance: FT_Pos,
-}
-
-pub struct FT_Parameter {
-    pub tag: FT_ULong,
-    pub data: FT_Pointer,
-}
-
-pub struct FT_Open_Args {
-    pub flags: FT_UInt,
-    pub memory_base: *FT_Byte,
-    pub memory_size: FT_Long,
-    pub pathname: *mut FT_String,
-    pub stream: FT_Stream,
-    pub driver: FT_Module,
-    pub num_params: FT_Int,
-    pub params: *FT_Parameter,
-}
-
-pub struct FT_Bitmap_Size {
-    pub height: FT_Short,
-    pub width: FT_Short,
-
-    pub size: FT_Pos,
-
-    pub x_ppem: FT_Pos,
-    pub y_ppem: FT_Pos
-}
-
-pub struct FT_Generic {
-    pub data: *c_void,
-    pub finalizer: FT_Generic_Finalizer,
-}
-
-pub struct FT_BBox {
-    pub xMin: FT_Pos,
-    pub yMin: FT_Pos,
-    pub xMax: FT_Pos,
-    pub yMax: FT_Pos,
-}
-
-pub struct FT_Matrix {
-    pub xx: FT_Fixed,
-    pub xy: FT_Fixed,
-    pub yx: FT_Fixed,
-    pub yy: FT_Fixed,
-}
-
-pub struct FT_Vector {
-    pub x: FT_Pos,
-    pub y: FT_Pos,
 }
 
 #[link(name = "freetype")]
