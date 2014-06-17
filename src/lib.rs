@@ -8,5 +8,10 @@
 
 extern crate libc;
 
+pub use library::Library;
+pub use face::Face;
+
 pub mod ffi;
+pub mod library;
+pub mod face;
 
