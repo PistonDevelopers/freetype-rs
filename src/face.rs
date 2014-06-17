@@ -3,32 +3,6 @@ use std;
 use ffi::*;
 use Library;
 
-pub struct GlyphSlot {
-    pub bitmap: FT_Bitmap,
-    pub bitmap_left: i32,
-    pub bitmap_top: i32,
-
-    raw: FT_GlyphSlot,
-}
-
-impl GlyphSlot {
-    pub fn new(raw: FT_GlyphSlot) -> GlyphSlot {
-        unsafe {
-            GlyphSlot {
-                bitmap: (*raw).bitmap,
-                bitmap_left: (*raw).bitmap_left,
-                bitmap_top: (*raw).bitmap_top,
-
-                raw: raw,
-            }
-        }
-    }
-
-    pub fn raw(&self) -> FT_GlyphSlot {
-        self.raw
-    }
-}
-
 pub struct Face {
     raw: FT_Face,
 }
@@ -103,9 +77,9 @@ impl Face {
         }
     }
 
-    pub fn glyph(&self) -> GlyphSlot {
+    pub fn glyph<'a>(&'a self) -> &'a FT_GlyphSlotRec {
         unsafe {
-            GlyphSlot::new((*self.raw).glyph)
+            &*(*self.raw).glyph
         }
     }
 
