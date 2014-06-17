@@ -14,4 +14,7 @@ pub use face::Face;
 pub mod ffi;
 pub mod library;
 pub mod face;
+pub mod error;
+
+pub type FtResult<T> = Result<T, error::Error>;
 

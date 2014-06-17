@@ -1,14 +1,18 @@
 
 use std;
+use std::num::FromPrimitive;
 use ffi::*;
-use Library;
+use {
+    Library,
+    FtResult,
+};
 
 pub struct Face {
     raw: FT_Face,
 }
 
 impl Face {
-    pub fn new(library: &Library, filepathname: &str, face_index: i64) -> Result<Face, String> {
+    pub fn new(library: &Library, filepathname: &str, face_index: i64) -> FtResult<Face> {
         unsafe {
             let face: FT_Face = std::ptr::null();
             let err = FT_New_Face(library.raw(), filepathname.as_slice().as_ptr(), face_index, &face);
@@ -17,62 +21,76 @@ impl Face {
                     raw: face,
                 })
             } else {
-                Err(format!("Failed to create face for '{}'. Error Code: {}", filepathname, err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
 
-    pub fn attach_file(&self, filepathname: &str) -> Result<(), String> {
+    pub fn new_memory(library: &Library, buffer: &[u8], face_index: i64) -> FtResult<Face> {
+        unsafe {
+            let face: FT_Face = std::ptr::null();
+            let err = FT_New_Memory_Face(library.raw(), buffer.as_ptr(), buffer.len() as i64, face_index, &face);
+            if err == 0 {
+                Ok(Face {
+                    raw: face,
+                })
+            } else {
+                Err(FromPrimitive::from_i32(err).unwrap())
+            }
+        }
+    }
+
+    pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
         unsafe {
             let err = FT_Attach_File(self.raw(), filepathname.as_slice().as_ptr() as *i8);
             if err == 0 {
                 Ok(())
             } else {
-                Err(format!("Failed to attach file '{}'. Error Code: {}", filepathname, err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
 
-    pub fn reference(&self) -> Result<(), String> {
+    pub fn reference(&self) -> FtResult<()> {
         unsafe {
             let err = FT_Reference_Face(self.raw());
             if err == 0 {
                 Ok(())
             } else {
-                Err(format!("Failed to reference face. Error Code: {}", err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
 
-    pub fn set_char_size(&self, char_width: i64, char_height: i64, horz_resolution: u32, vert_resolution: u32) -> Result<(), String> {
+    pub fn set_char_size(&self, char_width: i64, char_height: i64, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
         unsafe {
             let err = FT_Set_Char_Size(self.raw(), char_width, char_height, horz_resolution, vert_resolution);
             if err == 0 {
                 Ok(())
             } else {
-                Err(format!("Failed to set character size. Error Code: {}", err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
 
-    pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> Result<(), String> {
+    pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Glyph(self.raw(), glyph_index, load_flags.bits);
             if err == 0 {
                 Ok(())
             } else {
-                Err(format!("Failed to load glyph of index {}. Error Code: {}", glyph_index, err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
 
-    pub fn load_char(&self, char_code: u64, load_flags: LoadFlag) -> Result<(), String> {
+    pub fn load_char(&self, char_code: u64, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Char(self.raw(), char_code, load_flags.bits);
             if err == 0 {
                 Ok(())
             } else {
-                Err(format!("Failed to load character {}. Error Code: {}", char_code, err))
+                Err(FromPrimitive::from_i32(err).unwrap())
             }
         }
     }
