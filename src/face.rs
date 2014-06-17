@@ -5,6 +5,9 @@ use ffi::*;
 use {
     Library,
     FtResult,
+    Matrix,
+    Vector,
+    GlyphSlot,
 };
 
 pub struct Face {
@@ -12,7 +15,7 @@ pub struct Face {
 }
 
 impl Face {
-    pub fn new(library: &Library, filepathname: &str, face_index: i64) -> FtResult<Face> {
+    pub fn new(library: &Library, filepathname: &str, face_index: FT_Long) -> FtResult<Face> {
         unsafe {
             let face: FT_Face = std::ptr::null();
             let err = FT_New_Face(library.raw(), filepathname.as_slice().as_ptr(), face_index, &face);
@@ -26,7 +29,7 @@ impl Face {
         }
     }
 
-    pub fn new_memory(library: &Library, buffer: &[u8], face_index: i64) -> FtResult<Face> {
+    pub fn new_memory(library: &Library, buffer: &[u8], face_index: FT_Long) -> FtResult<Face> {
         unsafe {
             let face: FT_Face = std::ptr::null();
             let err = FT_New_Memory_Face(library.raw(), buffer.as_ptr(), buffer.len() as i64, face_index, &face);
@@ -62,7 +65,7 @@ impl Face {
         }
     }
 
-    pub fn set_char_size(&self, char_width: i64, char_height: i64, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
+    pub fn set_char_size(&self, char_width: FT_F26Dot6, char_height: FT_F26Dot6, horz_resolution: FT_UInt, vert_resolution: FT_UInt) -> FtResult<()> {
         unsafe {
             let err = FT_Set_Char_Size(self.raw(), char_width, char_height, horz_resolution, vert_resolution);
             if err == 0 {
@@ -73,7 +76,7 @@ impl Face {
         }
     }
 
-    pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_glyph(&self, glyph_index: FT_UInt, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Glyph(self.raw(), glyph_index, load_flags.bits);
             if err == 0 {
@@ -84,7 +87,7 @@ impl Face {
         }
     }
 
-    pub fn load_char(&self, char_code: u64, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_char(&self, char_code: FT_ULong, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Char(self.raw(), char_code, load_flags.bits);
             if err == 0 {
@@ -95,14 +98,23 @@ impl Face {
         }
     }
 
-    pub fn glyph<'a>(&'a self) -> &'a FT_GlyphSlotRec {
+    pub fn set_transform(&self, matrix: &Matrix, delta: &Vector) {
         unsafe {
-            &*(*self.raw).glyph
+            FT_Set_Transform(self.raw(), matrix, delta);
         }
     }
 
-    pub fn raw(&self) -> FT_Face {
-        self.raw
+    pub fn glyph(&self) -> GlyphSlot {
+        unsafe {
+            GlyphSlot::new((*self.raw).glyph)
+        }
+    }
+
+    #[inline(always)]
+    pub fn raw<'a>(&'a self) -> &'a FT_FaceRec {
+        unsafe {
+            &*self.raw
+        }
     }
 }
 
