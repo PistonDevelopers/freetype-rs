@@ -1,7 +1,10 @@
 
 use std::num::FromPrimitive;
 use ffi::*;
-use FtResult;
+use {
+    FtResult,
+    GlyphMetrics,
+};
 
 pub struct GlyphSlot {
     raw: FT_GlyphSlot,
@@ -41,6 +44,12 @@ impl GlyphSlot {
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
+        }
+    }
+
+    pub fn metrics(&self) -> GlyphMetrics {
+        unsafe {
+            (*self.raw).metrics
         }
     }
 
