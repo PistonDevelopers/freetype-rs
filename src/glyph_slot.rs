@@ -4,6 +4,7 @@ use ffi::*;
 use {
     FtResult,
     GlyphMetrics,
+    Vector,
 };
 
 pub struct GlyphSlot {
@@ -44,6 +45,24 @@ impl GlyphSlot {
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
+        }
+    }
+
+    pub fn advance(&self) -> Vector {
+        unsafe {
+            (*self.raw).advance
+        }
+    }
+
+    pub fn linear_hori_advance(&self) -> FT_Fixed {
+        unsafe {
+            (*self.raw).linearHoriAdvance
+        }
+    }
+
+    pub fn linear_vert_advance(&self) -> FT_Fixed {
+        unsafe {
+            (*self.raw).linearVertAdvance
         }
     }
 
