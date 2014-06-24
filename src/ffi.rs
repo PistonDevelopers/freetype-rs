@@ -211,6 +211,13 @@ pub static FT_KERNING_DEFAULT  : FT_Kerning_Mode = 0;
 pub static FT_KERNING_UNFITTED : FT_Kerning_Mode = 1;
 pub static FT_KERNING_UNSCALED : FT_Kerning_Mode = 2;
 
+pub type FT_Glyph_BBox_Mode = c_uint;
+pub static FT_GLYPH_BBOX_UNSCALED  : FT_Glyph_BBox_Mode = 0;
+pub static FT_GLYPH_BBOX_SUBPIXELS : FT_Glyph_BBox_Mode = 0;
+pub static FT_GLYPH_BBOX_GRIDFIT   : FT_Glyph_BBox_Mode = 1;
+pub static FT_GLYPH_BBOX_TRUNCATE  : FT_Glyph_BBox_Mode = 2;
+pub static FT_GLYPH_BBOX_PIXELS    : FT_Glyph_BBox_Mode = 3;
+
 // Constants
 pub static FT_FACE_FLAG_SCALABLE         : FT_Long = 1 << 0;
 pub static FT_FACE_FLAG_FIXED_SIZES      : FT_Long = 1 << 1;
@@ -377,6 +384,9 @@ pub type FT_Face_Internal = *FT_Face_InternalRec;
 pub type FT_Stream = *FT_StreamRec;
 pub type FT_Memory = *FT_MemoryRec;
 pub type FT_ListNode = *FT_ListNodeRec;
+pub type FT_Glyph = *FT_GlyphRec;
+pub type FT_BitmapGlyph = *FT_BitmapGlyphRec;
+pub type FT_OutlineGlyph = *FT_OutlineGlyphRec;
 
 // Internal Types
 pub type FT_LibraryRec = c_void;
@@ -528,6 +538,25 @@ pub struct FT_Size_RequestRec {
     pub vertResolution: FT_UInt,
 }
 
+pub struct FT_GlyphRec {
+    pub library: FT_Library,
+    pub clazz: *c_void, // FT_Glyph_Class
+    pub format: FT_Glyph_Format,
+    pub advance: FT_Vector,
+}
+
+pub struct FT_BitmapGlyphRec {
+    pub root: FT_GlyphRec,
+    pub left: FT_Int,
+    pub top: FT_Int,
+    pub bitmap: FT_Bitmap,
+}
+
+pub struct FT_OutlineGlyphRec {
+    pub root: FT_GlyphRec,
+    pub outline: FT_Outline,
+}
+
 // Macro functions
 #[inline(always)]
 pub fn FT_HAS_HORIZONTAL(face: FT_Face) -> bool {
@@ -645,5 +674,11 @@ extern "C" {
     pub fn FT_Get_Name_Index(face: FT_Face, glyph_name: *FT_String) -> FT_UInt;
     pub fn FT_Get_SubGlyph_Info(glyph: FT_GlyphSlot, sub_index: FT_UInt, p_index: *FT_Int, p_flags: *FT_UInt, p_arg1: *FT_Int, p_arg2: *FT_Int, p_transform: *FT_Matrix) -> FT_Error;
     pub fn FT_Get_FSType_Flags(face: FT_Face) -> FT_UShort;
+    pub fn FT_Get_Glyph(slot: FT_GlyphSlot, aglyph: *FT_Glyph) -> FT_Error;
+    pub fn FT_Glyph_Copy(source: FT_Glyph, target: *FT_Glyph) -> FT_Error;
+    pub fn FT_Glyph_Transform(glyph: FT_Glyph, matrix: *FT_Matrix, delta: *FT_Vector) -> FT_Error;
+    pub fn FT_Glyph_Get_CBox(glyph: FT_Glyph, bbox_mode: FT_UInt, acbox: *FT_BBox);
+    pub fn FT_Glyph_To_Bitmap(the_glyph: *FT_Glyph, render_mode: FT_Render_Mode, origin: *FT_Vector, destroy: FT_Bool) -> FT_Error;
+    pub fn FT_Done_Glyph(glyph: FT_Glyph);
 }
 
