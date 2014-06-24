@@ -1,8 +1,10 @@
 
+use std;
 use std::num::FromPrimitive;
 use ffi::*;
 use {
     FtResult,
+    Glyph,
     GlyphMetrics,
     Vector,
 };
@@ -42,6 +44,18 @@ impl GlyphSlot {
             let err = FT_Get_SubGlyph_Info(self.raw(), sub_index, &index, &flags, &arg1, &arg2, &transfrom);
             if err == 0 {
                 Ok((index, flags, arg1, arg2, transfrom))
+            } else {
+                Err(FromPrimitive::from_i32(err).unwrap())
+            }
+        }
+    }
+
+    pub fn get_glyph(&self) -> FtResult<Glyph> {
+        unsafe {
+            let aglyph: FT_Glyph = std::ptr::null();
+            let err= FT_Get_Glyph(self.raw, &aglyph);
+            if err == FT_Err_Ok {
+                Ok(Glyph::new(aglyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
