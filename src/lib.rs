@@ -23,4 +23,5 @@ pub type BBox = ffi::FT_BBox;
 pub type Bitmap = ffi::FT_Bitmap;
 pub type Matrix = ffi::FT_Matrix;
 pub type Vector = ffi::FT_Vector;
+pub type GlyphMetrics = ffi::FT_Glyph_Metrics;
 

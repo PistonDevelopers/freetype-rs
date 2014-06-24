@@ -104,6 +104,8 @@ impl Face {
         }
     }
 
+    // According to doc, each time you load a new glyph image,
+    // the previous one is erased from the glyph slot.
     pub fn glyph(&self) -> GlyphSlot {
         unsafe {
             GlyphSlot::new((*self.raw).glyph)
