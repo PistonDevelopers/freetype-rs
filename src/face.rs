@@ -12,6 +12,7 @@ use {
 
 pub struct Face {
     raw: FT_Face,
+    glyph: GlyphSlot,
 }
 
 impl Face {
@@ -22,6 +23,7 @@ impl Face {
             if err == 0 {
                 Ok(Face {
                     raw: face,
+                    glyph: GlyphSlot::new((*face).glyph),
                 })
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -36,6 +38,7 @@ impl Face {
             if err == 0 {
                 Ok(Face {
                     raw: face,
+                    glyph: GlyphSlot::new((*face).glyph),
                 })
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -104,12 +107,17 @@ impl Face {
         }
     }
 
-    // According to doc, each time you load a new glyph image,
-    // the previous one is erased from the glyph slot.
-    pub fn glyph(&self) -> GlyphSlot {
+    pub fn get_char_index(&self, charcode: FT_ULong) -> FT_UInt {
         unsafe {
-            GlyphSlot::new((*self.raw).glyph)
+            FT_Get_Char_Index(self.raw, charcode)
         }
+    }
+
+    // According to FreeType doc, each time you load a new glyph image,
+    // the previous one is erased from the glyph slot.
+    #[inline(always)]
+    pub fn glyph<'a>(&'a self) -> &'a GlyphSlot {
+        &self.glyph
     }
 
     #[inline(always)]
