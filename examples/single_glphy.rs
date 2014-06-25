@@ -74,8 +74,7 @@ fn main() {
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
     face.load_char(text.as_slice()[0] as u64, ft::face::Render).unwrap();
 
-    let slot = face.glyph();
-    let slot = slot.raw();
+    let slot = face.glyph().raw();
     let image = draw_bitmap(&slot.bitmap, slot.bitmap_left, HEIGHT - slot.bitmap_top);
 
     for i in range(0, HEIGHT) {
