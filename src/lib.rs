@@ -10,11 +10,15 @@ extern crate libc;
 
 pub use library::Library;
 pub use face::Face;
+pub use bitmap_glyph::BitmapGlyph;
+pub use glyph::Glyph;
 pub use glyph_slot::GlyphSlot;
 
 pub mod ffi;
 pub mod library;
 pub mod face;
+pub mod bitmap_glyph;
+pub mod glyph;
 pub mod glyph_slot;
 pub mod error;
 

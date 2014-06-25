@@ -1,8 +1,10 @@
 
+use std;
 use std::num::FromPrimitive;
 use ffi::*;
 use {
     FtResult,
+    Glyph,
     GlyphMetrics,
     Vector,
 };
@@ -48,24 +50,40 @@ impl GlyphSlot {
         }
     }
 
+    pub fn get_glyph(&self) -> FtResult<Glyph> {
+        unsafe {
+            let aglyph: FT_Glyph = std::ptr::null();
+            let err= FT_Get_Glyph(self.raw, &aglyph);
+            if err == FT_Err_Ok {
+                Ok(Glyph::new(aglyph))
+            } else {
+                Err(FromPrimitive::from_i32(err).unwrap())
+            }
+        }
+    }
+
+    #[inline(always)]
     pub fn advance(&self) -> Vector {
         unsafe {
             (*self.raw).advance
         }
     }
 
+    #[inline(always)]
     pub fn linear_hori_advance(&self) -> FT_Fixed {
         unsafe {
             (*self.raw).linearHoriAdvance
         }
     }
 
+    #[inline(always)]
     pub fn linear_vert_advance(&self) -> FT_Fixed {
         unsafe {
             (*self.raw).linearVertAdvance
         }
     }
 
+    #[inline(always)]
     pub fn metrics(&self) -> GlyphMetrics {
         unsafe {
             (*self.raw).metrics
