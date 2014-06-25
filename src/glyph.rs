@@ -4,6 +4,7 @@ use std::num::FromPrimitive;
 use ffi::*;
 use {
     BBox,
+    BitmapGlyph,
     FtResult,
     Matrix,
     Vector,
@@ -20,9 +21,20 @@ impl Glyph {
         }
     }
 
-    pub fn transform(&self, matrix: &Matrix, delta: &Vector) -> FtResult<()> {
+    pub fn transform(&self, matrix: Option<Matrix>, delta: Option<Vector>) -> FtResult<()> {
         unsafe {
-            let err = FT_Glyph_Transform(self.raw, matrix, delta);
+            let mut p_matrix : *Matrix = std::ptr::null();
+            let mut p_delta : *Vector = std::ptr::null();
+
+            if matrix.is_some() {
+                p_matrix = &matrix.unwrap() as *Matrix;
+            }
+
+            if delta.is_some() {
+                p_delta = &delta.unwrap() as *Vector;
+            }
+
+            let err = FT_Glyph_Transform(self.raw, p_matrix, p_delta);
             if err == FT_Err_Ok {
                 Ok(())
             } else {
@@ -44,20 +56,27 @@ impl Glyph {
         }
     }
 
-    pub fn to_bitmap(&self, render_mode: FT_Render_Mode, origin: Option<Vector>) -> FtResult<Glyph> {
+    pub fn to_bitmap(&self, render_mode: FT_Render_Mode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         unsafe {
-            let the_glyph = self.raw;
-            let err;
-            if origin.is_none() {
-                err = FT_Glyph_To_Bitmap(&the_glyph, render_mode, std::ptr::null(), 0);
-            } else {
-                err = FT_Glyph_To_Bitmap(&the_glyph, render_mode, origin.get_ref(), 0);
+            let mut p_origin = std::ptr::null();
+            if origin.is_some() {
+                p_origin = origin.get_ref() as *Vector;
             }
+
+            let the_glyph = self.raw;
+            let err = FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
             if err == FT_Err_Ok {
-                Ok(Glyph::new(the_glyph))
+                Ok(BitmapGlyph::new(the_glyph as FT_BitmapGlyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
+        }
+    }
+
+    #[inline(always)]
+    pub fn format(&self) -> FT_Glyph_Format {
+        unsafe {
+            (*self.raw).format
         }
     }
 

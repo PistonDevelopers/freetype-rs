@@ -62,24 +62,28 @@ impl GlyphSlot {
         }
     }
 
+    #[inline(always)]
     pub fn advance(&self) -> Vector {
         unsafe {
             (*self.raw).advance
         }
     }
 
+    #[inline(always)]
     pub fn linear_hori_advance(&self) -> FT_Fixed {
         unsafe {
             (*self.raw).linearHoriAdvance
         }
     }
 
+    #[inline(always)]
     pub fn linear_vert_advance(&self) -> FT_Fixed {
         unsafe {
             (*self.raw).linearVertAdvance
         }
     }
 
+    #[inline(always)]
     pub fn metrics(&self) -> GlyphMetrics {
         unsafe {
             (*self.raw).metrics
