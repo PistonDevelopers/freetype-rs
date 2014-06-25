@@ -113,6 +113,61 @@ impl Face {
     }
 
     #[inline(always)]
+    pub fn has_horizontal(&self) -> bool {
+        FT_HAS_HORIZONTAL(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn has_vertical(&self) -> bool {
+        FT_HAS_VERTICAL(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn has_kerning(&self) -> bool {
+        FT_HAS_KERNING(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn is_scalable(&self) -> bool {
+        FT_IS_SCALABLE(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn is_sfnt(&self) -> bool {
+        FT_IS_SFNT(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn is_fixed_width(&self) -> bool {
+        FT_IS_FIXED_WIDTH(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn has_fixed_sizes(&self) -> bool {
+        FT_HAS_FIXED_SIZES(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn has_glyph_names(&self) -> bool {
+        FT_HAS_GLYPH_NAMES(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn is_cid_keyed(&self) -> bool {
+        FT_IS_CID_KEYED(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn is_tricky(&self) -> bool {
+        FT_IS_TRICKY(self.raw)
+    }
+
+    #[inline(always)]
+    pub fn has_color(&self) -> bool {
+        FT_HAS_COLOR(self.raw)
+    }
+
+    #[inline(always)]
     pub fn raw<'a>(&'a self) -> &'a FT_FaceRec {
         unsafe {
             &*self.raw
