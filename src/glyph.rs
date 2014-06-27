@@ -15,7 +15,7 @@ pub struct Glyph {
 }
 
 impl Glyph {
-    pub fn new(raw: FT_Glyph) -> Glyph {
+    pub fn from_raw(raw: FT_Glyph) -> Glyph {
         Glyph {
             raw: raw,
         }
@@ -66,7 +66,7 @@ impl Glyph {
             let the_glyph = self.raw;
             let err = FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
             if err == FT_Err_Ok {
-                Ok(BitmapGlyph::new(the_glyph as FT_BitmapGlyph))
+                Ok(BitmapGlyph::from_raw(the_glyph as FT_BitmapGlyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
@@ -96,7 +96,7 @@ impl Clone for Glyph {
             if err != FT_Err_Ok {
                 std::io::println(format!("Failed to copy glyph. Error Code: {}", err).as_slice());
             }
-            Glyph::new(target)
+            Glyph::from_raw(target)
         }
     }
 }
