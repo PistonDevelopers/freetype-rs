@@ -14,7 +14,7 @@ pub struct GlyphSlot {
 }
 
 impl GlyphSlot {
-    pub fn new(raw: FT_GlyphSlot) -> GlyphSlot {
+    pub fn from_raw(raw: FT_GlyphSlot) -> GlyphSlot {
         GlyphSlot {
             raw: raw,
         }

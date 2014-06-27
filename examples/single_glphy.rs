@@ -70,7 +70,7 @@ fn main() {
     let text = args.get(2);
 
     let library = ft::Library::init().unwrap();
-    let face = ft::Face::new(&library, filename.as_slice(), 0).unwrap();
+    let face = library.new_face(filename.as_slice(), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
     face.load_char(text.as_slice()[0] as u64, ft::face::Render).unwrap();
 
