@@ -3,6 +3,7 @@ use std;
 use std::num::FromPrimitive;
 use ffi::*;
 use {
+    Bitmap,
     FtResult,
     Glyph,
     GlyphMetrics,
@@ -55,10 +56,31 @@ impl GlyphSlot {
             let aglyph: FT_Glyph = std::ptr::null();
             let err= FT_Get_Glyph(self.raw, &aglyph);
             if err == FT_Err_Ok {
-                Ok(Glyph::new(aglyph))
+                Ok(Glyph::from_raw(aglyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
+        }
+    }
+
+    #[inline(always)]
+    pub fn bitmap(&self) -> Bitmap {
+        unsafe {
+            Bitmap::from_raw(&(*self.raw).bitmap)
+        }
+    }
+
+    #[inline(always)]
+    pub fn bitmap_left(&self) -> i32 {
+        unsafe {
+            (*self.raw).bitmap_left
+        }
+    }
+
+    #[inline(always)]
+    pub fn bitmap_top(&self) -> i32 {
+        unsafe {
+            (*self.raw).bitmap_top
         }
     }
 
