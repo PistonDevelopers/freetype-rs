@@ -3,7 +3,6 @@ use std;
 use std::num::FromPrimitive;
 use ffi::*;
 use {
-    Library,
     FtResult,
     Matrix,
     Vector,
@@ -16,40 +15,17 @@ pub struct Face {
 }
 
 impl Face {
-    pub fn new(library: &Library, filepathname: &str, face_index: FT_Long) -> FtResult<Face> {
-        unsafe {
-            let face: FT_Face = std::ptr::null();
-            let err = FT_New_Face(library.raw(), filepathname.as_slice().as_ptr(), face_index, &face);
-            if err == 0 {
-                Ok(Face {
-                    raw: face,
-                    glyph: GlyphSlot::new((*face).glyph),
-                })
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
-        }
-    }
-
-    pub fn new_memory(library: &Library, buffer: &[u8], face_index: FT_Long) -> FtResult<Face> {
-        unsafe {
-            let face: FT_Face = std::ptr::null();
-            let err = FT_New_Memory_Face(library.raw(), buffer.as_ptr(), buffer.len() as i64, face_index, &face);
-            if err == 0 {
-                Ok(Face {
-                    raw: face,
-                    glyph: GlyphSlot::new((*face).glyph),
-                })
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+    pub fn from_raw(raw: FT_Face) -> Face {
+        Face {
+            raw: raw,
+            glyph: unsafe { GlyphSlot::from_raw((*raw).glyph) },
         }
     }
 
     pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
         unsafe {
             let err = FT_Attach_File(self.raw(), filepathname.as_slice().as_ptr() as *i8);
-            if err == 0 {
+            if err == FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -60,7 +36,7 @@ impl Face {
     pub fn reference(&self) -> FtResult<()> {
         unsafe {
             let err = FT_Reference_Face(self.raw());
-            if err == 0 {
+            if err == FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -71,7 +47,18 @@ impl Face {
     pub fn set_char_size(&self, char_width: FT_F26Dot6, char_height: FT_F26Dot6, horz_resolution: FT_UInt, vert_resolution: FT_UInt) -> FtResult<()> {
         unsafe {
             let err = FT_Set_Char_Size(self.raw(), char_width, char_height, horz_resolution, vert_resolution);
-            if err == 0 {
+            if err == FT_Err_Ok {
+                Ok(())
+            } else {
+                Err(FromPrimitive::from_i32(err).unwrap())
+            }
+        }
+    }
+
+    pub fn set_pixel_sizes(&self, pixel_width: FT_UInt, pixel_height: FT_UInt) -> FtResult<()> {
+        unsafe {
+            let err = FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height);
+            if err == FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -82,7 +69,7 @@ impl Face {
     pub fn load_glyph(&self, glyph_index: FT_UInt, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Glyph(self.raw(), glyph_index, load_flags.bits);
-            if err == 0 {
+            if err == FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -93,7 +80,7 @@ impl Face {
     pub fn load_char(&self, char_code: FT_ULong, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = FT_Load_Char(self.raw(), char_code, load_flags.bits);
-            if err == 0 {
+            if err == FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())

@@ -646,6 +646,7 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
 extern "C" {
     pub fn FT_Init_FreeType(alibrary: *FT_Library) -> FT_Error;
     pub fn FT_Done_FreeType(library: FT_Library) -> FT_Error;
+    pub fn FT_Done_Library(library: FT_Library) -> FT_Error;
     pub fn FT_New_Face(library: FT_Library, filepathname: *u8, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
     pub fn FT_New_Memory_Face(library: FT_Library, file_base: *FT_Byte, file_size: FT_Long, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
     pub fn FT_Open_Face(library: FT_Library, args: *FT_Open_Args, face_index: FT_Long, aface: *FT_Face) -> FT_Error;
