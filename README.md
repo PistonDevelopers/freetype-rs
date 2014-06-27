@@ -7,7 +7,7 @@ Requirements
 ------------
 
   * *Rust*: We currently compile against the *master* branch. The releases on http://www.rust-lang.org tend to not work.
-  * *FreeType2 development libraryies*: install through your favourite package management tool, or via http://www.freetype.org/download.html
+  * *FreeType2 development libraries*: install through your favourite package management tool, or via http://www.freetype.org/download.html
 
 Build
 -----
