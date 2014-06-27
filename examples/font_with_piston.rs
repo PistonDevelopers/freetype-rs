@@ -54,7 +54,7 @@ impl App {
             self.face.load_char(ch as u64, ft::face::Render).unwrap();
             let g = self.face.glyph();
 
-            let texture = Texture::from_memory_alpha(g.bitmap().buffer().as_slice(), g.bitmap().width() as u32, g.bitmap().rows() as u32).unwrap();
+            let texture = Texture::from_memory_alpha(g.bitmap().buffer(), g.bitmap().width() as u32, g.bitmap().rows() as u32).unwrap();
             c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64).image(&texture).rgb(0.0, 0.0, 0.0).draw(&mut self.gl);
 
             x += (g.advance().x >> 6) as i32;
