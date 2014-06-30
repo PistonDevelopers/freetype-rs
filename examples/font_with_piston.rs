@@ -47,7 +47,7 @@ impl App {
         }
     }
 
-    pub fn render_text(&mut self, c: &Context, text: &str) {
+    pub fn render_text<'a>(&mut self, c: &'a Context<'a>, text: &str) {
         let mut x = 0;
         let mut y = 0;
         for ch in text.chars() {
@@ -64,7 +64,7 @@ impl App {
 }
 
 impl Game for App {
-    fn render(&mut self, args: &mut RenderArgs) {
+    fn render(&mut self, args: &RenderArgs) {
         let c = Context::abs(args.width as f64, args.height as f64);
         c.rgb(1.0, 1.0, 1.0).draw(&mut self.gl);
 

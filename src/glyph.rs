@@ -1,7 +1,21 @@
 
 use std;
 use std::num::FromPrimitive;
-use ffi::*;
+use ffi::{
+    FT_BBox,
+    FT_BitmapGlyph,
+    FT_Done_Glyph,
+    FT_Err_Ok,
+    FT_Glyph_To_Bitmap,
+    FT_Glyph_BBox_Mode,
+    FT_Glyph_Format,
+    FT_Glyph,
+    FT_Glyph_Copy,
+    FT_GlyphRec,
+    FT_Glyph_Get_CBox,
+    FT_Glyph_Transform,
+    FT_Render_Mode,
+};
 use {
     BBox,
     BitmapGlyph,
@@ -23,15 +37,15 @@ impl Glyph {
 
     pub fn transform(&self, matrix: Option<Matrix>, delta: Option<Vector>) -> FtResult<()> {
         unsafe {
-            let mut p_matrix : *Matrix = std::ptr::null();
-            let mut p_delta : *Vector = std::ptr::null();
+            let mut p_matrix : *const Matrix = std::ptr::null();
+            let mut p_delta : *const Vector = std::ptr::null();
 
             if matrix.is_some() {
-                p_matrix = &matrix.unwrap() as *Matrix;
+                p_matrix = &matrix.unwrap() as *const Matrix;
             }
 
             if delta.is_some() {
-                p_delta = &delta.unwrap() as *Vector;
+                p_delta = &delta.unwrap() as *const Vector;
             }
 
             let err = FT_Glyph_Transform(self.raw, p_matrix, p_delta);
@@ -60,7 +74,7 @@ impl Glyph {
         unsafe {
             let mut p_origin = std::ptr::null();
             if origin.is_some() {
-                p_origin = origin.get_ref() as *Vector;
+                p_origin = origin.get_ref() as *const Vector;
             }
 
             let the_glyph = self.raw;
