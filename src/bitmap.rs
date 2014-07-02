@@ -1,13 +1,13 @@
 
 use std;
-use ffi::*;
+use ffi;
 
 pub struct Bitmap {
-    raw: *FT_Bitmap,
+    raw: *const ffi::FT_Bitmap,
 }
 
 impl Bitmap {
-    pub fn from_raw(raw: *FT_Bitmap) -> Bitmap {
+    pub fn from_raw(raw: *const ffi::FT_Bitmap) -> Bitmap {
         Bitmap {
             raw: raw,
         }
@@ -35,7 +35,7 @@ impl Bitmap {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a FT_Bitmap {
+    pub fn raw<'a>(&'a self) -> &'a ffi::FT_Bitmap {
         unsafe {
             &*self.raw
         }
