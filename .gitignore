@@ -20,3 +20,6 @@
 /.rust/
 rusti.sh
 
+examples/font_with_piston
+examples/single_glphy
+examples/single_glphy_ffi

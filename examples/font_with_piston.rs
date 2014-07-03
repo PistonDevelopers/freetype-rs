@@ -47,7 +47,7 @@ impl App {
         }
     }
 
-    pub fn render_text<'a>(&mut self, c: &'a Context<'a>, text: &str) {
+    pub fn render_text<'a>(&mut self, c: &Context, text: &str) {
         let mut x = 0;
         let mut y = 0;
         for ch in text.chars() {
