@@ -23,7 +23,7 @@ impl GlyphSlot {
 
     pub fn render_glyph(&self, render_mode: FT_Render_Mode) -> FtResult<()> {
         unsafe {
-            let err = FT_Render_Glyph(self.raw(), render_mode);
+            let err = FT_Render_Glyph(self.raw, render_mode);
             if err == 0 {
                 Ok(())
             } else {
@@ -34,15 +34,15 @@ impl GlyphSlot {
 
     pub fn get_subglyph_info(&self, sub_index: FT_UInt) -> FtResult<(FT_Int, FT_UInt, FT_Int, FT_Int, FT_Matrix)> {
         unsafe {
-            let index = 0;
-            let flags = 0;
-            let arg1 = 0;
-            let arg2 = 0;
-            let transfrom = FT_Matrix {
+            let mut index = 0;
+            let mut flags = 0;
+            let mut arg1 = 0;
+            let mut arg2 = 0;
+            let mut transfrom = FT_Matrix {
                 xx: 0, xy: 0,
                 yx: 0, yy: 0,
             };
-            let err = FT_Get_SubGlyph_Info(self.raw(), sub_index, &index, &flags, &arg1, &arg2, &transfrom);
+            let err = FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags, &mut arg1, &mut arg2, &mut transfrom);
             if err == 0 {
                 Ok((index, flags, arg1, arg2, transfrom))
             } else {
@@ -53,8 +53,8 @@ impl GlyphSlot {
 
     pub fn get_glyph(&self) -> FtResult<Glyph> {
         unsafe {
-            let aglyph: FT_Glyph = std::ptr::null();
-            let err= FT_Get_Glyph(self.raw, &aglyph);
+            let mut aglyph = std::ptr::mut_null();
+            let err= FT_Get_Glyph(self.raw, &mut aglyph);
             if err == FT_Err_Ok {
                 Ok(Glyph::from_raw(aglyph))
             } else {

@@ -1,21 +1,7 @@
 
 use std;
 use std::num::FromPrimitive;
-use ffi::{
-    FT_BBox,
-    FT_BitmapGlyph,
-    FT_Done_Glyph,
-    FT_Err_Ok,
-    FT_Glyph_To_Bitmap,
-    FT_Glyph_BBox_Mode,
-    FT_Glyph_Format,
-    FT_Glyph,
-    FT_Glyph_Copy,
-    FT_GlyphRec,
-    FT_Glyph_Get_CBox,
-    FT_Glyph_Transform,
-    FT_Render_Mode,
-};
+use ffi;
 use {
     BBox,
     BitmapGlyph,
@@ -25,11 +11,11 @@ use {
 };
 
 pub struct Glyph {
-    raw: FT_Glyph,
+    raw: ffi::FT_Glyph,
 }
 
 impl Glyph {
-    pub fn from_raw(raw: FT_Glyph) -> Glyph {
+    pub fn from_raw(raw: ffi::FT_Glyph) -> Glyph {
         Glyph {
             raw: raw,
         }
@@ -48,8 +34,8 @@ impl Glyph {
                 p_delta = &delta.unwrap() as *const Vector;
             }
 
-            let err = FT_Glyph_Transform(self.raw, p_matrix, p_delta);
-            if err == FT_Err_Ok {
+            let err = ffi::FT_Glyph_Transform(self.raw, p_matrix, p_delta);
+            if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
@@ -57,20 +43,20 @@ impl Glyph {
         }
     }
 
-    pub fn get_cbox(&self, bbox_mode: FT_Glyph_BBox_Mode) -> BBox {
+    pub fn get_cbox(&self, bbox_mode: ffi::FT_Glyph_BBox_Mode) -> BBox {
         unsafe {
-            let acbox = FT_BBox {
+            let acbox = ffi::FT_BBox {
                 xMin: 0,
                 yMin: 0,
                 xMax: 0,
                 yMax: 0,
             };
-            FT_Glyph_Get_CBox(self.raw, bbox_mode, &acbox);
+            ffi::FT_Glyph_Get_CBox(self.raw, bbox_mode, &acbox);
             acbox
         }
     }
 
-    pub fn to_bitmap(&self, render_mode: FT_Render_Mode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
+    pub fn to_bitmap(&self, render_mode: ffi::FT_Render_Mode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         unsafe {
             let mut p_origin = std::ptr::null();
             if origin.is_some() {
@@ -78,9 +64,9 @@ impl Glyph {
             }
 
             let the_glyph = self.raw;
-            let err = FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
-            if err == FT_Err_Ok {
-                Ok(BitmapGlyph::from_raw(the_glyph as FT_BitmapGlyph))
+            let err = ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
+            if err == ffi::FT_Err_Ok {
+                Ok(BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
@@ -88,14 +74,14 @@ impl Glyph {
     }
 
     #[inline(always)]
-    pub fn format(&self) -> FT_Glyph_Format {
+    pub fn format(&self) -> ffi::FT_Glyph_Format {
         unsafe {
             (*self.raw).format
         }
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a FT_GlyphRec {
+    pub fn raw<'a>(&'a self) -> &'a ffi::FT_GlyphRec {
         unsafe {
             &*self.raw
         }
@@ -105,9 +91,9 @@ impl Glyph {
 impl Clone for Glyph {
     fn clone(&self) -> Glyph {
         unsafe {
-            let target: FT_Glyph = std::ptr::null();
-            let err = FT_Glyph_Copy(self.raw, &target);
-            if err != FT_Err_Ok {
+            let mut target = std::ptr::mut_null();
+            let err = ffi::FT_Glyph_Copy(self.raw, &mut target);
+            if err != ffi::FT_Err_Ok {
                 std::io::println(format!("Failed to copy glyph. Error Code: {}", err).as_slice());
             }
             Glyph::from_raw(target)
@@ -118,7 +104,7 @@ impl Clone for Glyph {
 impl Drop for Glyph {
     fn drop(&mut self) {
         unsafe {
-            FT_Done_Glyph(self.raw)
+            ffi::FT_Done_Glyph(self.raw)
         }
     }
 }

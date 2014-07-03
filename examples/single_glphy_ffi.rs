@@ -69,15 +69,15 @@ fn main() {
         let filename = args.get(1);
         let text = args.get(2);
 
-        let library: ffi::FT_Library = std::ptr::null();
-        let error = ffi::FT_Init_FreeType(&library);
+        let mut library: ffi::FT_Library = std::ptr::mut_null();
+        let error = ffi::FT_Init_FreeType(&mut library);
         if error != ffi::FT_Err_Ok {
             println!("Could not initialize freetype.");
             return;
         }
 
-        let face: ffi::FT_Face = std::ptr::null();
-        let error = ffi::FT_New_Face(library, filename.as_slice().as_ptr(), 0, &face);
+        let mut face: ffi::FT_Face = std::ptr::mut_null();
+        let error = ffi::FT_New_Face(library, filename.as_slice().as_ptr(), 0, &mut face);
         if error != ffi::FT_Err_Ok {
             println!("Could not load font '{}'. Error Code: {}", filename, error);
             return;
@@ -86,7 +86,7 @@ fn main() {
         ffi::FT_Set_Char_Size(face, 40 * 64, 0, 50, 0);
         let slot = &*(*face).glyph;
 
-        let error = ffi::FT_Load_Char(face, text.as_slice()[0] as u64, ffi::FT_LOAD_RENDER);
+        let error = ffi::FT_Load_Char(face, text.as_bytes()[0] as u64, ffi::FT_LOAD_RENDER);
         if error != ffi::FT_Err_Ok {
             println!("Could not load char.");
             return;

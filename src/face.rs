@@ -24,7 +24,7 @@ impl Face {
 
     pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Attach_File(self.raw(), filepathname.as_slice().as_ptr() as *const i8);
+            let err = ffi::FT_Attach_File(self.raw, filepathname.as_slice().as_ptr() as *const i8);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -35,7 +35,7 @@ impl Face {
 
     pub fn reference(&self) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Reference_Face(self.raw());
+            let err = ffi::FT_Reference_Face(self.raw);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -46,7 +46,7 @@ impl Face {
 
     pub fn set_char_size(&self, char_width: ffi::FT_F26Dot6, char_height: ffi::FT_F26Dot6, horz_resolution: ffi::FT_UInt, vert_resolution: ffi::FT_UInt) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Set_Char_Size(self.raw(), char_width, char_height, horz_resolution, vert_resolution);
+            let err = ffi::FT_Set_Char_Size(self.raw, char_width, char_height, horz_resolution, vert_resolution);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -68,7 +68,7 @@ impl Face {
 
     pub fn load_glyph(&self, glyph_index: ffi::FT_UInt, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Load_Glyph(self.raw(), glyph_index, load_flags.bits);
+            let err = ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -79,7 +79,7 @@ impl Face {
 
     pub fn load_char(&self, char_code: ffi::FT_ULong, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Load_Char(self.raw(), char_code, load_flags.bits);
+            let err = ffi::FT_Load_Char(self.raw, char_code, load_flags.bits);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -90,7 +90,7 @@ impl Face {
 
     pub fn set_transform(&self, matrix: &Matrix, delta: &Vector) {
         unsafe {
-            ffi::FT_Set_Transform(self.raw(), matrix, delta);
+            ffi::FT_Set_Transform(self.raw, matrix, delta);
         }
     }
 
@@ -173,7 +173,7 @@ impl Face {
 impl Drop for Face {
     fn drop(&mut self) {
         unsafe {
-            let err = ffi::FT_Done_Face(self.raw());
+            let err = ffi::FT_Done_Face(self.raw);
             if err != 0 {
                 std::io::println(format!("Failed to drop face. Error Code: {}", err).as_slice());
             }
