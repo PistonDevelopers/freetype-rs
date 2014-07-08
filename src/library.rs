@@ -41,7 +41,7 @@ impl Library {
     pub fn new_memory_face(&self, buffer: &[u8], face_index: FT_Long) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::mut_null();
-            let err = FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as i64, face_index, &mut face);
+            let err = FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as FT_Long, face_index, &mut face);
             if err == FT_Err_Ok {
                 Ok(Face::from_raw(face))
             } else {
