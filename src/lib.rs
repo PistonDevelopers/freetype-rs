@@ -1,6 +1,6 @@
 
 #![crate_type = "lib"]
-#![crate_id="freetype#0.0.1"]
+#![crate_name="freetype"]
 #![desc = "Rust bindings for FreeType, based on version 2.5.2"]
 #![license = "MIT"]
 

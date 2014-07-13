@@ -4,6 +4,9 @@
 *.o
 *.so
 *.swp
+*.old
+*.bak
+*.kate-swp
 *.dylib
 *.dSYM
 *.dll
@@ -19,7 +22,7 @@
 /build/
 /.rust/
 rusti.sh
-
-examples/font_with_piston
-examples/single_glphy
-examples/single_glphy_ffi
+watch.sh
+/examples/**
+!/examples/*.rs
+!/examples/assets/
