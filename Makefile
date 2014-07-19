@@ -304,7 +304,7 @@ git-ignore:
 
 examples: $(EXAMPLE_FILES)
 
-$(EXAMPLE_FILES): lib examples-dir
+$(EXAMPLE_FILES): rlib examples-dir
 	$(Q)$(COMPILER) --target "$(TARGET)" $(COMPILER_FLAGS) $@ -L "$(TARGET_LIB_DIR)" -L "target" --out-dir examples/ \
 	&& echo "--- Built '$@' (make $@)"
 
