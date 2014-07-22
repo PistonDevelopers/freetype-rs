@@ -26,7 +26,7 @@ SHELL := /bin/bash
 
 # The default make command.
 # Change this to 'lib' if you are building a library.
-DEFAULT = lib
+DEFAULT = rlib
 # The entry file of library source.
 # Change this to support multi-crate source structure.
 # For advanced usage, you can rename the file 'rust-empty.mk'
@@ -304,7 +304,7 @@ git-ignore:
 
 examples: $(EXAMPLE_FILES)
 
-$(EXAMPLE_FILES): lib examples-dir
+$(EXAMPLE_FILES): rlib examples-dir
 	$(Q)$(COMPILER) --target "$(TARGET)" $(COMPILER_FLAGS) $@ -L "$(TARGET_LIB_DIR)" -L "target" --out-dir examples/ \
 	&& echo "--- Built '$@' (make $@)"
 
