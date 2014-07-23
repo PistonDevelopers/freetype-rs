@@ -17,6 +17,25 @@ pub enum KerningMode {
     KerningUnscaled = ffi::FT_KERNING_UNSCALED
 }
 
+bitflags!(flags LoadFlag: i32 {
+    static Default = ffi::FT_LOAD_DEFAULT,
+    static NoScale = ffi::FT_LOAD_NO_SCALE,
+    static NoHinting = ffi::FT_LOAD_NO_HINTING,
+    static Render = ffi::FT_LOAD_RENDER,
+    static NoBitmap = ffi::FT_LOAD_NO_BITMAP,
+    static VerticalLayout = ffi::FT_LOAD_VERTICAL_LAYOUT,
+    static ForceAutohint = ffi::FT_LOAD_FORCE_AUTOHINT,
+    static CropBitmap = ffi::FT_LOAD_CROP_BITMAP,
+    static Pendantic = ffi::FT_LOAD_PENDANTIC,
+    static IgnoreGlobalAdvanceWidth = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
+    static NoRecurse = ffi::FT_LOAD_NO_RECURSE,
+    static IgnoreTransform = ffi::FT_LOAD_IGNORE_TRANSFORM,
+    static Monochrome = ffi::FT_LOAD_MONOCHROME,
+    static LinearDesign = ffi::FT_LOAD_LINEAR_DESIGN,
+    static NoAutohint = ffi::FT_LOAD_NO_AUTOHINT,
+    static Color = ffi::FT_LOAD_COLOR
+})
+
 pub struct Face {
     raw: ffi::FT_Face,
     glyph: GlyphSlot,
@@ -108,9 +127,9 @@ impl Face {
         }
     }
 
-    pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
+    pub fn get_kerning(&self, left_char_index: ffi::FT_UInt, right_char_index: ffi::FT_UInt, kern_mode: KerningMode)
         -> FtResult<Vector> {
-       
+
         let vec = Vector { x: 0, y: 0 };
 
         let err_code = unsafe {
@@ -119,7 +138,7 @@ impl Face {
         };
 
         if err_code == ffi::FT_Err_Ok {
-            Ok(vec) 
+            Ok(vec)
         } else {
             Err(FromPrimitive::from_i32(err_code).unwrap())
         }
@@ -194,43 +213,50 @@ impl Face {
         }
     }
 
-    pub fn ascender(&self) -> i16 {
+    #[inline(always)]
+    pub fn ascender(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).ascender
         }
     }
 
-    pub fn descender(&self) -> i16 {
+    #[inline(always)]
+    pub fn descender(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).descender
         }
     }
 
-    pub fn height(&self) -> i16 {
+    #[inline(always)]
+    pub fn height(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).height
         }
     }
 
-    pub fn max_advance_width(&self) -> i16 {
+    #[inline(always)]
+    pub fn max_advance_width(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).max_advance_width
         }
     }
 
-    pub fn max_advance_height(&self) -> i16 {
+    #[inline(always)]
+    pub fn max_advance_height(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).max_advance_height
         }
     }
 
-    pub fn underline_position(&self) -> i16 {
+    #[inline(always)]
+    pub fn underline_position(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).underline_position
         }
     }
 
-    pub fn underline_thickness(&self) -> i16 {
+    #[inline(always)]
+    pub fn underline_thickness(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).underline_thickness
         }
@@ -271,23 +297,4 @@ impl Drop for Face {
         }
     }
 }
-
-bitflags!(flags LoadFlag: i32 {
-    static Default = ffi::FT_LOAD_DEFAULT,
-    static NoScale = ffi::FT_LOAD_NO_SCALE,
-    static NoHinting = ffi::FT_LOAD_NO_HINTING,
-    static Render = ffi::FT_LOAD_RENDER,
-    static NoBitmap = ffi::FT_LOAD_NO_BITMAP,
-    static VerticalLayout = ffi::FT_LOAD_VERTICAL_LAYOUT,
-    static ForceAutohint = ffi::FT_LOAD_FORCE_AUTOHINT,
-    static CropBitmap = ffi::FT_LOAD_CROP_BITMAP,
-    static Pendantic = ffi::FT_LOAD_PENDANTIC,
-    static IgnoreGlobalAdvanceWidth = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
-    static NoRecurse = ffi::FT_LOAD_NO_RECURSE,
-    static IgnoreTransform = ffi::FT_LOAD_IGNORE_TRANSFORM,
-    static Monochrome = ffi::FT_LOAD_MONOCHROME,
-    static LinearDesign = ffi::FT_LOAD_LINEAR_DESIGN,
-    static NoAutohint = ffi::FT_LOAD_NO_AUTOHINT,
-    static Color = ffi::FT_LOAD_COLOR
-})
 
