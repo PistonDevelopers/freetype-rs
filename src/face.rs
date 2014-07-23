@@ -1,6 +1,7 @@
 
 use std;
 use std::num::FromPrimitive;
+use std::c_str::CString;
 use ffi;
 use {
     FtResult,
@@ -8,6 +9,13 @@ use {
     Vector,
     GlyphSlot,
 };
+
+#[repr(u32)]
+pub enum KerningMode {
+    KerningDefault = ffi::FT_KERNING_DEFAULT,
+    KerningUnfitted = ffi::FT_KERNING_UNFITTED,
+    KerningUnscaled = ffi::FT_KERNING_UNSCALED
+}
 
 pub struct Face {
     raw: ffi::FT_Face,
@@ -100,6 +108,23 @@ impl Face {
         }
     }
 
+    pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
+        -> FtResult<Vector> {
+       
+        let vec = Vector { x: 0, y: 0 };
+
+        let err_code = unsafe {
+            ffi::FT_Get_Kerning(self.raw, left_char_index, right_char_index,
+                                kern_mode as u32, std::mem::transmute(&vec))
+        };
+
+        if err_code == ffi::FT_Err_Ok {
+            Ok(vec) 
+        } else {
+            Err(FromPrimitive::from_i32(err_code).unwrap())
+        }
+    }
+
     // According to FreeType doc, each time you load a new glyph image,
     // the previous one is erased from the glyph slot.
     #[inline(always)]
@@ -166,6 +191,72 @@ impl Face {
     pub fn raw<'a>(&'a self) -> &'a ffi::FT_FaceRec {
         unsafe {
             &*self.raw
+        }
+    }
+
+    pub fn ascender(&self) -> i16 {
+        unsafe {
+            (*self.raw).ascender
+        }
+    }
+
+    pub fn descender(&self) -> i16 {
+        unsafe {
+            (*self.raw).descender
+        }
+    }
+
+    pub fn height(&self) -> i16 {
+        unsafe {
+            (*self.raw).height
+        }
+    }
+
+    pub fn max_advance_width(&self) -> i16 {
+        unsafe {
+            (*self.raw).max_advance_width
+        }
+    }
+
+    pub fn max_advance_height(&self) -> i16 {
+        unsafe {
+            (*self.raw).max_advance_height
+        }
+    }
+
+    pub fn underline_position(&self) -> i16 {
+        unsafe {
+            (*self.raw).underline_position
+        }
+    }
+
+    pub fn underline_thickness(&self) -> i16 {
+        unsafe {
+            (*self.raw).underline_thickness
+        }
+    }
+
+    pub fn family_name(&self) -> Option<String> {
+        let family_name = unsafe {
+            CString::new((*self.raw).family_name, false)
+        };
+
+        if family_name.is_null() {
+            None
+        } else {
+            Some(family_name.as_str().unwrap().into_string())
+        }
+    }
+
+    pub fn style_name(&self) -> Option<String> {
+        let style_name = unsafe {
+            CString::new((*self.raw).style_name, false)
+        };
+
+        if style_name.is_null() {
+            None
+        } else {
+            Some(style_name.as_str().unwrap().into_string())
         }
     }
 }
