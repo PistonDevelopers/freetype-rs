@@ -14,7 +14,7 @@ impl Bitmap {
     }
 
     #[inline(always)]
-    pub fn buffer<'a>(&'a self) -> &'a [u8] {
+    pub fn buffer(&self) -> &[u8] {
         unsafe {
             std::slice::raw::buf_as_slice((*self.raw).buffer, (self.width() * self.rows()) as uint, |buf: &[u8]| std::mem::transmute(buf))
         }
@@ -35,7 +35,7 @@ impl Bitmap {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a ffi::FT_Bitmap {
+    pub fn raw(&self) -> &ffi::FT_Bitmap {
         unsafe {
             &*self.raw
         }

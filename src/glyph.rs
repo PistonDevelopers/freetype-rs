@@ -81,7 +81,7 @@ impl Glyph {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a ffi::FT_GlyphRec {
+    pub fn raw(&self) -> &ffi::FT_GlyphRec {
         unsafe {
             &*self.raw
         }

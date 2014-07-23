@@ -113,7 +113,7 @@ impl GlyphSlot {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a FT_GlyphSlotRec {
+    pub fn raw(&self) -> &FT_GlyphSlotRec {
         unsafe {
             &*self.raw
         }
