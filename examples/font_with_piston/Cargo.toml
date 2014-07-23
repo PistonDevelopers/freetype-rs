@@ -1,0 +1,31 @@
+[package]
+
+name = "font_with_piston"
+version = "0.0.0"
+authors = ["Coeuvre <coeuvre@gmail.com>"]
+
+[[bin]]
+
+name = "font_with_piston"
+path = "./font_with_piston.rs"
+
+[dependencies.freetype-rs]
+
+path = "../../"
+
+[dependencies.graphics]
+
+git = "https://github.com/pistondevelopers/rust-graphics"
+
+[dependencies.piston]
+
+git = "https://github.com/pistondevelopers/piston/"
+
+[dependencies.opengl_graphics]
+
+git = "https://github.com/pistondevelopers/opengl_graphics"
+
+[dependencies.sdl2_game_window]
+
+git = "https://github.com/pistondevelopers/sdl2_game_window"
+
