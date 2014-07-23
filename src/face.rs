@@ -128,7 +128,7 @@ impl Face {
     // According to FreeType doc, each time you load a new glyph image,
     // the previous one is erased from the glyph slot.
     #[inline(always)]
-    pub fn glyph<'a>(&'a self) -> &'a GlyphSlot {
+    pub fn glyph(&self) -> &GlyphSlot {
         &self.glyph
     }
 
@@ -188,7 +188,7 @@ impl Face {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a ffi::FT_FaceRec {
+    pub fn raw(&self) -> &ffi::FT_FaceRec {
         unsafe {
             &*self.raw
         }

@@ -62,12 +62,12 @@ fn main() {
     unsafe {
         let args = std::os::args();
         if args.len() != 3 {
-            println!("usage: {} font sample-text\n", args.get(0));
+            println!("usage: {} font sample-text\n", &args[0]);
             return;
         }
 
-        let filename = args.get(1);
-        let text = args.get(2);
+        let filename = &args[1];
+        let text = &args[2];
 
         let mut library: ffi::FT_Library = std::ptr::mut_null();
         let error = ffi::FT_Init_FreeType(&mut library);

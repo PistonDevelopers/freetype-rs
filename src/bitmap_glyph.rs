@@ -37,7 +37,7 @@ impl BitmapGlyph {
     }
 
     #[inline(always)]
-    pub fn raw<'a>(&'a self) -> &'a FT_BitmapGlyphRec {
+    pub fn raw(&self) -> &FT_BitmapGlyphRec {
         unsafe {
             &*self.raw
         }
