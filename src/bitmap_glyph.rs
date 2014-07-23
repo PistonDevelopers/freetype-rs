@@ -1,29 +1,29 @@
 
-use ffi::*;
+use ffi;
 use {
     Bitmap,
 };
 
 pub struct BitmapGlyph {
-    raw: FT_BitmapGlyph,
+    raw: ffi::FT_BitmapGlyph,
 }
 
 impl BitmapGlyph {
-    pub fn from_raw(raw: FT_BitmapGlyph) -> BitmapGlyph {
+    pub fn from_raw(raw: ffi::FT_BitmapGlyph) -> BitmapGlyph {
         BitmapGlyph {
             raw: raw,
         }
     }
 
     #[inline(always)]
-    pub fn left(&self) -> FT_Int {
+    pub fn left(&self) -> ffi::FT_Int {
         unsafe {
             (*self.raw).left
         }
     }
 
     #[inline(always)]
-    pub fn top(&self) -> FT_Int {
+    pub fn top(&self) -> ffi::FT_Int {
         unsafe {
             (*self.raw).top
         }
@@ -37,7 +37,7 @@ impl BitmapGlyph {
     }
 
     #[inline(always)]
-    pub fn raw(&self) -> &FT_BitmapGlyphRec {
+    pub fn raw(&self) -> &ffi::FT_BitmapGlyphRec {
         unsafe {
             &*self.raw
         }

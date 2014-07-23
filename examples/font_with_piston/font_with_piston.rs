@@ -34,7 +34,7 @@ impl App {
     /// Creates a new application.
     pub fn new() -> App {
         let freetype = ft::Library::init().unwrap();
-        let asset_store = AssetStore::from_folder("assets");
+        let asset_store = AssetStore::from_folder("../assets");
         let font = asset_store.path("Arial.ttf").unwrap();
         let face = freetype.new_face(font.as_str().unwrap(), 0).unwrap();
         face.set_pixel_sizes(0, 48).unwrap();
