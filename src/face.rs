@@ -263,25 +263,25 @@ impl Face {
     }
 
     pub fn family_name(&self) -> Option<String> {
-        let family_name = unsafe {
-            CString::new((*self.raw).family_name, false)
-        };
 
-        if family_name.is_null() {
+        let family_name_ptr = unsafe { (*self.raw).family_name };
+        
+        if family_name_ptr.is_null() {
             None
         } else {
+            let family_name = unsafe { CString::new(family_name_ptr, false) };
             Some(family_name.as_str().unwrap().into_string())
         }
     }
 
     pub fn style_name(&self) -> Option<String> {
-        let style_name = unsafe {
-            CString::new((*self.raw).style_name, false)
-        };
 
-        if style_name.is_null() {
+        let style_name_ptr = unsafe { (*self.raw).style_name };
+
+        if style_name_ptr.is_null() {
             None
         } else {
+            let style_name = unsafe { CString::new(style_name_ptr, false) };
             Some(style_name.as_str().unwrap().into_string())
         }
     }
