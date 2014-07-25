@@ -62,12 +62,12 @@ fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: ffi::FT_Int, y: ffi::FT_Int) -> [[u8,
 fn main() {
     let args = std::os::args();
     if args.len() != 3 {
-        println!("usage: {} font sample-text\n", args.get(0));
+        println!("usage: {} font sample-text\n", &args[0]);
         return;
     }
 
-    let filename = args.get(1);
-    let text = args.get(2);
+    let filename = &args[1];
+    let text = &args[2];
 
     let library = ft::Library::init().unwrap();
     let face = library.new_face(filename.as_slice(), 0).unwrap();

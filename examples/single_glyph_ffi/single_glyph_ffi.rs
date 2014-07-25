@@ -77,7 +77,7 @@ fn main() {
         }
 
         let mut face: ffi::FT_Face = std::ptr::mut_null();
-        let error = ffi::FT_New_Face(library, filename.as_slice().as_ptr(), 0, &mut face);
+        let error = ffi::FT_New_Face(library, filename.to_c_str().as_ptr(), 0, &mut face);
         if error != ffi::FT_Err_Ok {
             println!("Could not load font '{}'. Error Code: {}", filename, error);
             return;
