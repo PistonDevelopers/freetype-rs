@@ -29,7 +29,10 @@ impl Library {
     pub fn new_face(&self, filepathname: &str, face_index: ffi::FT_Long) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::mut_null();
-            let err = ffi::FT_New_Face(self.raw, filepathname.as_slice().as_ptr(), face_index, &mut face);
+
+            let path_str = filepathname.to_c_str();
+
+            let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index, &mut face);
             if err == ffi::FT_Err_Ok {
                 Ok(Face::from_raw(face))
             } else {
