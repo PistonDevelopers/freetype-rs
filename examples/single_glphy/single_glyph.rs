@@ -66,8 +66,8 @@ fn main() {
         return;
     }
 
-    let filename = args.get(1);
-    let text = args.get(2);
+    let ref filename = args[1];
+    let ref text = args[2];
 
     let library = ft::Library::init().unwrap();
     let face = library.new_face(filename.as_slice(), 0).unwrap();
