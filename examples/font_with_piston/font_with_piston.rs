@@ -18,6 +18,7 @@ use piston::{
     AssetStore,
     Game,
     GameIteratorSettings,
+    GameWindow,
     GameWindowSettings,
     RenderArgs
 };
@@ -63,8 +64,8 @@ impl App {
     }
 }
 
-impl Game for App {
-    fn render(&mut self, args: &RenderArgs) {
+impl<W: GameWindow> Game<W> for App {
+    fn render(&mut self, _window: &mut W, args: &RenderArgs) {
         let c = Context::abs(args.width as f64, args.height as f64);
         c.rgb(1.0, 1.0, 1.0).draw(&mut self.gl);
 
