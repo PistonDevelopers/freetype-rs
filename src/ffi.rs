@@ -49,9 +49,9 @@ pub type FT_Generic_Finalizer = extern fn(*const c_void);
 pub type FT_StreamDesc = *const c_void;
 pub type FT_Stream_IoFunc = extern fn(FT_Stream, c_ulong, *const c_uchar, c_ulong) -> c_ulong;
 pub type FT_Stream_CloseFunc = extern fn(FT_Stream);
-pub type FT_Alloc_Func = extern fn(FT_Memory, c_long) -> *const c_void;
-pub type FT_Free_Func = extern fn(FT_Memory, *const c_void);
-pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *const c_void) -> *const c_void;
+pub type FT_Alloc_Func = extern fn(FT_Memory, c_long) -> *mut c_void;
+pub type FT_Free_Func = extern fn(FT_Memory, *mut c_void);
+pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *mut c_void) -> *mut c_void;
 
 // Structs
 pub struct FT_Vector {
@@ -300,6 +300,8 @@ pub static FT_Err_Unimplemented_Feature         : FT_Error = 7;
 pub static FT_Err_Invalid_Table                 : FT_Error = 8;
 pub static FT_Err_Invalid_Offset                : FT_Error = 9;
 pub static FT_Err_Array_Too_Large               : FT_Error = 10;
+pub static FT_Err_Missing_Module                : FT_Error = 11;
+pub static FT_Err_Missing_Property              : FT_Error = 12;
 pub static FT_Err_Invalid_Glyph_Index           : FT_Error = 16;
 pub static FT_Err_Invalid_Character_Code        : FT_Error = 17;
 pub static FT_Err_Invalid_Glyph_Format          : FT_Error = 18;
@@ -394,7 +396,7 @@ pub type FT_Slot_Internal = *mut FT_Slot_InternalRec;
 pub type FT_Size_Request = *mut FT_Size_RequestRec;
 pub type FT_Face_Internal = *mut FT_Face_InternalRec;
 pub type FT_Stream = *mut FT_StreamRec;
-pub type FT_Memory = *mut FT_MemoryRec;
+pub type FT_Memory = *const FT_MemoryRec;
 pub type FT_ListNode = *mut FT_ListNodeRec;
 pub type FT_Glyph = *mut FT_GlyphRec;
 pub type FT_BitmapGlyph = *mut FT_BitmapGlyphRec;
@@ -658,7 +660,10 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
 extern "C" {
     pub fn FT_Init_FreeType(alibrary: *mut FT_Library) -> FT_Error;
     pub fn FT_Done_FreeType(library: FT_Library) -> FT_Error;
+    pub fn FT_New_Library(memory: FT_Memory, alibrary: *mut FT_Library) -> FT_Error;
     pub fn FT_Done_Library(library: FT_Library) -> FT_Error;
+    pub fn FT_Reference_Library(library: FT_Library) -> FT_Error;
+    pub fn FT_Add_Default_Modules(library: FT_Library);
     pub fn FT_New_Face(library: FT_Library, filepathname: *const i8, face_index: FT_Long, aface: *mut FT_Face) -> FT_Error;
     pub fn FT_New_Memory_Face(library: FT_Library, file_base: *const FT_Byte, file_size: FT_Long, face_index: FT_Long, aface: *mut FT_Face) -> FT_Error;
     pub fn FT_Open_Face(library: FT_Library, args: *const FT_Open_Args, face_index: FT_Long, aface: *mut FT_Face) -> FT_Error;

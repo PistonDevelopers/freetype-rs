@@ -265,7 +265,7 @@ impl Face {
     pub fn family_name(&self) -> Option<String> {
 
         let family_name_ptr = unsafe { (*self.raw).family_name };
-        
+
         if family_name_ptr.is_null() {
             None
         } else {
