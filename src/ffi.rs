@@ -282,6 +282,12 @@ pub static FT_LOAD_NO_AUTOHINT                 : FT_Int32 = 0x1 << 15;
 // Bits 16..19 are used by `FT_LOAD_TARGET`
 pub static FT_LOAD_COLOR                       : FT_Int32 = 0x1 << 20;
 
+pub static FT_LOAD_TARGET_NORMAL               : FT_Int32 = (FT_RENDER_MODE_NORMAL << 16) as FT_Int32;
+pub static FT_LOAD_TARGET_LIGHT                : FT_Int32 = (FT_RENDER_MODE_LIGHT  << 16) as FT_Int32;
+pub static FT_LOAD_TARGET_MONO                 : FT_Int32 = (FT_RENDER_MODE_MONO   << 16) as FT_Int32;
+pub static FT_LOAD_TARGET_LCD                  : FT_Int32 = (FT_RENDER_MODE_LCD    << 16) as FT_Int32;
+pub static FT_LOAD_TARGET_LCD_V                : FT_Int32 = (FT_RENDER_MODE_LCD_V  << 16) as FT_Int32;
+
 pub static FT_FSTYPE_INSTALLABLE_EMBEDDING        : FT_UShort = 0x0000;
 pub static FT_FSTYPE_RESTRICTED_LICENSE_EMBEDDING : FT_UShort = 0x0002;
 pub static FT_FSTYPE_PREVIEW_AND_PRINT_EMBEDDING  : FT_UShort = 0x0004;
