@@ -70,7 +70,7 @@ impl Library {
 
             let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index, &mut face);
             if err == ffi::FT_Err_Ok {
-                Ok(Face::from_raw(face))
+                Ok(Face::from_raw(self.raw, face))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
@@ -82,7 +82,7 @@ impl Library {
             let mut face = std::ptr::mut_null();
             let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as ffi::FT_Long, face_index, &mut face);
             if err == ffi::FT_Err_Ok {
-                Ok(Face::from_raw(face))
+                Ok(Face::from_raw(self.raw, face))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
@@ -92,35 +92,15 @@ impl Library {
     pub fn raw(&self) -> ffi::FT_Library {
         self.raw
     }
-
-    pub fn inc_ref(&mut self) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Reference_Library(self.raw);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
-        }
-    }
-
-    pub fn dec_ref(&mut self) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Done_Library(self.raw);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
-        }
-    }
 }
 
 impl Drop for Library {
     fn drop(&mut self) {
-        let result = self.dec_ref();
-        if result.is_err() {
-            std::io::println(format!("Failed to drop Library. Error Code: {}", result.unwrap_err()).as_slice());
+        unsafe {
+            let err = ffi::FT_Done_Library(self.raw);
+            if err != ffi::FT_Err_Ok {
+                std::io::println(format!("Failed to drop Library. Error Code: {}", err).as_slice());
+            }
         }
     }
 }
