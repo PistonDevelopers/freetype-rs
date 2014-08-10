@@ -1,13 +1,12 @@
-
 use std;
 use std::num::FromPrimitive;
 use std::c_str::CString;
 use ffi;
 use {
     FtResult,
+    GlyphSlot,
     Matrix,
     Vector,
-    GlyphSlot,
 };
 
 #[repr(u32)]
@@ -42,13 +41,19 @@ bitflags!(flags LoadFlag: i32 {
 })
 
 pub struct Face {
+    library_raw: ffi::FT_Library,
     raw: ffi::FT_Face,
     glyph: GlyphSlot,
 }
 
 impl Face {
-    pub fn from_raw(raw: ffi::FT_Face) -> Face {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Face {
+        unsafe {
+            ffi::FT_Reference_Library(library_raw);
+        }
+
         Face {
+            library_raw: library_raw,
             raw: raw,
             glyph: unsafe { GlyphSlot::from_raw((*raw).glyph) },
         }
@@ -299,6 +304,7 @@ impl Drop for Face {
             if err != 0 {
                 std::io::println(format!("Failed to drop face. Error Code: {}", err).as_slice());
             }
+            ffi::FT_Done_Library(self.library_raw);
         }
     }
 }
