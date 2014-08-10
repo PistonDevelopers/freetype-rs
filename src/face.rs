@@ -33,6 +33,11 @@ bitflags!(flags LoadFlag: i32 {
     static Monochrome = ffi::FT_LOAD_MONOCHROME,
     static LinearDesign = ffi::FT_LOAD_LINEAR_DESIGN,
     static NoAutohint = ffi::FT_LOAD_NO_AUTOHINT,
+    static LoadTargetNormal = ffi::FT_LOAD_TARGET_NORMAL,
+    static LoadTargetLight = ffi::FT_LOAD_TARGET_LIGHT,
+    static LoadTargetMono = ffi::FT_LOAD_TARGET_MONO,
+    static LoadTargetLCD = ffi::FT_LOAD_TARGET_LCD,
+    static LoadTargetLCD_V = ffi::FT_LOAD_TARGET_LCD_V,
     static Color = ffi::FT_LOAD_COLOR
 })
 
