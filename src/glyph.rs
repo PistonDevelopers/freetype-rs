@@ -12,12 +12,18 @@ use {
 };
 
 pub struct Glyph {
+    library_raw: ffi::FT_Library,
     raw: ffi::FT_Glyph,
 }
 
 impl Glyph {
-    pub fn from_raw(raw: ffi::FT_Glyph) -> Glyph {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Glyph {
+        unsafe {
+            ffi::FT_Reference_Library(library_raw);
+        }
+
         Glyph {
+            library_raw: library_raw,
             raw: raw,
         }
     }
@@ -74,6 +80,12 @@ impl Glyph {
         }
     }
 
+    pub fn advance(&self) -> ffi::FT_Vector {
+        unsafe {
+            (*self.raw).advance
+        }
+    }
+
     #[inline(always)]
     pub fn format(&self) -> ffi::FT_Glyph_Format {
         unsafe {
@@ -97,7 +109,7 @@ impl Clone for Glyph {
             if err != ffi::FT_Err_Ok {
                 std::io::println(format!("Failed to copy glyph. Error Code: {}", err).as_slice());
             }
-            Glyph::from_raw(target)
+            Glyph::from_raw(self.library_raw, target)
         }
     }
 }
@@ -105,7 +117,8 @@ impl Clone for Glyph {
 impl Drop for Glyph {
     fn drop(&mut self) {
         unsafe {
-            ffi::FT_Done_Glyph(self.raw)
+            ffi::FT_Done_Glyph(self.raw);
+            ffi::FT_Done_Library(self.library_raw);
         }
     }
 }
