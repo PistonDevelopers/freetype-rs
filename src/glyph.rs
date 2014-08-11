@@ -7,6 +7,7 @@ use {
     BitmapGlyph,
     FtResult,
     Matrix,
+    RenderMode,
     Vector,
 };
 
@@ -56,7 +57,7 @@ impl Glyph {
         }
     }
 
-    pub fn to_bitmap(&self, render_mode: ffi::FT_Render_Mode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
+    pub fn to_bitmap(&self, render_mode: RenderMode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         unsafe {
             let mut p_origin = std::ptr::null();
             if origin.is_some() {
@@ -64,7 +65,7 @@ impl Glyph {
             }
 
             let the_glyph = self.raw;
-            let err = ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
+            let err = ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode as u32, p_origin, 0);
             if err == ffi::FT_Err_Ok {
                 Ok(BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph))
             } else {

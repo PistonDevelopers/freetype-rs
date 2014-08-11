@@ -7,6 +7,7 @@ use {
     FtResult,
     Glyph,
     GlyphMetrics,
+    RenderMode,
     Vector,
 };
 
@@ -21,9 +22,9 @@ impl GlyphSlot {
         }
     }
 
-    pub fn render_glyph(&self, render_mode: ffi::FT_Render_Mode) -> FtResult<()> {
+    pub fn render_glyph(&self, render_mode: RenderMode) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Render_Glyph(self.raw, render_mode);
+            let err = ffi::FT_Render_Glyph(self.raw, render_mode as u32);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
