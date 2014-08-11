@@ -1,3 +1,4 @@
+
 use std;
 use std::num::FromPrimitive;
 use std::c_str::CString;
@@ -55,7 +56,7 @@ impl Face {
         Face {
             library_raw: library_raw,
             raw: raw,
-            glyph: unsafe { GlyphSlot::from_raw((*raw).glyph) },
+            glyph: unsafe { GlyphSlot::from_raw(library_raw, (*raw).glyph) },
         }
     }
 

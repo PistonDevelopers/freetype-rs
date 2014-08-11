@@ -7,16 +7,23 @@ use {
     BitmapGlyph,
     FtResult,
     Matrix,
+    RenderMode,
     Vector,
 };
 
 pub struct Glyph {
+    library_raw: ffi::FT_Library,
     raw: ffi::FT_Glyph,
 }
 
 impl Glyph {
-    pub fn from_raw(raw: ffi::FT_Glyph) -> Glyph {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Glyph {
+        unsafe {
+            ffi::FT_Reference_Library(library_raw);
+        }
+
         Glyph {
+            library_raw: library_raw,
             raw: raw,
         }
     }
@@ -56,7 +63,7 @@ impl Glyph {
         }
     }
 
-    pub fn to_bitmap(&self, render_mode: ffi::FT_Render_Mode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
+    pub fn to_bitmap(&self, render_mode: RenderMode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         unsafe {
             let mut p_origin = std::ptr::null();
             if origin.is_some() {
@@ -64,12 +71,18 @@ impl Glyph {
             }
 
             let the_glyph = self.raw;
-            let err = ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode, p_origin, 0);
+            let err = ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode as u32, p_origin, 0);
             if err == ffi::FT_Err_Ok {
                 Ok(BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }
+        }
+    }
+
+    pub fn advance(&self) -> ffi::FT_Vector {
+        unsafe {
+            (*self.raw).advance
         }
     }
 
@@ -96,7 +109,7 @@ impl Clone for Glyph {
             if err != ffi::FT_Err_Ok {
                 std::io::println(format!("Failed to copy glyph. Error Code: {}", err).as_slice());
             }
-            Glyph::from_raw(target)
+            Glyph::from_raw(self.library_raw, target)
         }
     }
 }
@@ -104,7 +117,8 @@ impl Clone for Glyph {
 impl Drop for Glyph {
     fn drop(&mut self) {
         unsafe {
-            ffi::FT_Done_Glyph(self.raw)
+            ffi::FT_Done_Glyph(self.raw);
+            ffi::FT_Done_Library(self.library_raw);
         }
     }
 }

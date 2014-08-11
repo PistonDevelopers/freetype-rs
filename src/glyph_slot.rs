@@ -7,23 +7,26 @@ use {
     FtResult,
     Glyph,
     GlyphMetrics,
+    RenderMode,
     Vector,
 };
 
 pub struct GlyphSlot {
+    library_raw: ffi::FT_Library,
     raw: ffi::FT_GlyphSlot,
 }
 
 impl GlyphSlot {
-    pub fn from_raw(raw: ffi::FT_GlyphSlot) -> GlyphSlot {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> GlyphSlot {
         GlyphSlot {
+            library_raw: library_raw,
             raw: raw,
         }
     }
 
-    pub fn render_glyph(&self, render_mode: ffi::FT_Render_Mode) -> FtResult<()> {
+    pub fn render_glyph(&self, render_mode: RenderMode) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Render_Glyph(self.raw, render_mode);
+            let err = ffi::FT_Render_Glyph(self.raw, render_mode as u32);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -56,7 +59,7 @@ impl GlyphSlot {
             let mut aglyph = std::ptr::mut_null();
             let err= ffi::FT_Get_Glyph(self.raw, &mut aglyph);
             if err == ffi::FT_Err_Ok {
-                Ok(Glyph::from_raw(aglyph))
+                Ok(Glyph::from_raw(self.library_raw, aglyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
             }

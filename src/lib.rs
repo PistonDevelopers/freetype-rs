@@ -13,6 +13,7 @@ pub use face::Face;
 pub use glyph::Glyph;
 pub use glyph_slot::GlyphSlot;
 pub use library::Library;
+pub use render_mode::RenderMode;
 
 pub mod bitmap;
 pub mod bitmap_glyph;
@@ -22,6 +23,7 @@ pub mod ffi;
 pub mod glyph;
 pub mod glyph_slot;
 pub mod library;
+pub mod render_mode;
 
 pub type BBox = ffi::FT_BBox;
 pub type GlyphMetrics = ffi::FT_Glyph_Metrics;
