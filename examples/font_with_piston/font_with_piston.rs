@@ -8,7 +8,7 @@ extern crate sdl2_game_window;
 extern crate opengl_graphics;
 
 use graphics::*;
-use ft = freetype;
+use freetype as ft;
 use sdl2_game_window::GameWindowSDL2;
 use opengl_graphics::{
     Gl,
