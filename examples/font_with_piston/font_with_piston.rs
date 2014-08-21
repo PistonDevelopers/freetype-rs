@@ -16,10 +16,9 @@ use opengl_graphics::{
 };
 use piston::{
     AssetStore,
-    Game,
     GameIteratorSettings,
-    GameWindow,
     GameWindowSettings,
+    Render,
     RenderArgs
 };
 
@@ -62,10 +61,8 @@ impl App {
             y += (g.advance().y >> 6) as i32;
         }
     }
-}
 
-impl<W: GameWindow> Game<W> for App {
-    fn render(&mut self, _window: &mut W, args: &RenderArgs) {
+    fn render(&mut self, args: &RenderArgs) {
         let c = Context::abs(args.width as f64, args.height as f64);
         c.rgb(1.0, 1.0, 1.0).draw(&mut self.gl);
 
@@ -75,6 +72,7 @@ impl<W: GameWindow> Game<W> for App {
 
 fn main() {
     let mut window = GameWindowSDL2::new(
+        piston::shader_version::opengl::OpenGL_3_2,
         GameWindowSettings {
             title: "Test".to_string(),
             size: [300, 300],
@@ -87,6 +85,15 @@ fn main() {
             updates_per_second: 120,
             max_frames_per_second: 60,
         };
-    App::new().run(&mut window, &game_iter_settings);
+
+    let mut app = App::new();
+
+    for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
+        match e {
+            Render(_args) =>
+                app.render(&_args),
+            _ => {},
+        }
+    }
 }
 
