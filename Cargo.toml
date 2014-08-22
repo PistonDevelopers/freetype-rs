@@ -4,8 +4,7 @@ name = "freetype-rs"
 version = "0.0.0"
 authors = ["Coeuvre <coeuvre@gmail.com>"]
 
-[[lib]]
+[lib]
 
 name = "freetype"
 path = "src/lib.rs"
-

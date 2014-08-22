@@ -1,4 +1,3 @@
-
 #![feature(globs)]
 
 extern crate graphics;
@@ -10,7 +9,7 @@ extern crate opengl_graphics;
 
 use std::collections::hashmap::HashMap;
 use graphics::*;
-use ft = freetype;
+use freetype as ft;
 use sdl2_game_window::GameWindowSDL2;
 use opengl_graphics::{
     Gl,
@@ -18,10 +17,9 @@ use opengl_graphics::{
 };
 use piston::{
     AssetStore,
-    Game,
     GameIteratorSettings,
-    GameWindow,
     GameWindowSettings,
+    Render,
     RenderArgs
 };
 
@@ -69,7 +67,7 @@ impl App {
                 self.load_character(ch);
                 std::io::println(format!("Loaded char {}", ch).as_slice());
             }
-            let character = self.buffer.get(&ch);
+            let character = &self.buffer[ch];
 
             c.trans((x + character.bitmap_glyph.left()) as f64, (y - character.bitmap_glyph.top()) as f64).image(&character.texture).rgb(0.0, 0.0, 0.0).draw(&mut self.gl);
 
@@ -92,10 +90,8 @@ impl App {
             texture: texture,
         });
     }
-}
 
-impl<W: GameWindow> Game<W> for App {
-    fn render(&mut self, _window: &mut W, args: &RenderArgs) {
+    fn render(&mut self, args: &RenderArgs) {
         let c = Context::abs(args.width as f64, args.height as f64);
         c.rgb(1.0, 1.0, 1.0).draw(&mut self.gl);
 
@@ -107,6 +103,7 @@ impl<W: GameWindow> Game<W> for App {
 
 fn main() {
     let mut window = GameWindowSDL2::new(
+        piston::shader_version::opengl::OpenGL_3_2,
         GameWindowSettings {
             title: "Test".to_string(),
             size: [300, 300],
@@ -119,6 +116,13 @@ fn main() {
             updates_per_second: 120,
             max_frames_per_second: 60,
         };
-    App::new().run(&mut window, &game_iter_settings);
-}
+    let mut app = App::new();
 
+    for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
+        match e {
+            Render(_args) =>
+                app.render(&_args),
+            _ => {},
+        }
+    }
+}
