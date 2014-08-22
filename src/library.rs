@@ -2,7 +2,8 @@
 use libc;
 use libc::{
     c_void,
-    c_long
+    c_long,
+    size_t,
 };
 use std;
 use std::num::FromPrimitive;
@@ -14,7 +15,7 @@ use {
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
     unsafe {
-        libc::malloc(size as u64)
+        libc::malloc(size as size_t)
     }
 }
 
@@ -29,7 +30,7 @@ extern "C" fn realloc_library(_memory: ffi::FT_Memory,
                               new_size: c_long,
                               block: *mut c_void) -> *mut c_void {
     unsafe {
-        libc::realloc(block, new_size as u64)
+        libc::realloc(block, new_size as size_t)
     }
 }
 
