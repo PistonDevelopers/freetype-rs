@@ -67,7 +67,7 @@ impl App {
                 self.load_character(ch);
                 std::io::println(format!("Loaded char {}", ch).as_slice());
             }
-            let character = self.buffer.get(&ch);
+            let character = &self.buffer[ch];
 
             c.trans((x + character.bitmap_glyph.left()) as f64, (y - character.bitmap_glyph.top()) as f64).image(&character.texture).rgb(0.0, 0.0, 0.0).draw(&mut self.gl);
 
