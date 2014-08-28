@@ -4,7 +4,6 @@ os:
     - osx
 env:
     global:
-        - LD_LIBRARY_PATH: /usr/local/lib
         - secure: DMlDiGHNvu6BxizTXu5If0SHASHUHUgd9/tKurFD6MEka6OlBEACFIpjWO6cVaIC8AeLiy4LGaxI6I9YJEap0Qdx9HTySk2qqFNdyav7XOKMZqVKKvGgbmJAWyiow7zJq7R7ZXbvIHykQCWWlBsIZEPkKesH6X0Zhri1GWqVw00=
 before_script:
     - rustc -v
