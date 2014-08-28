@@ -1,4 +1,4 @@
-# freetype-rs [![Build Status](https://travis-ci.org/PistonDevelopers/freetype-rs.svg)](https://travis-ci.org/PistonDevelopers/freetype-rs)
+# freetype-rs [![Build Status](https://travis-ci.org/PistonDevelopers/freetype-rs.svg?branch=master)](https://travis-ci.org/PistonDevelopers/freetype-rs)
 
 Rust bindings for FreeType library
 
