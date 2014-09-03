@@ -2,14 +2,14 @@
 extern crate debug;
 extern crate freetype;
 
-use ft = freetype;
+use freetype as ft;
 use freetype::ffi;
 
 static WIDTH: ffi::FT_Int = 32;
 static HEIGHT: ffi::FT_Int = 24;
 
-fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: ffi::FT_Int, y: ffi::FT_Int) -> [[u8, ..WIDTH], ..HEIGHT] {
-    let mut image: [[u8, ..WIDTH], ..HEIGHT] = [
+fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: ffi::FT_Int, y: ffi::FT_Int) -> [[u8, ..WIDTH as uint], ..HEIGHT as uint] {
+    let mut image: [[u8, ..WIDTH as uint], ..HEIGHT as uint] = [
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
         [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,],
