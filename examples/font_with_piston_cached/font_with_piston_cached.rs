@@ -1,4 +1,3 @@
-
 #![feature(globs)]
 
 extern crate graphics;
@@ -48,7 +47,6 @@ fn render_text(buffer: &mut HashMap<char, Character>, face: &Face, gl: &mut Gl, 
         x += (character.glyph.advance().x >> 16) as i32;
         y += (character.glyph.advance().y >> 16) as i32;
     }
-}
 
 fn load_character(buffer: &mut HashMap<char, Character>, face: &Face, ch: char) {
     face.load_char(ch as u64, ft::face::Default).unwrap();
@@ -104,3 +102,11 @@ fn main() {
     }
 }
 
+    for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
+        match e {
+            Render(_args) =>
+                app.render(&_args),
+            _ => {},
+        }
+    }
+}
