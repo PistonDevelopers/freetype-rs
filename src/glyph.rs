@@ -67,7 +67,7 @@ impl Glyph {
         unsafe {
             let mut p_origin = std::ptr::null();
             if origin.is_some() {
-                p_origin = origin.get_ref() as *const Vector;
+                p_origin = origin.as_ref().unwrap() as *const Vector;
             }
 
             let the_glyph = self.raw;

@@ -1,6 +1,6 @@
 
 #![allow(non_camel_case_types)]
-#![allow(non_snake_case_functions)]
+#![allow(non_snake_case)]
 
 use libc::{
     c_char,
@@ -54,11 +54,13 @@ pub type FT_Free_Func = extern fn(FT_Memory, *mut c_void);
 pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *mut c_void) -> *mut c_void;
 
 // Structs
+#[repr(C)]
 pub struct FT_Vector {
     pub x: FT_Pos,
     pub y: FT_Pos,
 }
 
+#[repr(C)]
 pub struct FT_BBox {
     pub xMin: FT_Pos,
     pub yMin: FT_Pos,
@@ -66,6 +68,7 @@ pub struct FT_BBox {
     pub yMax: FT_Pos,
 }
 
+#[repr(C)]
 pub struct FT_Matrix {
     pub xx: FT_Fixed,
     pub xy: FT_Fixed,
@@ -73,11 +76,13 @@ pub struct FT_Matrix {
     pub yy: FT_Fixed,
 }
 
+#[repr(C)]
 pub struct FT_UnitVector {
     pub x: FT_F2Dot14,
     pub y: FT_F2Dot14,
 }
 
+#[repr(C)]
 pub struct FT_Bitmap {
     pub rows: c_int,
     pub width: c_int,
@@ -89,16 +94,19 @@ pub struct FT_Bitmap {
     pub palette: *const c_void,
 }
 
+#[repr(C)]
 pub struct FT_Data {
     pub pointer: *const FT_Byte,
     pub length: FT_Int,
 }
 
+#[repr(C)]
 pub struct FT_Generic {
     pub data: *const c_void,
     pub finalizer: FT_Generic_Finalizer,
 }
 
+#[repr(C)]
 pub struct FT_Size_Metrics {
     pub x_ppem: FT_UShort,
     pub y_ppem: FT_UShort,
@@ -112,6 +120,7 @@ pub struct FT_Size_Metrics {
     pub max_advance: FT_Pos
 }
 
+#[repr(C)]
 pub struct FT_Outline {
     pub n_contours: c_short,
     pub n_points: c_short,
@@ -123,6 +132,7 @@ pub struct FT_Outline {
     pub flags: c_int,
 }
 
+#[repr(C)]
 pub struct FT_Glyph_Metrics {
     pub width: FT_Pos,
     pub height: FT_Pos,
@@ -136,11 +146,13 @@ pub struct FT_Glyph_Metrics {
     pub vertAdvance: FT_Pos,
 }
 
+#[repr(C)]
 pub struct FT_Parameter {
     pub tag: FT_ULong,
     pub data: FT_Pointer,
 }
 
+#[repr(C)]
 pub struct FT_Open_Args {
     pub flags: FT_UInt,
     pub memory_base: *const FT_Byte,
@@ -152,6 +164,7 @@ pub struct FT_Open_Args {
     pub params: *const FT_Parameter,
 }
 
+#[repr(C)]
 pub struct FT_Bitmap_Size {
     pub height: FT_Short,
     pub width: FT_Short,
@@ -418,6 +431,7 @@ pub type FT_SubGlyphRec = c_void;
 pub type FT_Slot_InternalRec = c_void;
 pub type FT_Face_InternalRec = c_void;
 
+#[repr(C)]
 pub struct FT_CharMapRec {
     pub face: FT_Face,
     pub encoding: FT_Encoding,
@@ -425,6 +439,7 @@ pub struct FT_CharMapRec {
     pub encoding_id: FT_UShort,
 }
 
+#[repr(C)]
 pub struct FT_FaceRec {
     pub num_faces: FT_Long,
     pub face_index: FT_Long,
@@ -476,6 +491,7 @@ pub struct FT_FaceRec {
     /* @private end */
 }
 
+#[repr(C)]
 pub struct FT_GlyphSlotRec {
     pub library: FT_Library,
     pub face: FT_Face,
@@ -510,6 +526,7 @@ pub struct FT_GlyphSlotRec {
     pub internal: FT_Slot_Internal,
 }
 
+#[repr(C)]
 pub struct FT_SizeRec {
     pub face: FT_Face,
     pub generic: FT_Generic,
@@ -517,6 +534,7 @@ pub struct FT_SizeRec {
     pub internal: FT_Size_Internal,
 }
 
+#[repr(C)]
 pub struct FT_StreamRec {
     pub base: *const c_uchar,
     pub size: c_ulong,
@@ -532,6 +550,7 @@ pub struct FT_StreamRec {
     pub limit: *const c_uchar,
 }
 
+#[repr(C)]
 pub struct FT_MemoryRec {
     pub user: *const c_void,
     pub alloc: FT_Alloc_Func,
@@ -539,17 +558,20 @@ pub struct FT_MemoryRec {
     pub realloc: FT_Realloc_Func,
 }
 
+#[repr(C)]
 pub struct FT_ListRec {
     pub head: FT_ListNode,
     pub tail: FT_ListNode,
 }
 
+#[repr(C)]
 pub struct FT_ListNodeRec {
     pub prev: FT_ListNode,
     pub next: FT_ListNode,
     pub data: *const c_void,
 }
 
+#[repr(C)]
 pub struct FT_Size_RequestRec {
     pub size_request_type: FT_Size_Request_Type, // type
     pub width: FT_Long,
@@ -558,6 +580,7 @@ pub struct FT_Size_RequestRec {
     pub vertResolution: FT_UInt,
 }
 
+#[repr(C)]
 pub struct FT_GlyphRec {
     pub library: FT_Library,
     pub clazz: *const c_void, // FT_Glyph_Class
@@ -565,6 +588,7 @@ pub struct FT_GlyphRec {
     pub advance: FT_Vector,
 }
 
+#[repr(C)]
 pub struct FT_BitmapGlyphRec {
     pub root: FT_GlyphRec,
     pub left: FT_Int,
@@ -572,6 +596,7 @@ pub struct FT_BitmapGlyphRec {
     pub bitmap: FT_Bitmap,
 }
 
+#[repr(C)]
 pub struct FT_OutlineGlyphRec {
     pub root: FT_GlyphRec,
     pub outline: FT_Outline,
