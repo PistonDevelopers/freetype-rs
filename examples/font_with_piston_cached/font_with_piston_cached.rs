@@ -8,19 +8,19 @@ extern crate sdl2_game_window;
 extern crate opengl_graphics;
 
 use std::collections::hashmap::HashMap;
-use graphics::*;
+use piston::graphics::*;
 use freetype as ft;
 use freetype::Face;
-use sdl2_game_window::GameWindowSDL2;
+use sdl2_game_window::WindowSDL2;
 use opengl_graphics::{
     Gl,
     Texture,
 };
 use piston::{
     AssetStore,
-    GameIterator,
-    GameIteratorSettings,
-    GameWindowSettings,
+    EventIterator,
+    EventSettings,
+    WindowSettings,
     Render,
 };
 
@@ -47,6 +47,7 @@ fn render_text(buffer: &mut HashMap<char, Character>, face: &Face, gl: &mut Gl, 
         x += (character.glyph.advance().x >> 16) as i32;
         y += (character.glyph.advance().y >> 16) as i32;
     }
+}
 
 fn load_character(buffer: &mut HashMap<char, Character>, face: &Face, ch: char) {
     face.load_char(ch as u64, ft::face::Default).unwrap();
@@ -63,13 +64,15 @@ fn load_character(buffer: &mut HashMap<char, Character>, face: &Face, ch: char) 
 }
 
 fn main() {
-    let mut window = GameWindowSDL2::new(
+    let opengl = piston::shader_version::opengl::OpenGL_3_2;
+    let mut window = WindowSDL2::new(
         piston::shader_version::opengl::OpenGL_3_2,
-        GameWindowSettings {
+        WindowSettings {
             title: "Font with Piston (Cached)".to_string(),
             size: [300, 300],
             fullscreen: false,
-            exit_on_esc: true
+            exit_on_esc: true,
+            samples: 0,
         }
     );
 
@@ -81,14 +84,14 @@ fn main() {
 
     let mut buffer = HashMap::<char, Character>::new();
 
-    let game_iter_settings = GameIteratorSettings {
+    let event_settings = EventSettings {
             updates_per_second: 120,
             max_frames_per_second: 60,
     };
 
-    let ref mut gl = Gl::new();
+    let ref mut gl = Gl::new(opengl);
 
-    for e in GameIterator::new(&mut window, &game_iter_settings) {
+    for e in EventIterator::new(&mut window, &event_settings) {
         match e {
             Render(args) => {
                 let c = Context::abs(args.width as f64, args.height as f64);
@@ -102,11 +105,3 @@ fn main() {
     }
 }
 
-    for e in piston::GameIterator::new(&mut window, &game_iter_settings) {
-        match e {
-            Render(_args) =>
-                app.render(&_args),
-            _ => {},
-        }
-    }
-}
