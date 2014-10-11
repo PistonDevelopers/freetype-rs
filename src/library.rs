@@ -49,7 +49,7 @@ pub struct Library {
 impl Library {
     pub fn init() -> FtResult<Library> {
         unsafe {
-            let mut raw = std::ptr::mut_null();
+            let mut raw = std::ptr::null_mut();
 
             let err = ffi::FT_New_Library(&MEMORY, &mut raw);
             if err == ffi::FT_Err_Ok {
@@ -65,7 +65,7 @@ impl Library {
 
     pub fn new_face(&self, filepathname: &str, face_index: ffi::FT_Long) -> FtResult<Face> {
         unsafe {
-            let mut face = std::ptr::mut_null();
+            let mut face = std::ptr::null_mut();
 
             let path_str = filepathname.to_c_str();
 
@@ -80,7 +80,7 @@ impl Library {
 
     pub fn new_memory_face(&self, buffer: &[u8], face_index: ffi::FT_Long) -> FtResult<Face> {
         unsafe {
-            let mut face = std::ptr::mut_null();
+            let mut face = std::ptr::null_mut();
             let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as ffi::FT_Long, face_index, &mut face);
             if err == ffi::FT_Err_Ok {
                 Ok(Face::from_raw(self.raw, face))
