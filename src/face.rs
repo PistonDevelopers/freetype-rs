@@ -26,7 +26,7 @@ bitflags!(flags LoadFlag: i32 {
     const VerticalLayout = ffi::FT_LOAD_VERTICAL_LAYOUT,
     const ForceAutohint = ffi::FT_LOAD_FORCE_AUTOHINT,
     const CropBitmap = ffi::FT_LOAD_CROP_BITMAP,
-    const Pendantic = ffi::FT_LOAD_PENDANTIC,
+    const Pedantic = ffi::FT_LOAD_PEDANTIC,
     const IgnoreGlobalAdvanceWidth = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
     const NoRecurse = ffi::FT_LOAD_NO_RECURSE,
     const IgnoreTransform = ffi::FT_LOAD_IGNORE_TRANSFORM,
