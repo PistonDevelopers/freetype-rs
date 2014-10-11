@@ -33,11 +33,11 @@ bitflags!(flags LoadFlag: i32 {
     const MONOCHROME                 = ffi::FT_LOAD_MONOCHROME,
     const LINEAR_DESIGN              = ffi::FT_LOAD_LINEAR_DESIGN,
     const NO_AUTOHINT                = ffi::FT_LOAD_NO_AUTOHINT,
-    const LOAD_TARGET_NORMAL         = ffi::FT_LOAD_TARGET_NORMAL,
-    const LOAD_TARGET_LIGHT          = ffi::FT_LOAD_TARGET_LIGHT,
-    const LOAD_TARGET_MONO           = ffi::FT_LOAD_TARGET_MONO,
-    const LOAD_TARGET_LCD            = ffi::FT_LOAD_TARGET_LCD,
-    const LOAD_TARGET_LCD_V          = ffi::FT_LOAD_TARGET_LCD_V,
+    const TARGET_NORMAL              = ffi::FT_LOAD_TARGET_NORMAL,
+    const TARGET_LIGHT               = ffi::FT_LOAD_TARGET_LIGHT,
+    const TARGET_MONO                = ffi::FT_LOAD_TARGET_MONO,
+    const TARGET_LCD                 = ffi::FT_LOAD_TARGET_LCD,
+    const TARGET_LCD_V               = ffi::FT_LOAD_TARGET_LCD_V,
     const COLOR                      = ffi::FT_LOAD_COLOR
 })
 
