@@ -18,27 +18,27 @@ pub enum KerningMode {
 }
 
 bitflags!(flags LoadFlag: i32 {
-    const Default = ffi::FT_LOAD_DEFAULT,
-    const NoScale = ffi::FT_LOAD_NO_SCALE,
-    const NoHinting = ffi::FT_LOAD_NO_HINTING,
-    const Render = ffi::FT_LOAD_RENDER,
-    const NoBitmap = ffi::FT_LOAD_NO_BITMAP,
-    const VerticalLayout = ffi::FT_LOAD_VERTICAL_LAYOUT,
-    const ForceAutohint = ffi::FT_LOAD_FORCE_AUTOHINT,
-    const CropBitmap = ffi::FT_LOAD_CROP_BITMAP,
-    const Pedantic = ffi::FT_LOAD_PEDANTIC,
-    const IgnoreGlobalAdvanceWidth = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
-    const NoRecurse = ffi::FT_LOAD_NO_RECURSE,
-    const IgnoreTransform = ffi::FT_LOAD_IGNORE_TRANSFORM,
-    const Monochrome = ffi::FT_LOAD_MONOCHROME,
-    const LinearDesign = ffi::FT_LOAD_LINEAR_DESIGN,
-    const NoAutohint = ffi::FT_LOAD_NO_AUTOHINT,
-    const LoadTargetNormal = ffi::FT_LOAD_TARGET_NORMAL,
-    const LoadTargetLight = ffi::FT_LOAD_TARGET_LIGHT,
-    const LoadTargetMono = ffi::FT_LOAD_TARGET_MONO,
-    const LoadTargetLCD = ffi::FT_LOAD_TARGET_LCD,
-    const LoadTargetLCD_V = ffi::FT_LOAD_TARGET_LCD_V,
-    const Color = ffi::FT_LOAD_COLOR
+    const DEFAULT                    = ffi::FT_LOAD_DEFAULT,
+    const NO_SCALE                   = ffi::FT_LOAD_NO_SCALE,
+    const NO_HINTING                 = ffi::FT_LOAD_NO_HINTING,
+    const RENDER                     = ffi::FT_LOAD_RENDER,
+    const NO_BITMAP                  = ffi::FT_LOAD_NO_BITMAP,
+    const VERTICAL_LAYOUT            = ffi::FT_LOAD_VERTICAL_LAYOUT,
+    const FORCE_AUTOHINT             = ffi::FT_LOAD_FORCE_AUTOHINT,
+    const CROP_BITMAP                = ffi::FT_LOAD_CROP_BITMAP,
+    const PEDANTIC                   = ffi::FT_LOAD_PEDANTIC,
+    const IGNORE_GLOBAL_ADVANCE_WITH = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
+    const NO_RECURSE                 = ffi::FT_LOAD_NO_RECURSE,
+    const IGNORE_TRANSFORM           = ffi::FT_LOAD_IGNORE_TRANSFORM,
+    const MONOCHROME                 = ffi::FT_LOAD_MONOCHROME,
+    const LINEAR_DESIGN              = ffi::FT_LOAD_LINEAR_DESIGN,
+    const NO_AUTOHINT                = ffi::FT_LOAD_NO_AUTOHINT,
+    const LOAD_TARGET_NORMAL         = ffi::FT_LOAD_TARGET_NORMAL,
+    const LOAD_TARGET_LIGHT          = ffi::FT_LOAD_TARGET_LIGHT,
+    const LOAD_TARGET_MONO           = ffi::FT_LOAD_TARGET_MONO,
+    const LOAD_TARGET_LCD            = ffi::FT_LOAD_TARGET_LCD,
+    const LOAD_TARGET_LCD_V          = ffi::FT_LOAD_TARGET_LCD_V,
+    const COLOR                      = ffi::FT_LOAD_COLOR
 })
 
 pub struct Face {
