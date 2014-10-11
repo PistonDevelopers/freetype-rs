@@ -56,7 +56,7 @@ impl GlyphSlot {
 
     pub fn get_glyph(&self) -> FtResult<Glyph> {
         unsafe {
-            let mut aglyph = std::ptr::mut_null();
+            let mut aglyph = std::ptr::null_mut();
             let err= ffi::FT_Get_Glyph(self.raw, &mut aglyph);
             if err == ffi::FT_Err_Ok {
                 Ok(Glyph::from_raw(self.library_raw, aglyph))
