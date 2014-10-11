@@ -7,19 +7,19 @@ extern crate piston;
 extern crate sdl2_game_window;
 extern crate opengl_graphics;
 
-use graphics::*;
+use piston::graphics::*;
 use freetype as ft;
 use freetype::Face;
-use sdl2_game_window::GameWindowSDL2;
+use sdl2_game_window::WindowSDL2;
 use opengl_graphics::{
     Gl,
     Texture,
 };
 use piston::{
     AssetStore,
-    GameIterator,
-    GameIteratorSettings,
-    GameWindowSettings,
+    EventIterator,
+    EventSettings,
+    WindowSettings,
     Render,
 };
 
@@ -39,13 +39,15 @@ fn render_text(face: &Face, gl: &mut Gl, c: &Context, text: &str) {
 }
 
 fn main() {
-    let mut window = GameWindowSDL2::new(
+    let opengl = piston::shader_version::opengl::OpenGL_3_2;
+    let mut window = WindowSDL2::new(
         piston::shader_version::opengl::OpenGL_3_2,
-        GameWindowSettings {
+        WindowSettings {
             title: "Font with Piston".to_string(),
             size: [300, 300],
             fullscreen: false,
-            exit_on_esc: true
+            exit_on_esc: true,
+            samples: 0,
         }
     );
 
@@ -55,14 +57,14 @@ fn main() {
     let face = freetype.new_face(font.as_str().unwrap(), 0).unwrap();
     face.set_pixel_sizes(0, 48).unwrap();
 
-    let game_iter_settings = GameIteratorSettings {
+    let event_settings = EventSettings {
             updates_per_second: 120,
             max_frames_per_second: 60,
     };
 
-    let ref mut gl = Gl::new();
+    let ref mut gl = Gl::new(opengl);
 
-    for e in GameIterator::new(&mut window, &game_iter_settings) {
+    for e in EventIterator::new(&mut window, &event_settings) {
         match e {
             Render(args) => {
                 let c = Context::abs(args.width as f64, args.height as f64);
