@@ -688,7 +688,14 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
     }
 }
 
+#[cfg(any(target_os = "linux", target_os = "macos"))]
 #[link(name = "freetype")]
+extern {}
+
+#[cfg(windows)]
+#[link(name = "freetype-6")]
+extern {}
+
 extern "C" {
     pub fn FT_Init_FreeType(alibrary: *mut FT_Library) -> FT_Error;
     pub fn FT_Done_FreeType(library: FT_Library) -> FT_Error;
