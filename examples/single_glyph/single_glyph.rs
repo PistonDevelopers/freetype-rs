@@ -1,12 +1,11 @@
 
-extern crate debug;
 extern crate freetype;
 
 use freetype as ft;
 use freetype::ffi;
 
-static WIDTH: ffi::FT_Int = 32;
-static HEIGHT: ffi::FT_Int = 24;
+const WIDTH: ffi::FT_Int = 32;
+const HEIGHT: ffi::FT_Int = 24;
 
 fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: ffi::FT_Int, y: ffi::FT_Int) -> [[u8, ..WIDTH as uint], ..HEIGHT as uint] {
     let mut image: [[u8, ..WIDTH as uint], ..HEIGHT as uint] = [
@@ -70,9 +69,9 @@ fn main() {
     let ref text = args[2];
 
     let library = ft::Library::init().unwrap();
-    let face = library.new_face(filename.as_slice(), 0).unwrap();
+    let mut face = library.new_face(filename.as_slice(), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.as_bytes()[0] as u64, ft::face::Render).unwrap();
+    face.load_char(text.as_bytes()[0] as u64, ft::face::RENDER).unwrap();
 
     let slot = face.glyph().raw();
     let image = draw_bitmap(&slot.bitmap, slot.bitmap_left, HEIGHT - slot.bitmap_top);

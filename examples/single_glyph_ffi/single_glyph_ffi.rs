@@ -1,11 +1,10 @@
 
-extern crate debug;
 extern crate freetype;
 
 use freetype::ffi;
 
-static WIDTH: ffi::FT_Int = 32;
-static HEIGHT: ffi::FT_Int = 24;
+const WIDTH: ffi::FT_Int = 32;
+const HEIGHT: ffi::FT_Int = 24;
 
 fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: ffi::FT_Int, y: ffi::FT_Int) -> [[u8, ..WIDTH as uint], ..HEIGHT as uint] {
     let mut image: [[u8, ..WIDTH as uint], ..HEIGHT as uint] = [
@@ -69,14 +68,14 @@ fn main() {
         let filename = &args[1];
         let text = &args[2];
 
-        let mut library: ffi::FT_Library = std::ptr::mut_null();
+        let mut library: ffi::FT_Library = std::ptr::null_mut();
         let error = ffi::FT_Init_FreeType(&mut library);
         if error != ffi::FT_Err_Ok {
             println!("Could not initialize freetype.");
             return;
         }
 
-        let mut face: ffi::FT_Face = std::ptr::mut_null();
+        let mut face: ffi::FT_Face = std::ptr::null_mut();
         let error = ffi::FT_New_Face(library, filename.to_c_str().as_ptr(), 0, &mut face);
         if error != ffi::FT_Err_Ok {
             println!("Could not load font '{}'. Error Code: {}", filename, error);
