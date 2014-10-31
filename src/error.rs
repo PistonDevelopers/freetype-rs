@@ -109,7 +109,7 @@ impl FromPrimitive for Error {
         FromPrimitive::from_i32(n as i32)
     }
 
-    #[allow(non_uppercase_statics)]
+    #[allow(non_upper_case_globals)]
     fn from_i32(n: i32) -> Option<Error> {
         match n {
             ffi::FT_Err_Ok                            => Some(Ok),
