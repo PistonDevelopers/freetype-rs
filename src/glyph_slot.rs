@@ -7,6 +7,7 @@ use {
     FtResult,
     Glyph,
     GlyphMetrics,
+    Outline,
     RenderMode,
     Vector,
 };
@@ -62,6 +63,16 @@ impl GlyphSlot {
                 Ok(Glyph::from_raw(self.library_raw, aglyph))
             } else {
                 Err(FromPrimitive::from_i32(err).unwrap())
+            }
+        }
+    }
+
+    pub fn outline(&self) -> Option<Outline> {
+        unsafe {
+            if (*self.raw).format == ffi::FT_GLYPH_FORMAT_OUTLINE {
+                Some(Outline::from_raw(&(*self.raw).outline))
+            } else {
+                None
             }
         }
     }

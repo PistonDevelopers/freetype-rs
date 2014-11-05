@@ -61,6 +61,43 @@ pub struct FT_Vector {
     pub y: FT_Pos,
 }
 
+impl Add<FT_Vector, FT_Vector> for FT_Vector {
+    fn add(&self, other: &FT_Vector) -> FT_Vector {
+        FT_Vector {
+            x: self.x + other.x,
+            y: self.y + other.y,
+        }
+    }
+}
+
+impl Sub<FT_Vector, FT_Vector> for FT_Vector {
+    fn sub(&self, other: &FT_Vector) -> FT_Vector {
+        FT_Vector {
+            x: self.x - other.x,
+            y: self.y - other.y,
+        }
+    }
+}
+
+impl Mul<FT_Pos, FT_Vector> for FT_Vector {
+    fn mul(&self, other: &FT_Pos) -> FT_Vector {
+        FT_Vector {
+            x: self.x * *other,
+            y: self.y * *other,
+        }
+    }
+}
+
+impl Div<FT_Pos, FT_Vector> for FT_Vector {
+    fn div(&self, other: &FT_Pos) -> FT_Vector {
+        FT_Vector {
+            x: self.x / *other,
+            y: self.y / *other,
+        }
+    }
+}
+
+
 #[repr(C)]
 pub struct FT_BBox {
     pub xMin: FT_Pos,

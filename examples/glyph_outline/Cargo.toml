@@ -1,0 +1,15 @@
+[package]
+
+name = "glyph_outline"
+version = "0.0.0"
+authors = ["Joe Neeman <joeneeman@gmail.com>"]
+
+[[bin]]
+
+name = "glyph_outline"
+path = "./glyph_outline.rs"
+
+[dependencies.freetype-rs]
+
+path = "../../"
+
