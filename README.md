@@ -29,3 +29,5 @@ cargo build
 # run
 ./target/font_with_piston
 ```
+
+[How to contribute](https://github.com/PistonDevelopers/piston/blob/master/CONTRIBUTING.md)
