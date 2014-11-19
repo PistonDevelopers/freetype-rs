@@ -90,9 +90,9 @@ impl<'a> Iterator<Curve<'a>> for CurveIterator<'a> {
                 let tag1 = self.tg(1);
 
                 let (shift, curve) = if (tag1 & TAG_ONCURVE) == TAG_ONCURVE {
-                    (1, Line(self.pt(1)))
+                    (1, Curve::Line(self.pt(1)))
                 } else if (tag1 & TAG_BEZIER3) == TAG_BEZIER3 {
-                    (3, Bezier3(self.pt(1), self.pt(2), self.pt(3)))
+                    (3, Curve::Bezier3(self.pt(1), self.pt(2), self.pt(3)))
                 } else {
                     // We are some kind of quadratic Bezier.
                     // Quadratic Bezier curves have a special treatment in TTF outlines:
@@ -100,9 +100,9 @@ impl<'a> Iterator<Curve<'a>> for CurveIterator<'a> {
                     // of off-curve control points. In this case, there are implied on-curve
                     // points in between each pair of off-curve points.
                     if (self.tg(2) & TAG_ONCURVE) == TAG_ONCURVE {
-                        (2, Bezier2(self.pt(1), self.pt(2)))
+                        (2, Curve::Bezier2(self.pt(1), self.pt(2)))
                     } else {
-                        (1, Bezier2(self.pt(1), (self.pt(1) + self.pt(2))/2))
+                        (1, Curve::Bezier2(self.pt(1), (self.pt(1) + self.pt(2))/2))
                     }
                 };
 
