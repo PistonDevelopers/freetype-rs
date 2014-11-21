@@ -1,29 +1,26 @@
 #![feature(globs)]
 
+extern crate shader_version;
 extern crate graphics;
 extern crate freetype;
-extern crate piston;
-
-extern crate sdl2_game_window;
+extern crate event;
+extern crate sdl2_window;
 extern crate opengl_graphics;
 
-use std::collections::hashmap::HashMap;
-use piston::graphics::*;
+use graphics::Context;
+use std::collections::hash_map::HashMap;
 use freetype as ft;
 use freetype::Face;
-use sdl2_game_window::WindowSDL2;
+use sdl2_window::Sdl2Window;
 use opengl_graphics::{
     Gl,
     Texture,
 };
-use piston::{
-    AssetStore,
-    EventIterator,
-    EventSettings,
+use event::{
+    Event,
+    Events,
     WindowSettings,
-    Render,
 };
-
 
 struct Character {
     glyph: ft::Glyph,
@@ -31,7 +28,9 @@ struct Character {
     texture: Texture,
 }
 
-fn render_text(buffer: &mut HashMap<char, Character>, face: &Face, gl: &mut Gl, c: &Context, text: &str) {
+fn render_text(buffer: &mut HashMap<char, Character>, face: &mut Face, gl: &mut Gl, c: &Context, text: &str) {
+    use graphics::*;
+
     let mut x = 0;
     let mut y = 0;
     for ch in text.chars() {
@@ -39,7 +38,7 @@ fn render_text(buffer: &mut HashMap<char, Character>, face: &Face, gl: &mut Gl, 
             load_character(buffer, face, ch);
             std::io::println(format!("Loaded char {}", ch).as_slice());
         }
-        let character = buffer.get(&ch);
+        let character = buffer.get(&ch).unwrap();
 
         c.trans((x + character.bitmap_glyph.left()) as f64, (y - character.bitmap_glyph.top()) as f64).image(&character.texture).rgb(0.0, 0.0, 0.0).draw(gl);
 
@@ -49,8 +48,8 @@ fn render_text(buffer: &mut HashMap<char, Character>, face: &Face, gl: &mut Gl, 
     }
 }
 
-fn load_character(buffer: &mut HashMap<char, Character>, face: &Face, ch: char) {
-    face.load_char(ch as u64, ft::face::Default).unwrap();
+fn load_character(buffer: &mut HashMap<char, Character>, face: &mut Face, ch: char) {
+    face.load_char(ch as u64, ft::face::DEFAULT).unwrap();
     let glyph = face.glyph().get_glyph().unwrap();
     let bitmap_glyph = glyph.to_bitmap(ft::render_mode::Normal, None).unwrap();
     let bitmap = bitmap_glyph.bitmap();
@@ -64,9 +63,9 @@ fn load_character(buffer: &mut HashMap<char, Character>, face: &Face, ch: char) 
 }
 
 fn main() {
-    let opengl = piston::shader_version::opengl::OpenGL_3_2;
-    let mut window = WindowSDL2::new(
-        piston::shader_version::opengl::OpenGL_3_2,
+    let opengl = shader_version::opengl::OpenGL::OpenGL_3_2;
+    let window = Sdl2Window::new(
+        opengl,
         WindowSettings {
             title: "Font with Piston (Cached)".to_string(),
             size: [300, 300],
@@ -76,29 +75,25 @@ fn main() {
         }
     );
 
-    let asset_store = AssetStore::from_folder("../assets");
     let freetype = ft::Library::init().unwrap();
-    let font = asset_store.path("Arial.ttf").unwrap();
-    let face = freetype.new_face(font.as_str().unwrap(), 0).unwrap();
+    let font = Path::new("./assets/Arial.ttf");
+    let mut face = freetype.new_face(font.as_str().unwrap(), 0).unwrap();
     face.set_pixel_sizes(0, 48).unwrap();
 
     let mut buffer = HashMap::<char, Character>::new();
 
-    let event_settings = EventSettings {
-            updates_per_second: 120,
-            max_frames_per_second: 60,
-    };
-
     let ref mut gl = Gl::new(opengl);
 
-    for e in EventIterator::new(&mut window, &event_settings) {
+    for e in Events::new(window) {
         match e {
-            Render(args) => {
+            Event::Render(args) => {
+                use graphics::*;
+
                 let c = Context::abs(args.width as f64, args.height as f64);
                 c.rgb(1.0, 1.0, 1.0).draw(gl);
-                render_text(&mut buffer, &face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
-                render_text(&mut buffer, &face, gl, &c.trans(0.0, 160.0), "Hello Piston!");
-                render_text(&mut buffer, &face, gl, &c.trans(0.0, 220.0), "Hello Piston!");
+                render_text(&mut buffer, &mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
+                render_text(&mut buffer, &mut face, gl, &c.trans(0.0, 160.0), "Hello Piston!");
+                render_text(&mut buffer, &mut face, gl, &c.trans(0.0, 220.0), "Hello Piston!");
             },
             _ => {},
         }
