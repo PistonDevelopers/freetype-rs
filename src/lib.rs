@@ -1,6 +1,6 @@
 
 #![crate_type = "lib"]
-#![crate_name="freetype"]
+#![crate_name="freetype_rs"]
 #![desc = "Rust bindings for FreeType"]
 #![license = "MIT"]
 
@@ -26,6 +26,7 @@ pub mod glyph_slot;
 pub mod library;
 pub mod outline;
 pub mod render_mode;
+pub mod tt_os2;
 
 pub type BBox = ffi::FT_BBox;
 pub type GlyphMetrics = ffi::FT_Glyph_Metrics;

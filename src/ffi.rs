@@ -54,6 +54,15 @@ pub type FT_Alloc_Func = extern fn(FT_Memory, c_long) -> *mut c_void;
 pub type FT_Free_Func = extern fn(FT_Memory, *mut c_void);
 pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *mut c_void) -> *mut c_void;
 
+pub trait FTErrorMethods {
+    fn succeeded(&self) -> bool;
+}
+
+impl FTErrorMethods for FT_Error {
+    fn succeeded(&self) -> bool { *self == 0 as FT_Error }
+}
+
+
 // Structs
 #[repr(C)]
 pub struct FT_Vector {
@@ -214,6 +223,18 @@ pub struct FT_Bitmap_Size {
 }
 
 // Enums
+
+pub type enum_FT_Sfnt_Tag_ = c_uint;
+pub const ft_sfnt_head: u32 = 0_u32;
+pub const ft_sfnt_maxp: u32 = 1_u32;
+pub const ft_sfnt_os2: u32 = 2_u32;
+pub const ft_sfnt_hhea: u32 = 3_u32;
+pub const ft_sfnt_vhea: u32 = 4_u32;
+pub const ft_sfnt_post: u32 = 5_u32;
+pub const ft_sfnt_pclt: u32 = 6_u32;
+pub const ft_sfnt_max: u32 = 7_u32;
+pub type FT_Sfnt_Tag = enum_FT_Sfnt_Tag_;
+
 pub type FT_Pixel_Mode = c_uint;
 pub const FT_PIXEL_MODE_NONE  : FT_Pixel_Mode = 0;
 pub const FT_PIXEL_MODE_MONO  : FT_Pixel_Mode = 1;
@@ -590,7 +611,7 @@ pub struct FT_StreamRec {
 
 #[repr(C)]
 pub struct FT_MemoryRec {
-    pub user: *const c_void,
+    pub user: *mut c_void,
     pub alloc: FT_Alloc_Func,
     pub free: FT_Free_Func,
     pub realloc: FT_Realloc_Func,
@@ -727,7 +748,9 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 #[link(name = "freetype")]
-extern {}
+extern {
+    pub fn FT_Get_Sfnt_Table(face: FT_Face, tag: FT_Sfnt_Tag) -> *mut c_void;
+}
 
 #[cfg(windows)]
 #[link(name = "freetype-6")]

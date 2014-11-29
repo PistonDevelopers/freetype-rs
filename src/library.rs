@@ -35,7 +35,7 @@ extern "C" fn realloc_library(_memory: ffi::FT_Memory,
 }
 
 static MEMORY: ffi::FT_MemoryRec = ffi::FT_MemoryRec {
-    user: 0 as *const c_void,
+    user: 0 as *mut c_void,
     alloc: alloc_library,
     free: free_library,
     realloc: realloc_library,
