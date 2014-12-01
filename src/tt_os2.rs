@@ -1,52 +1,123 @@
-// Copyright 2013 The Servo Project Developers. See the COPYRIGHT
-// file at the top-level directory of this distribution.
-//
-// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
-// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
-// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. This file may not be copied, modified, or distributed
-// except according to those terms.
+use ffi;
 
-use ffi::{FT_UShort, FT_Short, FT_ULong, FT_Byte};
-
-#[allow(non_snake_case)]
-#[allow(non_camel_case_types)]
-
-pub struct TT_OS2 {
-    pub version: FT_UShort,
-    pub xAvgCharWidth: FT_Short,
-    pub usWeightClass: FT_UShort,
-    pub usWidthClass: FT_UShort,
-    pub fsType: FT_Short,
-    pub ySubscriptXSize: FT_Short,
-    pub ySubscriptYSize: FT_Short,
-    pub ySubscriptXOffset: FT_Short,
-    pub ySubscriptYOffset: FT_Short,
-    pub ySuperscriptXSize: FT_Short,
-    pub ySuperscriptYSize: FT_Short,
-    pub ySuperscriptXOffset: FT_Short,
-    pub ySuperscriptYOffset: FT_Short,
-    pub yStrikeoutSize: FT_Short,
-    pub yStrikeoutPosition: FT_Short,
-    pub sFamilyClass: FT_Short,
-
-    pub panose: [FT_Byte, ..10],
-
-    pub ulUnicodeRange1: FT_ULong, /* Bits 0-31   */
-    pub ulUnicodeRange2: FT_ULong, /* Bits 32-63  */
-    pub ulUnicodeRange3: FT_ULong, /* Bits 64-95  */
-    pub ulUnicodeRange4: FT_ULong, /* Bits 96-127 */
-
-    /* only version 1 tables */
-
-    pub ulCodePageRange1: FT_ULong, /* Bits 0-31  */
-    pub ulCodePageRange2: FT_ULong, /* Bits 32-63 */
-
-    /* only version 2 tables */
-
-    pub sxHeight: FT_Short,
-    pub sCapHeight: FT_Short,
-    pub usDefaultChar: FT_UShort,
-    pub usBreakChar: FT_UShort,
-    pub usMaxContext: FT_UShort,
+pub struct TrueTypeOS2Table {
+    raw: ffi::TT_OS2,
 }
+
+impl TrueTypeOS2Table  {
+
+    #[inline(always)]
+    pub fn version(&self) -> ffi::FT_UShort {
+        unsafe {
+            (*self.raw).version
+        }
+    }
+
+    #[inline(always)]
+    pub fn avg_char_width(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).xAvgCharWidth
+        }
+    }
+
+    #[inline(always)]
+    pub fn us_weight_class(&self) -> ffi::FT_UShort {
+        unsafe {
+            (*self.raw).usWeightClass
+        }
+    }
+
+    #[inline(always)]
+    pub fn us_width_class(&self) -> ffi::FT_UShort {
+        unsafe {
+            (*self.raw).usWidthClass
+        }
+    }
+
+    #[inline(always)]
+    pub fn fs_type(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).fsType
+        }
+    }
+
+
+    #[inline(always)]
+    pub fn y_subscript_x_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySubscriptXSize
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_subscript_y_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySubscriptYSize
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_subscript_x_offset(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySubscriptXOffset
+        }
+    }
+
+
+    #[inline(always)]
+    pub fn y_subscript_y_offset(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySubscriptYOffset
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_superscript_x_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySuperscriptXSize
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_superscript_y_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySuperscriptYSize
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_superscript_x_offset(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySuperscriptXOffset
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_superscript_y_offset(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).ySuperscriptYOffset
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_strikeout_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).yStrikeoutSize
+        }
+    }
+
+    #[inline(always)]
+    pub fn y_strikeout_position(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).yStrikeoutPosition
+        }
+    }
+
+    #[inline(always)]
+    pub fn s_family_class(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).sFamilyClass
+        }
+    }
+}
+
