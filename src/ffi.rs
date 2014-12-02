@@ -223,7 +223,7 @@ pub struct FT_Bitmap_Size {
 }
 
 #[repr(C)]
-pub struct TT_OS2_ {
+pub struct TT_OS2 {
     pub version: FT_UShort,
     pub xAvgCharWidth: FT_Short,
     pub usWeightClass: FT_UShort,
@@ -519,7 +519,7 @@ pub type FT_ListNode = *mut FT_ListNodeRec;
 pub type FT_Glyph = *mut FT_GlyphRec;
 pub type FT_BitmapGlyph = *mut FT_BitmapGlyphRec;
 pub type FT_OutlineGlyph = *mut FT_OutlineGlyphRec;
-pub type TT_OS2 = *mut TT_OS2_;
+pub type TT_OS2_Internal = *mut TT_OS2;
 
 // Internal Types
 pub type FT_LibraryRec = c_void;

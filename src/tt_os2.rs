@@ -1,7 +1,7 @@
 use ffi;
 
 pub struct TrueTypeOS2Table {
-    raw: ffi::TT_OS2,
+    raw: ffi::TT_OS2_Internal,
 }
 
 impl TrueTypeOS2Table  {
