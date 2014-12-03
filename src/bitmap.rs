@@ -16,7 +16,10 @@ impl Bitmap {
     #[inline(always)]
     pub fn buffer(&self) -> &[u8] {
         unsafe {
-            std::slice::raw::buf_as_slice((*self.raw).buffer, (self.width() * self.rows()) as uint, |buf: &[u8]| std::mem::transmute(buf))
+            std::slice::from_raw_buf(
+                &(*self.raw).buffer, 
+                (self.width() * self.rows()) as uint, 
+            )
         }
     }
 
