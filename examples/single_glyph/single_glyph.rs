@@ -71,7 +71,7 @@ fn main() {
     let library = ft::Library::init().unwrap();
     let mut face = library.new_face(filename.as_slice(), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.as_bytes()[0] as u64, ft::face::RENDER).unwrap();
+    face.load_char(text.nfc_chars().next().unwrap() as u64, ft::face::RENDER).unwrap();
 
     let slot = face.glyph().raw();
     let image = draw_bitmap(&slot.bitmap, slot.bitmap_left, HEIGHT - slot.bitmap_top);
