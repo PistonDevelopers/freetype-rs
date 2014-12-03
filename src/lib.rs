@@ -1,8 +1,5 @@
 
 #![crate_type = "lib"]
-#![crate_name="freetype_rs"]
-#![desc = "Rust bindings for FreeType"]
-#![license = "MIT"]
 
 extern crate libc;
 
