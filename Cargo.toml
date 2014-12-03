@@ -6,5 +6,5 @@ authors = ["Coeuvre <coeuvre@gmail.com>"]
 
 [lib]
 
-name = "freetype"
+name = "freetype_rs"
 path = "src/lib.rs"

@@ -54,6 +54,15 @@ pub type FT_Alloc_Func = extern fn(FT_Memory, c_long) -> *mut c_void;
 pub type FT_Free_Func = extern fn(FT_Memory, *mut c_void);
 pub type FT_Realloc_Func = extern fn(FT_Memory, c_long, c_long, *mut c_void) -> *mut c_void;
 
+pub trait FTErrorMethods {
+    fn succeeded(&self) -> bool;
+}
+
+impl FTErrorMethods for FT_Error {
+    fn succeeded(&self) -> bool { *self == 0 as FT_Error }
+}
+
+
 // Structs
 #[repr(C)]
 pub struct FT_Vector {
@@ -213,7 +222,59 @@ pub struct FT_Bitmap_Size {
     pub y_ppem: FT_Pos
 }
 
+#[repr(C)]
+pub struct TT_OS2 {
+    pub version: FT_UShort,
+    pub xAvgCharWidth: FT_Short,
+    pub usWeightClass: FT_UShort,
+    pub usWidthClass: FT_UShort,
+    pub fsType: FT_Short,
+    pub ySubscriptXSize: FT_Short,
+    pub ySubscriptYSize: FT_Short,
+    pub ySubscriptXOffset: FT_Short,
+    pub ySubscriptYOffset: FT_Short,
+    pub ySuperscriptXSize: FT_Short,
+    pub ySuperscriptYSize: FT_Short,
+    pub ySuperscriptXOffset: FT_Short,
+    pub ySuperscriptYOffset: FT_Short,
+    pub yStrikeoutSize: FT_Short,
+    pub yStrikeoutPosition: FT_Short,
+    pub sFamilyClass: FT_Short,
+
+    pub panose: [FT_Byte, ..10],
+
+    pub ulUnicodeRange1: FT_ULong, /* Bits 0-31   */
+    pub ulUnicodeRange2: FT_ULong, /* Bits 32-63  */
+    pub ulUnicodeRange3: FT_ULong, /* Bits 64-95  */
+    pub ulUnicodeRange4: FT_ULong, /* Bits 96-127 */
+
+    /* only version 1 tables */
+
+    pub ulCodePageRange1: FT_ULong, /* Bits 0-31  */
+    pub ulCodePageRange2: FT_ULong, /* Bits 32-63 */
+
+    /* only version 2 tables */
+
+    pub sxHeight: FT_Short,
+    pub sCapHeight: FT_Short,
+    pub usDefaultChar: FT_UShort,
+    pub usBreakChar: FT_UShort,
+    pub usMaxContext: FT_UShort,
+}
+
 // Enums
+
+pub type enum_FT_Sfnt_Tag_ = c_uint;
+pub const ft_sfnt_head: u32 = 0_u32;
+pub const ft_sfnt_maxp: u32 = 1_u32;
+pub const ft_sfnt_os2: u32 = 2_u32;
+pub const ft_sfnt_hhea: u32 = 3_u32;
+pub const ft_sfnt_vhea: u32 = 4_u32;
+pub const ft_sfnt_post: u32 = 5_u32;
+pub const ft_sfnt_pclt: u32 = 6_u32;
+pub const ft_sfnt_max: u32 = 7_u32;
+pub type FT_Sfnt_Tag = enum_FT_Sfnt_Tag_;
+
 pub type FT_Pixel_Mode = c_uint;
 pub const FT_PIXEL_MODE_NONE  : FT_Pixel_Mode = 0;
 pub const FT_PIXEL_MODE_MONO  : FT_Pixel_Mode = 1;
@@ -458,6 +519,7 @@ pub type FT_ListNode = *mut FT_ListNodeRec;
 pub type FT_Glyph = *mut FT_GlyphRec;
 pub type FT_BitmapGlyph = *mut FT_BitmapGlyphRec;
 pub type FT_OutlineGlyph = *mut FT_OutlineGlyphRec;
+pub type TT_OS2_Internal = *mut TT_OS2;
 
 // Internal Types
 pub type FT_LibraryRec = c_void;
@@ -590,7 +652,7 @@ pub struct FT_StreamRec {
 
 #[repr(C)]
 pub struct FT_MemoryRec {
-    pub user: *const c_void,
+    pub user: *mut c_void,
     pub alloc: FT_Alloc_Func,
     pub free: FT_Free_Func,
     pub realloc: FT_Realloc_Func,
@@ -727,7 +789,9 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
 #[link(name = "freetype")]
-extern {}
+extern {
+    pub fn FT_Get_Sfnt_Table(face: FT_Face, tag: FT_Sfnt_Tag) -> *mut c_void;
+}
 
 #[cfg(windows)]
 #[link(name = "freetype-6")]
