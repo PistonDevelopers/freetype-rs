@@ -85,7 +85,7 @@ fn main() {
         ffi::FT_Set_Char_Size(face, 40 * 64, 0, 50, 0);
         let slot = &*(*face).glyph;
 
-        let error = ffi::FT_Load_Char(face, text.as_bytes()[0] as u64, ffi::FT_LOAD_RENDER);
+        let error = ffi::FT_Load_Char(face, text.nfc_chars().next().unwrap() as u64, ffi::FT_LOAD_RENDER);
         if error != ffi::FT_Err_Ok {
             println!("Could not load char.");
             return;
