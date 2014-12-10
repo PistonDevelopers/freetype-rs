@@ -2,6 +2,7 @@
 #![crate_type = "lib"]
 
 extern crate libc;
+extern crate "freetype-sys" as freetype_sys;
 
 pub use bitmap::Bitmap;
 pub use bitmap_glyph::BitmapGlyph;
@@ -12,12 +13,12 @@ pub use glyph_slot::GlyphSlot;
 pub use library::Library;
 pub use outline::Outline;
 pub use render_mode::RenderMode;
+pub use freetype_sys as ffi;
 
 pub mod bitmap;
 pub mod bitmap_glyph;
 pub mod error;
 pub mod face;
-pub mod ffi;
 pub mod glyph;
 pub mod glyph_slot;
 pub mod library;

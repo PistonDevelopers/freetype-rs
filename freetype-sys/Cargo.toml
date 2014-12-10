@@ -1,0 +1,9 @@
+[package]
+
+name = "freetype-sys"
+version = "0.0.1"
+authors = ["Coeuvre <coeuvre@gmail.com>"]
+build = "build.rs"
+
+[build-dependencies]
+pkg-config = "*"
