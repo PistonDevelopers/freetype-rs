@@ -3,6 +3,8 @@
 #![allow(non_snake_case)]
 #![allow(non_upper_case_globals)]
 
+extern crate libc;
+
 use libc::{
     c_char,
     c_void,
@@ -788,14 +790,9 @@ pub fn FT_HAS_COLOR(face: FT_Face) -> bool {
 }
 
 #[cfg(any(target_os = "linux", target_os = "macos"))]
-#[link(name = "freetype")]
 extern {
     pub fn FT_Get_Sfnt_Table(face: FT_Face, tag: FT_Sfnt_Tag) -> *mut c_void;
 }
-
-#[cfg(windows)]
-#[link(name = "freetype-6")]
-extern {}
 
 extern "C" {
     pub fn FT_Init_FreeType(alibrary: *mut FT_Library) -> FT_Error;

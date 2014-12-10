@@ -8,3 +8,6 @@ authors = ["Coeuvre <coeuvre@gmail.com>"]
 
 name = "freetype"
 path = "src/lib.rs"
+
+[dependencies.freetype-sys]
+path = "freetype-sys"
