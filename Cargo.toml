@@ -16,5 +16,6 @@ name = "freetype"
 path = "src/lib.rs"
 
 [dependencies.freetype-sys]
-path = "freetype-sys"
+
+git = "https://github.com/PistonDevelopers/freetype-sys"
 
