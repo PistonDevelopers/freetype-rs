@@ -26,4 +26,3 @@ watch.sh
 /examples/**/target
 
 Cargo.lock
-/freetype-sys/target/
