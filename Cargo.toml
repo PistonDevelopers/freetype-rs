@@ -3,7 +3,7 @@
 name = "freetype-rs"
 version = "0.0.0"
 authors = ["Coeuvre <coeuvre@gmail.com>"]
-tags = ["freetype", "font", "glyph"]
+keywords = ["freetype", "font", "glyph"]
 description = "Bindings for FreeType font library"
 license = "MIT"
 readme = "README.md"

@@ -2,6 +2,7 @@
 use std;
 use ffi;
 
+#[allow(missing_copy_implementations)]
 pub struct Bitmap {
     raw: *const ffi::FT_Bitmap,
 }
