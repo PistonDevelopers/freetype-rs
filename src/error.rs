@@ -3,7 +3,7 @@ use ffi;
 
 pub type FtResult<T> = Result<T, Error>;
 
-#[deriving(Clone, PartialEq, Eq, Show)]
+#[deriving(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(i32)]
 pub enum Error {
     Ok                          = ffi::FT_Err_Ok,

@@ -11,13 +11,16 @@ use {
 };
 
 #[repr(u32)]
+#[deriving(Copy)]
 pub enum KerningMode {
     KerningDefault = ffi::FT_KERNING_DEFAULT,
     KerningUnfitted = ffi::FT_KERNING_UNFITTED,
     KerningUnscaled = ffi::FT_KERNING_UNSCALED
 }
 
-bitflags!(flags LoadFlag: i32 {
+bitflags!(
+#[deriving(Copy)]
+flags LoadFlag: i32 {
     const DEFAULT                    = ffi::FT_LOAD_DEFAULT,
     const NO_SCALE                   = ffi::FT_LOAD_NO_SCALE,
     const NO_HINTING                 = ffi::FT_LOAD_NO_HINTING,
