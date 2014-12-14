@@ -31,7 +31,11 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
         let g = face.glyph();
 
         let texture = Texture::from_memory_alpha(g.bitmap().buffer(), g.bitmap().width() as u32, g.bitmap().rows() as u32).unwrap();
-        c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64).image(&texture).rgb(0.0, 0.0, 0.0).draw(gl);
+        graphics::Image::colored(graphics::color::BLACK).draw(
+            &texture, 
+            &c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
+            gl
+        );
 
         x += (g.advance().x >> 6) as i32;
         y += (g.advance().y >> 6) as i32;
@@ -39,7 +43,7 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
 }
 
 fn main() {
-    let opengl = shader_version::opengl::OpenGL::OpenGL_3_2;
+    let opengl = shader_version::OpenGL::_3_2;
     let window = Sdl2Window::new(
         opengl,
         WindowSettings {
@@ -65,7 +69,7 @@ fn main() {
                 use graphics::*;
 
                 let c = Context::abs(args.width as f64, args.height as f64);
-                c.rgb(1.0, 1.0, 1.0).draw(gl);
+                graphics::clear([1.0, 1.0, 1.0, 1.0], gl);
                 render_text(&mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
             },
             _ => {},

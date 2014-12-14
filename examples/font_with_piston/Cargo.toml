@@ -13,19 +13,19 @@ path = "./font_with_piston.rs"
 
 path = "../../"
 
-[dependencies.graphics]
-
-git = "https://github.com/pistondevelopers/graphics"
-
-[dependencies.event]
+[dependencies.pistoncore-event]
 
 git = "https://github.com/pistondevelopers/event"
 
-[dependencies.opengl_graphics]
+[dependencies.piston2d-opengl_graphics]
 
 git = "https://github.com/pistondevelopers/opengl_graphics"
 
-[dependencies.sdl2_window]
+[dependencies.piston2d-graphics]
+
+git = "https://github.com/pistondevelopers/graphics"
+
+[dependencies.pistoncore-sdl2_window]
 
 git = "https://github.com/pistondevelopers/sdl2_window"
 
