@@ -19,7 +19,6 @@ pub enum KerningMode {
 }
 
 bitflags!(
-#[deriving(Copy)]
 flags LoadFlag: i32 {
     const DEFAULT                    = ffi::FT_LOAD_DEFAULT,
     const NO_SCALE                   = ffi::FT_LOAD_NO_SCALE,
