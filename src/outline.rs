@@ -102,7 +102,12 @@ impl<'a> Iterator<Curve<'a>> for CurveIterator<'a> {
                     if (self.tg(2) & TAG_ONCURVE) == TAG_ONCURVE {
                         (2, Curve::Bezier2(self.pt(1), self.pt(2)))
                     } else {
-                        (1, Curve::Bezier2(self.pt(1), (self.pt(1) + self.pt(2))/2))
+                        let pt = ffi::FT_Vector {
+                            x: (self.pt(1).x + self.pt(2).x) / 2,
+                            y: (self.pt(1).y + self.pt(2).y) / 2,
+                        };
+
+                        (1, Curve::Bezier2(self.pt(1), pt))
                     }
                 };
 
