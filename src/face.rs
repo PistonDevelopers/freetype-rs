@@ -41,7 +41,7 @@ flags LoadFlag: i32 {
     const TARGET_LCD                 = ffi::FT_LOAD_TARGET_LCD,
     const TARGET_LCD_V               = ffi::FT_LOAD_TARGET_LCD_V,
     const COLOR                      = ffi::FT_LOAD_COLOR
-})
+});
 
 pub struct Face {
     library_raw: ffi::FT_Library,
