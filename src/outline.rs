@@ -47,7 +47,7 @@ pub struct CurveIterator<'a> {
 }
 
 impl<'a> CurveIterator<'a> {
-    pub unsafe fn from_raw<'a>(outline: &'a ffi::FT_Outline,
+    pub unsafe fn from_raw(outline: &'a ffi::FT_Outline,
                                start_idx: int,
                                end_idx: int) -> CurveIterator<'a> {
         CurveIterator {
@@ -126,7 +126,7 @@ pub struct ContourIterator<'a> {
 }
 
 impl<'a> ContourIterator<'a> {
-    pub unsafe fn from_raw<'a>(outline: &'a ffi::FT_Outline) -> ContourIterator<'a> {
+    pub unsafe fn from_raw(outline: &'a ffi::FT_Outline) -> ContourIterator<'a> {
         ContourIterator {
             outline: outline,
             contour_start: 0,
