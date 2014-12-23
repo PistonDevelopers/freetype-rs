@@ -283,7 +283,7 @@ impl Face {
             None
         } else {
             let family_name = unsafe { CString::new(family_name_ptr, false) };
-            Some(family_name.as_str().unwrap().into_string())
+            Some(family_name.as_str().unwrap().to_string())
         }
     }
 
@@ -295,7 +295,7 @@ impl Face {
             None
         } else {
             let style_name = unsafe { CString::new(style_name_ptr, false) };
-            Some(style_name.as_str().unwrap().into_string())
+            Some(style_name.as_str().unwrap().to_string())
         }
     }
 }
