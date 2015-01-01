@@ -34,22 +34,24 @@ extern "C" fn realloc_library(_memory: ffi::FT_Memory,
     }
 }
 
+static MEMORY: ffi::FT_MemoryRec = ffi::FT_MemoryRec {
+    user: 0 as *mut c_void,
+    alloc: alloc_library,
+    free: free_library,
+    realloc: realloc_library,
+};
+
+
 pub struct Library {
     raw: ffi::FT_Library,
 }
 
 impl Library {
     pub fn init() -> FtResult<Library> {
-        let memory = ffi::FT_MemoryRec {
-            user: 0 as *mut c_void,
-            alloc: alloc_library,
-            free: free_library,
-            realloc: realloc_library,
-        };
         unsafe {
             let mut raw = std::ptr::null_mut();
 
-            let err = ffi::FT_New_Library(&memory, &mut raw);
+            let err = ffi::FT_New_Library(&MEMORY, &mut raw);
             if err == ffi::FT_Err_Ok {
                 ffi::FT_Add_Default_Modules(raw);
                 Ok(Library {
