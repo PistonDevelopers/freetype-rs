@@ -1,6 +1,6 @@
 use ffi;
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub struct TrueTypeOS2Table {
     raw: ffi::TT_OS2_Internal,
 }

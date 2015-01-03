@@ -12,7 +12,7 @@ use {
     Vector,
 };
 
-#[deriving(Copy)]
+#[derive(Copy)]
 pub struct GlyphSlot {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_GlyphSlot,
