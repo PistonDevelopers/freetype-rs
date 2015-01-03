@@ -5,6 +5,7 @@ use libc::{
     c_long,
     size_t,
 };
+use std::c_str::ToCStr;
 use std;
 use std::num::FromPrimitive;
 use ffi;

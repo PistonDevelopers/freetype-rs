@@ -1,9 +1,10 @@
+use std::num::FromPrimitive;
 
 use ffi;
 
 pub type FtResult<T> = Result<T, Error>;
 
-#[deriving(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Show)]
 #[repr(i32)]
 pub enum Error {
     Ok                          = ffi::FT_Err_Ok,
