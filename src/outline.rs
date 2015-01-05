@@ -81,7 +81,8 @@ impl<'a> CurveIterator<'a> {
     }
 }
 
-impl<'a> Iterator<Curve<'a>> for CurveIterator<'a> {
+impl<'a> Iterator for CurveIterator<'a> {
+	type Item = Curve<'a>;
     fn next(&mut self) -> Option<Curve<'a>> {
         if self.idx >= self.length {
             None
@@ -136,7 +137,8 @@ impl<'a> ContourIterator<'a> {
     }
 }
 
-impl<'a> Iterator<CurveIterator<'a>> for ContourIterator<'a> {
+impl<'a> Iterator for ContourIterator<'a> {
+	type Item = CurveIterator<'a>;
     fn next(&mut self) -> Option<CurveIterator<'a>> {
         if self.contour_end_idx > self.last_end_idx {
             None

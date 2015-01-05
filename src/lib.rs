@@ -2,6 +2,7 @@
 #![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_deriving)]
+#![feature(associated_types)]
 
 extern crate libc;
 extern crate "freetype-sys" as freetype_sys;
