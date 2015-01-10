@@ -20,15 +20,15 @@ impl<'a> Outline<'a> {
     }
 
     pub fn points(&self) -> &'a [Vector] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.points, len: self.raw.n_points as uint }) }
+        unsafe { mem::transmute(raw::Slice { data: self.raw.points, len: self.raw.n_points as usize }) }
     }
 
     pub fn tags(&self) -> &'a [c_char] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.tags, len: self.raw.n_points as uint }) }
+        unsafe { mem::transmute(raw::Slice { data: self.raw.tags, len: self.raw.n_points as usize }) }
     }
 
     pub fn contours(&self) -> &'a [c_short] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.contours, len: self.raw.n_contours as uint }) }
+        unsafe { mem::transmute(raw::Slice { data: self.raw.contours, len: self.raw.n_contours as usize }) }
     }
 
     pub fn contours_iter(&self) -> ContourIterator<'a> {
@@ -42,14 +42,14 @@ const TAG_BEZIER3: c_char = 0x02;
 pub struct CurveIterator<'a> {
     start_point: *const Vector,
     start_tag: *const c_char,
-    idx: int,
-    length: int,
+    idx: isize,
+    length: isize,
 }
 
 impl<'a> CurveIterator<'a> {
     pub unsafe fn from_raw(outline: &'a ffi::FT_Outline,
-                               start_idx: int,
-                               end_idx: int) -> CurveIterator<'a> {
+                               start_idx: isize,
+                               end_idx: isize) -> CurveIterator<'a> {
         CurveIterator {
             start_point: outline.points.offset(start_idx),
             start_tag: outline.tags.offset(start_idx),
@@ -64,7 +64,7 @@ impl<'a> CurveIterator<'a> {
 
     // Retrieves the point at offset i from the current point. Note that contours implicitly repeat their
     // first point at the end.
-    unsafe fn pt(&self, i: int) -> Vector {
+    unsafe fn pt(&self, i: isize) -> Vector {
         if self.idx + i < self.length {
             *self.start_point.offset(self.idx + i)
         } else {
@@ -72,7 +72,7 @@ impl<'a> CurveIterator<'a> {
         }
     }
 
-    unsafe fn tg(&self, i: int) -> c_char {
+    unsafe fn tg(&self, i: isize) -> c_char {
         if self.idx + i < self.length {
             *self.start_tag.offset(self.idx + i)
         } else {
@@ -132,7 +132,7 @@ impl<'a> ContourIterator<'a> {
             outline: outline,
             contour_start: 0,
             contour_end_idx: outline.contours,
-            last_end_idx: outline.contours.offset(outline.n_contours as int - 1),
+            last_end_idx: outline.contours.offset(outline.n_contours as isize - 1),
         }
     }
 }
@@ -145,7 +145,7 @@ impl<'a> Iterator for ContourIterator<'a> {
         } else {
             unsafe {
                 let contour_end = *self.contour_end_idx;
-                let curves = CurveIterator::from_raw(self.outline, self.contour_start as int, contour_end as int);
+                let curves = CurveIterator::from_raw(self.outline, self.contour_start as isize, contour_end as isize);
 
                 self.contour_start = contour_end + 1;
                 self.contour_end_idx = self.contour_end_idx.offset(1);

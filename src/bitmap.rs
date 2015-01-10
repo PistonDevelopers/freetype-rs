@@ -19,7 +19,7 @@ impl Bitmap {
         unsafe {
             std::slice::from_raw_buf(
                 &(*self.raw).buffer, 
-                (self.width() * self.rows()) as uint, 
+                (self.width() * self.rows()) as usize, 
             )
         }
     }
