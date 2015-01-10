@@ -5,7 +5,7 @@ use libc::{
     c_long,
     size_t,
 };
-use std::c_str::ToCStr;
+use std::ffi::CString;
 use std;
 use std::num::FromPrimitive;
 use ffi;
@@ -68,7 +68,7 @@ impl Library {
         unsafe {
             let mut face = std::ptr::null_mut();
 
-            let path_str = filepathname.to_c_str();
+            let path_str = CString::from_slice(filepathname.as_bytes());
 
             let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index, &mut face);
             if err == ffi::FT_Err_Ok {
