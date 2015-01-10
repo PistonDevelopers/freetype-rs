@@ -1,6 +1,5 @@
 use std;
 use std::num::FromPrimitive;
-use std::ffi::CString;
 use std::ffi::c_str_to_bytes;
 use std::str;
 use std::borrow::ToOwned;
