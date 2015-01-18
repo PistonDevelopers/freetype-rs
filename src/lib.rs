@@ -4,6 +4,8 @@
 #![deny(raw_pointer_derive)]
 #![allow(unstable)]
 
+#[macro_use]
+extern crate bitflags;
 extern crate libc;
 extern crate "freetype-sys" as freetype_sys;
 
