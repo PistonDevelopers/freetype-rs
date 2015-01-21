@@ -16,8 +16,8 @@ name = "freetype"
 path = "src/lib.rs"
 
 [dependencies.freetype-sys]
-#git = "https://github.com/PistonDevelopers/freetype-sys"
-version = "0.0.2"
+git = "https://github.com/PistonDevelopers/freetype-sys"
+#version = "0.0.2"
 
 [dependencies]
 bitflags = "*"
