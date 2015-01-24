@@ -1,4 +1,5 @@
 use std::num::FromPrimitive;
+use std::fmt;
 
 use ffi;
 
@@ -209,3 +210,10 @@ impl FromPrimitive for Error {
     }
 }
 
+impl fmt::Display for Error {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        use std::fmt::Show;        
+
+        self.fmt(f)
+    }
+}
