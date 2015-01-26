@@ -37,7 +37,7 @@ impl GlyphSlot {
         }
     }
 
-    pub fn get_subglyph_info(&self, sub_index: ffi::FT_UInt) -> FtResult<(ffi::FT_Int, ffi::FT_UInt, ffi::FT_Int, ffi::FT_Int, ffi::FT_Matrix)> {
+    pub fn get_subglyph_info(&self, sub_index: u32) -> FtResult<(i32, u32, i32, i32, ffi::FT_Matrix)> {
         unsafe {
             let mut index = 0;
             let mut flags = 0;

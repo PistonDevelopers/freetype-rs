@@ -86,7 +86,7 @@ impl Face {
         }
     }
 
-    pub fn set_char_size(&mut self, char_width: ffi::FT_F26Dot6, char_height: ffi::FT_F26Dot6, horz_resolution: ffi::FT_UInt, vert_resolution: ffi::FT_UInt) -> FtResult<()> {
+    pub fn set_char_size(&mut self, char_width: ffi::FT_F26Dot6, char_height: ffi::FT_F26Dot6, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Set_Char_Size(self.raw, char_width, char_height, horz_resolution, vert_resolution);
             if err == ffi::FT_Err_Ok {
@@ -97,7 +97,7 @@ impl Face {
         }
     }
 
-    pub fn set_pixel_sizes(&mut self, pixel_width: ffi::FT_UInt, pixel_height: ffi::FT_UInt) -> FtResult<()> {
+    pub fn set_pixel_sizes(&mut self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height);
             if err == ffi::FT_Err_Ok {
@@ -108,7 +108,7 @@ impl Face {
         }
     }
 
-    pub fn load_glyph(&mut self, glyph_index: ffi::FT_UInt, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_glyph(&mut self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits);
             if err == ffi::FT_Err_Ok {
@@ -119,9 +119,9 @@ impl Face {
         }
     }
 
-    pub fn load_char(&mut self, char_code: ffi::FT_ULong, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_char(&mut self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Load_Char(self.raw, char_code, load_flags.bits);
+            let err = ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
@@ -136,13 +136,13 @@ impl Face {
         }
     }
 
-    pub fn get_char_index(&self, charcode: ffi::FT_ULong) -> ffi::FT_UInt {
+    pub fn get_char_index(&self, charcode: usize) -> u32 {
         unsafe {
-            ffi::FT_Get_Char_Index(self.raw, charcode)
+            ffi::FT_Get_Char_Index(self.raw, charcode as ffi::FT_ULong)
         }
     }
 
-    pub fn get_kerning(&self, left_char_index: ffi::FT_UInt, right_char_index: ffi::FT_UInt, kern_mode: KerningMode)
+    pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
         -> FtResult<Vector> {
 
         let vec = Vector { x: 0, y: 0 };

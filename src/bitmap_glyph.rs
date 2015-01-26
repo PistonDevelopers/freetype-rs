@@ -17,14 +17,14 @@ impl BitmapGlyph {
     }
 
     #[inline(always)]
-    pub fn left(&self) -> ffi::FT_Int {
+    pub fn left(&self) -> i32 {
         unsafe {
             (*self.raw).left
         }
     }
 
     #[inline(always)]
-    pub fn top(&self) -> ffi::FT_Int {
+    pub fn top(&self) -> i32 {
         unsafe {
             (*self.raw).top
         }

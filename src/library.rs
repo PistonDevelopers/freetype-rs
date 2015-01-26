@@ -64,13 +64,13 @@ impl Library {
         }
     }
 
-    pub fn new_face(&self, filepath: &Path, face_index: ffi::FT_Long) -> FtResult<Face> {
+    pub fn new_face(&self, filepath: &Path, face_index: isize) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::null_mut();
 
             let path_str = CString::from_slice(filepath.as_vec());
 
-            let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index, &mut face);
+            let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index as ffi::FT_Long, &mut face);
             if err == ffi::FT_Err_Ok {
                 Ok(Face::from_raw(self.raw, face))
             } else {
@@ -79,10 +79,11 @@ impl Library {
         }
     }
 
-    pub fn new_memory_face(&self, buffer: &[u8], face_index: ffi::FT_Long) -> FtResult<Face> {
+    pub fn new_memory_face(&self, buffer: &[u8], face_index: isize) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::null_mut();
-            let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as ffi::FT_Long, face_index, &mut face);
+            let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(),
+                buffer.len() as ffi::FT_Long, face_index as ffi::FT_Long, &mut face);
             if err == ffi::FT_Err_Ok {
                 Ok(Face::from_raw(self.raw, face))
             } else {
