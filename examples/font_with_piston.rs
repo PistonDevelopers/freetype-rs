@@ -1,4 +1,4 @@
-#![feature(globs)]
+#![allow(unstable)]
 
 extern crate graphics;
 extern crate freetype;
@@ -27,7 +27,7 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
     let mut x = 0;
     let mut y = 0;
     for ch in text.chars() {
-        face.load_char(ch as u64, ft::face::RENDER).unwrap();
+        face.load_char(ch as usize, ft::face::RENDER).unwrap();
         let g = face.glyph();
 
         let texture = Texture::from_memory_alpha(g.bitmap().buffer(), g.bitmap().width() as u32, g.bitmap().rows() as u32).unwrap();
@@ -56,8 +56,8 @@ fn main() {
     );
 
     let freetype = ft::Library::init().unwrap();
-    let font = Path::new("./assets/Arial.ttf");
-    let mut face = freetype.new_face(font.as_str().unwrap(), 0).unwrap();
+    let font = Path::new("./examples/assets/Arial.ttf");
+    let mut face = freetype.new_face(&font, 0).unwrap();
     face.set_pixel_sizes(0, 48).unwrap();
 
     let ref mut gl = Gl::new(opengl);

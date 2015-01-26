@@ -1,34 +1,41 @@
+#![allow(unstable)]
 
 extern crate freetype;
 
-use freetype as ft;
-use freetype::outline::{Line, Bezier2, Bezier3, Curve};
+use freetype::outline::Curve;
 
 fn show_curve(curve: Curve) {
     match curve {
-        Line(pt) => println!("L {} {}", pt.x, -pt.y),
-        Bezier2(pt1, pt2) => { println!("Q {} {} {} {}", pt1.x, -pt1.y, pt2.x, -pt2.y) }
-        Bezier3(pt1, pt2, pt3) => println!("C {} {} {} {} {} {}",
-                                           pt1.x, -pt1.y,
-                                           pt2.x, -pt2.y,
-                                           pt3.x, -pt3.y),
+        Curve::Line(pt) =>
+            println!("L {} {}", pt.x, -pt.y),
+
+        Curve::Bezier2(pt1, pt2) =>
+            println!("Q {} {} {} {}", pt1.x, -pt1.y, pt2.x, -pt2.y),
+
+        Curve::Bezier3(pt1, pt2, pt3) =>
+            println!("C {} {} {} {} {} {}", pt1.x, -pt1.y,
+                                            pt2.x, -pt2.y,
+                                            pt3.x, -pt3.y),
     }
 }
 
 fn main() {
-    let args = std::os::args();
+    let mut stderr = &mut std::io::stderr();
+    let args = std::os::args_as_bytes();
     if args.len() != 3 {
-        println!("usage: {} font character", &args[0]);
+        let exe = String::from_utf8_lossy(args[0].as_slice());
+        let _ = writeln!(stderr, "Usage: {} font character", exe);
+        std::os::set_exit_status(1);
         return;
     }
 
-    let ref filename = args[1];
-    let ref text = args[2];
+    let filename = args[1].as_slice();
+    let text = String::from_utf8_lossy(args[2].as_slice());
 
-    let library = ft::Library::init().unwrap();
-    let mut face = library.new_face(filename.as_slice(), 0).unwrap();
+    let library = freetype::Library::init().unwrap();
+    let mut face = library.new_face(&Path::new(filename), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.as_bytes()[0] as u64, ft::face::NO_SCALE).unwrap();
+    face.load_char(text.chars().next().unwrap() as usize, freetype::face::NO_SCALE).unwrap();
 
     let metrics = &face.glyph().raw().metrics;
     let xmin = metrics.horiBearingX - 5;
