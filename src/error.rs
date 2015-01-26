@@ -212,8 +212,6 @@ impl FromPrimitive for Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        use std::fmt::Show;        
-
-        self.fmt(f)
+        fmt::Debug::fmt(self, f)
     }
 }
