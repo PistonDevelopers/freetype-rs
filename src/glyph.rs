@@ -105,11 +105,10 @@ impl Clone for Glyph {
     fn clone(&self) -> Glyph {
         unsafe {
             let mut target = std::ptr::null_mut();
-            let err = ffi::FT_Glyph_Copy(self.raw, &mut target);
-            if err != ffi::FT_Err_Ok {
-                std::io::println(format!("Failed to copy glyph. Error Code: {}", err).as_slice());
+            match ffi::FT_Glyph_Copy(self.raw, &mut target) {
+                ffi::FT_Err_Ok => Glyph::from_raw(self.library_raw, target),
+                _ => panic!("Falid to copy glyph"),
             }
-            Glyph::from_raw(self.library_raw, target)
         }
     }
 }

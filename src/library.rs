@@ -101,7 +101,7 @@ impl Drop for Library {
         unsafe {
             let err = ffi::FT_Done_Library(self.raw);
             if err != ffi::FT_Err_Ok {
-                std::io::println(format!("Failed to drop Library. Error Code: {}", err).as_slice());
+                panic!("Failed to drop freetype library");
             }
         }
     }
