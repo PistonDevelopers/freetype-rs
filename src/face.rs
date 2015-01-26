@@ -44,7 +44,7 @@ flags LoadFlag: i32 {
     const COLOR                      = ffi::FT_LOAD_COLOR
 });
 
-#[derive(Eq, PartialEq)]
+#[derive(Eq, PartialEq, Hash)]
 pub struct Face {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_Face,
