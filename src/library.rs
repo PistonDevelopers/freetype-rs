@@ -64,11 +64,11 @@ impl Library {
         }
     }
 
-    pub fn new_face(&self, filepathname: &str, face_index: ffi::FT_Long) -> FtResult<Face> {
+    pub fn new_face(&self, filepath: &Path, face_index: ffi::FT_Long) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::null_mut();
 
-            let path_str = CString::from_slice(filepathname.as_bytes());
+            let path_str = CString::from_slice(filepath.as_vec());
 
             let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index, &mut face);
             if err == ffi::FT_Err_Ok {
