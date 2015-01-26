@@ -310,12 +310,14 @@ impl Face {
 impl Drop for Face {
     fn drop(&mut self) {
         unsafe {
-            let err = ffi::FT_Done_Face(self.raw);
-            if err != 0 {
-                std::io::println(format!("Failed to drop face. Error Code: {}", err).as_slice());
+            match ffi::FT_Done_Face(self.raw) {
+                ffi::FT_Err_Ok => {
+                    if ffi::FT_Done_Library(self.library_raw) != ffi::FT_Err_Ok {
+                        panic!("Failed to deref library");
+                    }
+                },
+                _ => panic!("Failed to drop face"),
             }
-            ffi::FT_Done_Library(self.library_raw);
         }
     }
 }
-
