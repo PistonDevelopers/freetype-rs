@@ -21,3 +21,20 @@ git = "https://github.com/PistonDevelopers/freetype-sys"
 
 [dependencies]
 bitflags = "*"
+
+###### used for font with piston examples ######
+[dev-dependencies.pistoncore-event]
+git = "https://github.com/pistondevelopers/event"
+
+[dev-dependencies.piston2d-opengl_graphics]
+git = "https://github.com/pistondevelopers/opengl_graphics"
+
+[dev-dependencies.piston2d-graphics]
+git = "https://github.com/pistondevelopers/graphics"
+
+[dev-dependencies.pistoncore-sdl2_window]
+git = "https://github.com/pistondevelopers/sdl2_window"
+
+[dev-dependencies.shader_version]
+git = "https://github.com/PistonDevelopers/shader_version"
+#################################################
