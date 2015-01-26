@@ -22,7 +22,7 @@ git = "https://github.com/PistonDevelopers/freetype-sys"
 [dependencies]
 bitflags = "*"
 
-###### used for font with piston examples ######
+###### used for font with piston example ######
 [dev-dependencies.pistoncore-event]
 git = "https://github.com/pistondevelopers/event"
 

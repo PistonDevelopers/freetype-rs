@@ -8,9 +8,10 @@ env:
     global:
         - secure: DMlDiGHNvu6BxizTXu5If0SHASHUHUgd9/tKurFD6MEka6OlBEACFIpjWO6cVaIC8AeLiy4LGaxI6I9YJEap0Qdx9HTySk2qqFNdyav7XOKMZqVKKvGgbmJAWyiow7zJq7R7ZXbvIHykQCWWlBsIZEPkKesH6X0Zhri1GWqVw00=
 install:
-    - sudo apt-add-repository ppa:andrewrk/libgroove -y
-    - sudo apt-get update
-    - sudo apt-get install libsdl2-dev
+    # SDL2
+    - curl -O http://libsdl.org/release/SDL2-2.0.3.tar.gz
+    - tar -xzvf SDL2-2.0.3.tar.gz
+    - (cd SDL2-2.0.3 && ./configure && make && sudo make install)
 script:
     - cargo build -v
     - cargo test -v
