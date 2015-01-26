@@ -18,16 +18,14 @@ cargo build
 
 ## Examples
 
-To build examples, enter the corresponding example folder and run `cargo build`.
+To build examples, use `cargo test`. They are all built in `./target/examples/*`.
 
 For example:
 ```
 # build
-cd examples/font_with_piston
-cargo build
-
+cargo test
 # run
-./target/font_with_piston
+./target/examples/font_with_piston
 ```
 
 [How to contribute](https://github.com/PistonDevelopers/piston/blob/master/CONTRIBUTING.md)
