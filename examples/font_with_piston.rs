@@ -30,7 +30,9 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
         face.load_char(ch as usize, ft::face::RENDER).unwrap();
         let g = face.glyph();
 
-        let texture = Texture::from_memory_alpha(g.bitmap().buffer(), g.bitmap().width() as u32, g.bitmap().rows() as u32).unwrap();
+        let bitmap = g.bitmap();
+        let texture = Texture::from_memory_alpha(bitmap.buffer(),
+            bitmap.width() as u32, bitmap.rows() as u32).unwrap();
         graphics::Image::colored(graphics::color::BLACK).draw(
             &texture, 
             &c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
