@@ -33,7 +33,7 @@ fn main() {
     let text = String::from_utf8_lossy(args[2].as_slice());
 
     let library = freetype::Library::init().unwrap();
-    let mut face = library.new_face(&Path::new(filename), 0).unwrap();
+    let face = library.new_face(&Path::new(filename), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
     face.load_char(text.chars().next().unwrap() as usize, freetype::face::NO_SCALE).unwrap();
 

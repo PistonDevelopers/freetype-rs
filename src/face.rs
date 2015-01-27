@@ -64,7 +64,7 @@ impl Face {
         }
     }
 
-    pub fn attach_file(&mut self, filepathname: &str) -> FtResult<()> {
+    pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Attach_File(self.raw, filepathname.as_slice().as_ptr() as *const i8);
             if err == ffi::FT_Err_Ok {
@@ -75,7 +75,7 @@ impl Face {
         }
     }
 
-    pub fn reference(&mut self) -> FtResult<()> {
+    pub fn reference(&self) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Reference_Face(self.raw);
             if err == ffi::FT_Err_Ok {
@@ -86,7 +86,7 @@ impl Face {
         }
     }
 
-    pub fn set_char_size(&mut self, char_width: isize, char_height: isize, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
+    pub fn set_char_size(&self, char_width: isize, char_height: isize, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Set_Char_Size(self.raw, char_width as ffi::FT_F26Dot6,
                                             char_height as ffi::FT_F26Dot6, horz_resolution,
@@ -99,7 +99,7 @@ impl Face {
         }
     }
 
-    pub fn set_pixel_sizes(&mut self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
+    pub fn set_pixel_sizes(&self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height);
             if err == ffi::FT_Err_Ok {
@@ -110,7 +110,7 @@ impl Face {
         }
     }
 
-    pub fn load_glyph(&mut self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits);
             if err == ffi::FT_Err_Ok {
@@ -121,7 +121,7 @@ impl Face {
         }
     }
 
-    pub fn load_char(&mut self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
+    pub fn load_char(&self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits);
             if err == ffi::FT_Err_Ok {
@@ -132,7 +132,7 @@ impl Face {
         }
     }
 
-    pub fn set_transform(&mut self, matrix: &Matrix, delta: &Vector) {
+    pub fn set_transform(&self, matrix: &Matrix, delta: &Vector) {
         unsafe {
             ffi::FT_Set_Transform(self.raw, matrix, delta);
         }
