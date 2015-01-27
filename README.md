@@ -2,11 +2,15 @@
 
 Rust bindings for FreeType library
 
+[Documentation](http://rust-ci.org/PistonDevelopers/freetype-rs/doc/freetype/)
+
 ## Requirements
 
-  * *Rust*: We currently compile against the *master* branch. The releases on http://www.rust-lang.org tend to not work.
+  * *Rust*: We currently compile against the *master* branch. The releases on
+    http://www.rust-lang.org tend to not work.
   * *Cargo*: We use Cargo to compile the project.
-  * *FreeType2 development libraries*: install through your favourite package management tool, or via http://www.freetype.org/download.html
+  * *FreeType2 development libraries*: install through your favourite package
+    management tool, or via http://www.freetype.org/download.html
 
 ## Build
 
@@ -24,6 +28,7 @@ For example:
 ```
 # build
 cargo test
+
 # run
 ./target/examples/font_with_piston
 ```
