@@ -80,6 +80,19 @@ impl Glyph {
         }
     }
 
+    pub fn advance_x(&self) -> isize {
+        unsafe {
+            (*self.raw).advance.x as isize
+        }
+    }
+
+    pub fn advance_y(&self) -> isize {
+        unsafe {
+            (*self.raw).advance.y as isize
+        }
+    }
+
+    #[deprecated = "use advance_x and advance_y instead"]
     pub fn advance(&self) -> ffi::FT_Vector {
         unsafe {
             (*self.raw).advance
