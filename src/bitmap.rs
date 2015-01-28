@@ -121,9 +121,9 @@ impl Bitmap {
     /// To change the pitch of a bitmap (say, to make it a multiple of 4), use FT_Bitmap_Convert.
     /// Alternatively, you might use callback functions to directly render to the application's
     /// surface; see the file ‘example2.cpp’ in the tutorial for a demonstration.
-    pub fn pitch(&self) -> isize {
+    pub fn pitch(&self) -> i32 {
         unsafe {
-            (*self.raw).pitch as isize
+            (*self.raw).pitch
         }
     }
 }
