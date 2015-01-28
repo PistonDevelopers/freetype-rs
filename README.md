@@ -2,8 +2,6 @@
 
 Rust bindings for FreeType library
 
-[Documentation](http://rust-ci.org/PistonDevelopers/freetype-rs/doc/freetype/)
-
 ## Requirements
 
   * *Rust*: We currently compile against the *master* branch. The releases on
