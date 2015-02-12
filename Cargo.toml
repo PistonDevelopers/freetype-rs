@@ -21,6 +21,7 @@ git = "https://github.com/PistonDevelopers/freetype-sys"
 
 [dependencies]
 bitflags = "*"
+libc = "*"
 
 ###### used for font with piston example ######
 [dev-dependencies.pistoncore-event]
