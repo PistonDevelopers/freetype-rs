@@ -1,8 +1,10 @@
-#![allow(unstable)]
+#![feature(io, env, path)]
 
-extern crate freetype;
+extern crate "freetype" as ft;
 
-use freetype::outline::Curve;
+use std::old_io::stderr;
+use std::env::{ args, set_exit_status };
+use ft::outline::Curve;
 
 fn show_curve(curve: Curve) {
     match curve {
@@ -20,22 +22,23 @@ fn show_curve(curve: Curve) {
 }
 
 fn main() {
-    let mut stderr = &mut std::io::stderr();
-    let args = std::os::args_as_bytes();
-    if args.len() != 3 {
-        let exe = String::from_utf8_lossy(args[0].as_slice());
+    let ref mut stderr = stderr();
+    let ref mut args = args();
+    if let (3, _) = args.size_hint() {}
+    else {
+        let exe = args.next().unwrap();
         let _ = writeln!(stderr, "Usage: {} font character", exe);
-        std::os::set_exit_status(1);
-        return;
+        set_exit_status(1);
+        return
     }
 
-    let filename = args[1].as_slice();
-    let text = String::from_utf8_lossy(args[2].as_slice());
+    let filename = args.nth(1).unwrap();
+    let text = args.next().unwrap();
 
-    let library = freetype::Library::init().unwrap();
+    let library = ft::Library::init().unwrap();
     let face = library.new_face(&Path::new(filename), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.chars().next().unwrap() as usize, freetype::face::NO_SCALE).unwrap();
+    face.load_char(text.chars().next().unwrap() as usize, ft::face::NO_SCALE).unwrap();
 
     let metrics = &face.glyph().raw().metrics;
     let xmin = metrics.horiBearingX - 5;
@@ -51,7 +54,7 @@ fn main() {
     println!("<svg viewBox=\"{} {} {} {}\" xmlns=\"http://www.w3.org/2000/svg\" version=\"1.1\">",
              xmin, ymin, width, height);
 
-    for mut contour in outline.contours_iter() {
+    for contour in outline.contours_iter() {
         let start = contour.start();
         println!("<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" d=\"M {} {}", start.x, -start.y);
         for curve in contour {
