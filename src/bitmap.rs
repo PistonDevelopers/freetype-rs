@@ -64,8 +64,8 @@ impl Bitmap {
     /// on 32-bit boundaries in most cases.
     pub fn buffer(&self) -> &[u8] {
         unsafe {
-            std::slice::from_raw_buf(
-                &(*self.raw).buffer, 
+            std::slice::from_raw_parts(
+                (*self.raw).buffer,
                 (self.width() * self.rows()) as usize, 
             )
         }

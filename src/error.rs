@@ -5,7 +5,7 @@ use ffi;
 
 pub type FtResult<T> = Result<T, Error>;
 
-#[derive(Copy, Clone, PartialEq, Eq, Show)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 #[repr(i32)]
 pub enum Error {
     Ok                          = ffi::FT_Err_Ok,
