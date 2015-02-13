@@ -31,7 +31,8 @@ fn render_text(face: &mut ft::Face, gl: &mut Gl, c: &Context, text: &str) {
 
         let bitmap = g.bitmap();
         let texture = Texture::from_memory_alpha(bitmap.buffer(),
-            bitmap.width() as u32, bitmap.rows() as u32).unwrap();
+                                                 bitmap.width() as u32,
+                                                 bitmap.rows() as u32).unwrap();
         Image::colored(color::BLACK).draw(
             &texture, 
             &c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
@@ -67,9 +68,10 @@ fn main() {
     for e in piston::events(&window) {
         match e {
             Event::Render(args) => {
-                let c = Context::abs(args.width as f64, args.height as f64);
-                graphics::clear([1.0, 1.0, 1.0, 1.0], gl);
-                render_text(&mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
+                gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
+                    graphics::clear(color::WHITE, gl);
+                    render_text(&mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
+                });
             },
             _ => ()
         }
