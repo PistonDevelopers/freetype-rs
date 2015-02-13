@@ -1,29 +1,28 @@
-#![allow(unstable)]
+#![feature(path)]
 
 extern crate graphics;
-extern crate freetype;
-extern crate shader_version;
+extern crate "freetype" as ft;
 extern crate sdl2_window;
 extern crate opengl_graphics;
-extern crate event;
+extern crate piston;
 
 use std::cell::RefCell;
-use freetype as ft;
-use freetype::Face;
 use sdl2_window::Sdl2Window;
 use opengl_graphics::{
     Gl,
     Texture,
+    OpenGL
 };
-use event::{
-    Event,
-    Events,
-    WindowSettings,
+use graphics::{
+    Context,
+    Image,
+    RelativeTransform,
+    color
 };
+use piston::window::WindowSettings;
+use piston::event::Event;
 
-fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) {
-    use graphics::*;
-
+fn render_text(face: &mut ft::Face, gl: &mut Gl, c: &Context, text: &str) {
     let mut x = 0;
     let mut y = 0;
     for ch in text.chars() {
@@ -33,7 +32,7 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
         let bitmap = g.bitmap();
         let texture = Texture::from_memory_alpha(bitmap.buffer(),
             bitmap.width() as u32, bitmap.rows() as u32).unwrap();
-        graphics::Image::colored(graphics::color::BLACK).draw(
+        Image::colored(color::BLACK).draw(
             &texture, 
             &c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
             gl
@@ -45,7 +44,7 @@ fn render_text(face: &mut Face, gl: &mut Gl, c: &graphics::Context, text: &str) 
 }
 
 fn main() {
-    let opengl = shader_version::OpenGL::_3_2;
+    let opengl = OpenGL::_3_2;
     let window = Sdl2Window::new(
         opengl,
         WindowSettings {
@@ -65,16 +64,14 @@ fn main() {
     let ref mut gl = Gl::new(opengl);
 
     let window = RefCell::new(window);
-    for e in Events::new(&window) {
+    for e in piston::events(&window) {
         match e {
             Event::Render(args) => {
-                use graphics::*;
-
                 let c = Context::abs(args.width as f64, args.height as f64);
                 graphics::clear([1.0, 1.0, 1.0, 1.0], gl);
                 render_text(&mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
             },
-            _ => {},
+            _ => ()
         }
     }
 }

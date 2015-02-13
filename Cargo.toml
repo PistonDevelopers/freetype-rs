@@ -24,18 +24,15 @@ bitflags = "*"
 libc = "*"
 
 ###### used for font with piston example ######
-[dev-dependencies.pistoncore-event]
-git = "https://github.com/pistondevelopers/event"
+[dev-dependencies.piston]
+git = "https://github.com/PistonDevelopers/piston"
 
 [dev-dependencies.piston2d-opengl_graphics]
-git = "https://github.com/pistondevelopers/opengl_graphics"
+git = "https://github.com/PistonDevelopers/opengl_graphics"
 
 [dev-dependencies.piston2d-graphics]
-git = "https://github.com/pistondevelopers/graphics"
+git = "https://github.com/PistonDevelopers/graphics"
 
 [dev-dependencies.pistoncore-sdl2_window]
-git = "https://github.com/pistondevelopers/sdl2_window"
-
-[dev-dependencies.shader_version]
-git = "https://github.com/PistonDevelopers/shader_version"
-#################################################
+git = "https://github.com/PistonDevelopers/sdl2_window"
+###############################################

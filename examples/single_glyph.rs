@@ -1,9 +1,10 @@
-#![allow(unstable)]
+#![feature(core, io, env, path, collections)]
 
-extern crate freetype;
+extern crate "freetype" as ft;
 
-use freetype as ft;
-use freetype::ffi;
+use std::old_io::{ stderr, print, println };
+use std::env::{ args, set_exit_status };
+use ft::ffi;
 
 const WIDTH: usize = 32;
 const HEIGHT: usize = 24;
@@ -36,17 +37,18 @@ fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: usize, y: usize) ->
 }
 
 fn main() {
-    let mut stderr = &mut std::io::stderr();
-    let args = std::os::args_as_bytes();
-    if args.len() != 3 {
-        let exe = String::from_utf8_lossy(args[0].as_slice());
+    let ref mut stderr = stderr();
+    let ref mut args = args();
+    if let (3, _) = args.size_hint() {}
+    else {
+        let exe = args.next().unwrap();
         let _ = writeln!(stderr, "Usage: {} font sample-text", exe);
-        std::os::set_exit_status(1);
-        return;
+        set_exit_status(1);
+        return
     }
 
-    let filename = args[1].as_slice();
-    let text = String::from_utf8_lossy(args[2].as_slice());
+    let filename = args.nth(1).unwrap();
+    let text = args.next().unwrap();
 
     let library = ft::Library::init().unwrap();
     let face = library.new_face(&Path::new(filename), 0).unwrap();
@@ -61,7 +63,7 @@ fn main() {
 
     for i in range(0, HEIGHT) {
         for j in range(0, WIDTH) {
-            std::io::print(if image[i as usize][j as usize] == 0 {
+            print(if image[i as usize][j as usize] == 0 {
                                " "
                            } else if image[i as usize][j as usize] < 128 {
                                "*"
@@ -69,7 +71,6 @@ fn main() {
                                "+"
                            });
         }
-        std::io::println("");
+        println("");
     }
-
 }
