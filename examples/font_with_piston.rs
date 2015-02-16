@@ -58,7 +58,7 @@ fn main() {
     );
 
     let freetype = ft::Library::init().unwrap();
-    let font = Path::new("./examples/assets/Arial.ttf");
+    let font = Path::new("./examples/assets/FiraSans-Regular.ttf");
     let mut face = freetype.new_face(&font, 0).unwrap();
     face.set_pixel_sizes(0, 48).unwrap();
 
