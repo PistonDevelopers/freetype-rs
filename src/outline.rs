@@ -1,10 +1,11 @@
 use ffi;
-use std::{mem, raw};
+use std::{marker, mem, raw};
 use libc::{c_short, c_char};
 
 pub use ffi::FT_Vector as Vector;
 
-pub enum Curve<'a> {
+#[derive(Copy)]
+pub enum Curve {
     Line(Vector),
     Bezier2(Vector, Vector),
     Bezier3(Vector, Vector, Vector),
@@ -44,6 +45,7 @@ pub struct CurveIterator<'a> {
     start_tag: *const c_char,
     idx: isize,
     length: isize,
+    marker: marker::PhantomData<&'a ()>,
 }
 
 impl<'a> CurveIterator<'a> {
@@ -55,6 +57,7 @@ impl<'a> CurveIterator<'a> {
             start_tag: outline.tags.offset(start_idx),
             idx: 0,
             length: end_idx - start_idx + 1,
+            marker: marker::PhantomData,
         }
     }
 
@@ -82,8 +85,8 @@ impl<'a> CurveIterator<'a> {
 }
 
 impl<'a> Iterator for CurveIterator<'a> {
-	type Item = Curve<'a>;
-    fn next(&mut self) -> Option<Curve<'a>> {
+	type Item = Curve;
+    fn next(&mut self) -> Option<Curve> {
         if self.idx >= self.length {
             None
         } else {
@@ -155,5 +158,3 @@ impl<'a> Iterator for ContourIterator<'a> {
         }
     }
 }
-
-
