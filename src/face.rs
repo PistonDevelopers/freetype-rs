@@ -1,6 +1,6 @@
 use std;
 use std::num::FromPrimitive;
-use std::ffi::c_str_to_bytes;
+use std::ffi::CStr;
 use std::str;
 use std::borrow::ToOwned;
 use ffi;
@@ -286,7 +286,7 @@ impl Face {
         if family_name_ptr.is_null() {
             None
         } else {
-            let family_name = unsafe { c_str_to_bytes(&family_name_ptr) };
+            let family_name = unsafe { CStr::from_ptr(family_name_ptr).to_bytes() };
             match str::from_utf8(family_name) {
                 Ok(string)  => Some(string.to_owned()),
                 _           => None
@@ -301,7 +301,7 @@ impl Face {
         if style_name_ptr.is_null() {
             None
         } else {
-            let style_name = unsafe { c_str_to_bytes(&style_name_ptr) };
+            let style_name = unsafe { CStr::from_ptr(style_name_ptr).to_bytes() };
             match str::from_utf8(style_name) {
                 Ok(string)  => Some(string.to_owned()),
                 _           => None

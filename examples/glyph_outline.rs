@@ -1,4 +1,4 @@
-#![feature(io, env, path)]
+#![feature(old_io, env, old_path)]
 
 extern crate "freetype" as ft;
 

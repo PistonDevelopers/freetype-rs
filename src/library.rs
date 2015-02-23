@@ -1,15 +1,14 @@
-
-use libc;
 use libc::{
+    self,
     c_void,
     c_long,
     size_t,
 };
 use std::ffi::CString;
-use std;
 use std::num::FromPrimitive;
-use ffi;
 use {
+    std,
+    ffi,
     Face,
     FtResult,
 };
@@ -68,7 +67,7 @@ impl Library {
         unsafe {
             let mut face = std::ptr::null_mut();
 
-            let path_str = CString::from_slice(filepath.as_vec());
+            let path_str = CString::new(filepath.as_vec()).unwrap();
 
             let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index as ffi::FT_Long, &mut face);
             if err == ffi::FT_Err_Ok {

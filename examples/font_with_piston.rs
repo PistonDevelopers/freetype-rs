@@ -1,4 +1,4 @@
-#![feature(path)]
+#![feature(old_path)]
 
 extern crate graphics;
 extern crate "freetype" as ft;
