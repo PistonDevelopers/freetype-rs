@@ -51,6 +51,16 @@ pub struct Face {
     glyph: GlyphSlot,
 }
 
+impl Clone for Face {
+    fn clone(&self) -> Face {
+        unsafe {
+            ffi::FT_Reference_Library(self.library_raw);
+            ffi::FT_Reference_Face(self.raw);
+        }
+        Face { ..*self }
+    }
+}
+
 impl Face {
     pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Face {
         unsafe {
