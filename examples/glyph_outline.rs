@@ -1,8 +1,11 @@
-#![feature(old_io, exit_status, old_path)]
+#![feature(exit_status)]
 
 extern crate "freetype" as ft;
 
-use std::old_io::stderr;
+use std::io::prelude::*;
+
+use std::io::stderr;
+use std::path::Path;
 use std::env::{ args, set_exit_status };
 use ft::outline::Curve;
 
@@ -36,7 +39,7 @@ fn main() {
     let text = args.next().unwrap();
 
     let library = ft::Library::init().unwrap();
-    let face = library.new_face(&Path::new(filename), 0).unwrap();
+    let face = library.new_face(&Path::new(&filename), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
     face.load_char(text.chars().next().unwrap() as usize, ft::face::NO_SCALE).unwrap();
 
