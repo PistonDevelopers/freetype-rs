@@ -1,5 +1,3 @@
-#![feature(old_path)]
-
 extern crate graphics;
 extern crate "freetype" as ft;
 extern crate sdl2_window;
@@ -7,14 +5,16 @@ extern crate opengl_graphics;
 extern crate piston;
 
 use std::cell::RefCell;
+use std::path::Path;
 use sdl2_window::Sdl2Window;
 use opengl_graphics::{
     Gl,
     Texture,
     OpenGL
 };
+use graphics::vecmath::Matrix2d;
 use graphics::{
-    Context,
+    default_draw_state,
     Image,
     RelativeTransform,
     color
@@ -22,7 +22,7 @@ use graphics::{
 use piston::window::WindowSettings;
 use piston::event::Event;
 
-fn render_text(face: &mut ft::Face, gl: &mut Gl, c: &Context, text: &str) {
+fn render_text(face: &mut ft::Face, gl: &mut Gl, t: Matrix2d, text: &str) {
     let mut x = 0;
     let mut y = 0;
     for ch in text.chars() {
@@ -34,8 +34,9 @@ fn render_text(face: &mut ft::Face, gl: &mut Gl, c: &Context, text: &str) {
                                                  bitmap.width() as u32,
                                                  bitmap.rows() as u32).unwrap();
         Image::colored(color::BLACK).draw(
-            &texture, 
-            &c.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
+            &texture,
+            default_draw_state(),
+            t.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
             gl
         );
 
@@ -69,8 +70,10 @@ fn main() {
         match e {
             Event::Render(args) => {
                 gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
+                    let transform = c.transform.trans(0.0, 100.0);
+
                     graphics::clear(color::WHITE, gl);
-                    render_text(&mut face, gl, &c.trans(0.0, 100.0), "Hello Piston!");
+                    render_text(&mut face, gl, transform, "Hello Piston!");
                 });
             },
             _ => ()

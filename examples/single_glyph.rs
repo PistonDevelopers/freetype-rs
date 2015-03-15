@@ -1,8 +1,11 @@
-#![feature(core, old_io, exit_status, old_path, collections)]
+#![feature(core, exit_status, collections)]
 
 extern crate "freetype" as ft;
 
-use std::old_io::{ stderr, print, println };
+use std::io::prelude::*;
+
+use std::io::stderr;
+use std::path::Path;
 use std::env::{ args, set_exit_status };
 use ft::ffi;
 
@@ -51,7 +54,7 @@ fn main() {
     let text = args.next().unwrap();
 
     let library = ft::Library::init().unwrap();
-    let face = library.new_face(&Path::new(filename), 0).unwrap();
+    let face = library.new_face(&Path::new(&filename), 0).unwrap();
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
     face.load_char(text.nfc_chars().next().unwrap() as usize, ft::face::RENDER).unwrap();
 
@@ -63,14 +66,14 @@ fn main() {
 
     for i in range(0, HEIGHT) {
         for j in range(0, WIDTH) {
-            print(if image[i as usize][j as usize] == 0 {
-                               " "
-                           } else if image[i as usize][j as usize] < 128 {
-                               "*"
-                           } else {
-                               "+"
-                           });
+            print!("{}", if image[i as usize][j as usize] == 0 {
+                             " "
+                         } else if image[i as usize][j as usize] < 128 {
+                             "*"
+                         } else {
+                             "+"
+                         });
         }
-        println("");
+        println!("");
     }
 }
