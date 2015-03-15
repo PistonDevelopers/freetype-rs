@@ -1,7 +1,7 @@
 #![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_derive)]
-#![feature(core, old_path)]
+#![feature(core, std_misc)]
 
 #[macro_use]
 extern crate bitflags;
