@@ -1,4 +1,4 @@
-#![feature(core, exit_status, collections)]
+#![feature(exit_status, unicode)]
 
 extern crate "freetype" as ft;
 
@@ -12,17 +12,15 @@ use ft::ffi;
 const WIDTH: usize = 32;
 const HEIGHT: usize = 24;
 
-fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: usize, y: usize) ->
-    [[u8; WIDTH]; HEIGHT]
-{
+fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: usize, y: usize) -> [[u8; WIDTH]; HEIGHT] {
     let mut image = [[0u8; WIDTH]; HEIGHT];
     let mut p = 0;
     let mut q = 0;
     let x_max = x + bitmap.width as usize;
     let y_max = y + bitmap.rows as usize;
 
-    for i in range(x, x_max) {
-        for j in range(y, y_max) {
+    for i in x .. x_max {
+        for j in y .. y_max {
             if i >= WIDTH || j >= HEIGHT {
                 continue;
             }
@@ -64,8 +62,8 @@ fn main() {
     let y = HEIGHT - slot.bitmap_top as usize;
     let image = draw_bitmap(&slot.bitmap, x, y);
 
-    for i in range(0, HEIGHT) {
-        for j in range(0, WIDTH) {
+    for i in 0 .. HEIGHT {
+        for j in 0 .. WIDTH {
             print!("{}", if image[i as usize][j as usize] == 0 {
                              " "
                          } else if image[i as usize][j as usize] < 128 {

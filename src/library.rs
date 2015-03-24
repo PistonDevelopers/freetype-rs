@@ -64,9 +64,7 @@ impl Library {
         }
     }
 
-    pub fn new_face<P: ?Sized>(&self, filepath: &P, face_index: isize) -> FtResult<Face>
-        where P: AsPath
-    {
+    pub fn new_face<P: AsPath>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::null_mut();
 
