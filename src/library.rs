@@ -12,7 +12,7 @@ use {
     Face,
     FtResult,
 };
-use std::path::AsPath;
+use std::path::Path;
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
     unsafe {
@@ -64,11 +64,11 @@ impl Library {
         }
     }
 
-    pub fn new_face<P: AsPath>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
+    pub fn new_face<P: AsRef<Path>>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
         unsafe {
             let mut face = std::ptr::null_mut();
 
-            let path_str = CString::new(filepath.as_path().to_str().unwrap()).unwrap();
+            let path_str = CString::new(filepath.as_ref().to_str().unwrap()).unwrap();
 
             let err = ffi::FT_New_Face(self.raw, path_str.as_ptr(), face_index as ffi::FT_Long, &mut face);
             if err == ffi::FT_Err_Ok {

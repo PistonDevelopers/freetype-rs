@@ -1,12 +1,12 @@
 #![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_derive)]
-#![feature(core, std_misc)]
+#![feature(core, convert)]
 
 #[macro_use]
 extern crate bitflags;
 extern crate libc;
-extern crate "freetype-sys" as freetype_sys;
+extern crate freetype_sys;
 
 pub use bitmap::Bitmap;
 pub use bitmap_glyph::BitmapGlyph;
