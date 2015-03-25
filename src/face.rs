@@ -76,7 +76,7 @@ impl Face {
 
     pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
         unsafe {
-            let err = ffi::FT_Attach_File(self.raw, filepathname.as_slice().as_ptr() as *const i8);
+            let err = ffi::FT_Attach_File(self.raw, filepathname.as_ptr() as *const i8);
             if err == ffi::FT_Err_Ok {
                 Ok(())
             } else {
