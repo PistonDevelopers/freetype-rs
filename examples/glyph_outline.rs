@@ -1,10 +1,8 @@
 #![feature(exit_status)]
 
-extern crate "freetype" as ft;
+extern crate freetype as ft;
 
-use std::io::prelude::*;
-
-use std::io::stderr;
+use std::io::{ Write, stderr };
 use std::path::Path;
 use std::env::{ args, set_exit_status };
 use ft::outline::Curve;

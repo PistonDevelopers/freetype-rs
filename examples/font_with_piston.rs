@@ -1,5 +1,5 @@
 extern crate graphics;
-extern crate "freetype" as ft;
+extern crate freetype as ft;
 extern crate sdl2_window;
 extern crate opengl_graphics;
 extern crate piston;
