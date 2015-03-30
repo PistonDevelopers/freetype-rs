@@ -4,6 +4,7 @@ extern crate sdl2_window;
 extern crate opengl_graphics;
 extern crate piston;
 
+use std::rc::Rc;
 use std::cell::RefCell;
 use std::path::Path;
 use sdl2_window::Sdl2Window;
@@ -65,8 +66,8 @@ fn main() {
 
     let ref mut gl = Gl::new(opengl);
 
-    let window = RefCell::new(window);
-    for e in piston::events(&window) {
+    let window = Rc::new(RefCell::new(window));
+    for e in piston::events(window) {
         match e {
             Event::Render(args) => {
                 gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
