@@ -320,6 +320,14 @@ impl Face {
     }
 }
 
+impl ::std::fmt::Debug for Face {
+    fn fmt(&self, form: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+        let name = self.style_name().unwrap_or("[unknown name]".to_string());
+        try!(form.write_str("Font Face: "));
+        form.write_str(&name[..])
+    }
+}
+
 impl Drop for Face {
     fn drop(&mut self) {
         unsafe {
