@@ -2,7 +2,7 @@
 use ffi;
 
 #[repr(u32)]
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub enum RenderMode {
     Normal = ffi::FT_RENDER_MODE_NORMAL,
     Light = ffi::FT_RENDER_MODE_LIGHT,

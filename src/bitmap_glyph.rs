@@ -4,7 +4,7 @@ use {
     Bitmap,
 };
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub struct BitmapGlyph {
     raw: ffi::FT_BitmapGlyph,
 }
