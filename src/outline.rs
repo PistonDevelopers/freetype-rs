@@ -4,7 +4,7 @@ use libc::{c_short, c_char};
 
 pub use ffi::FT_Vector as Vector;
 
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub enum Curve {
     Line(Vector),
     Bezier2(Vector, Vector),

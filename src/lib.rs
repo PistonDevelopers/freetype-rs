@@ -1,7 +1,7 @@
 #![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_derive)]
-#![feature(core, convert)]
+#![feature(core)]
 
 #[macro_use]
 extern crate bitflags;
@@ -34,4 +34,3 @@ pub type BBox = ffi::FT_BBox;
 pub type GlyphMetrics = ffi::FT_Glyph_Metrics;
 pub type Matrix = ffi::FT_Matrix;
 pub type Vector = ffi::FT_Vector;
-

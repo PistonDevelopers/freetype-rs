@@ -12,7 +12,7 @@ use {
 };
 
 #[repr(u32)]
-#[derive(Copy)]
+#[derive(Copy, Clone)]
 pub enum KerningMode {
     KerningDefault = ffi::FT_KERNING_DEFAULT,
     KerningUnfitted = ffi::FT_KERNING_UNFITTED,
