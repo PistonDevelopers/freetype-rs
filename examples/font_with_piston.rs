@@ -8,22 +8,13 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::path::Path;
 use sdl2_window::Sdl2Window;
-use opengl_graphics::{
-    Gl,
-    Texture,
-    OpenGL
-};
-use graphics::vecmath::Matrix2d;
-use graphics::{
-    default_draw_state,
-    Image,
-    RelativeTransform,
-    color
-};
-use piston::window::WindowSettings;
-use piston::event::Event;
+use opengl_graphics::{ GlGraphics, Texture, OpenGL };
+use graphics::math::Matrix2d;
+use piston::window::{ WindowSettings, Size };
 
-fn render_text(face: &mut ft::Face, gl: &mut Gl, t: Matrix2d, text: &str) {
+fn render_text(face: &mut ft::Face, gl: &mut GlGraphics, t: Matrix2d, text: &str) {
+    use graphics::*;
+
     let mut x = 0;
     let mut y = 0;
     for ch in text.chars() {
@@ -34,7 +25,7 @@ fn render_text(face: &mut ft::Face, gl: &mut Gl, t: Matrix2d, text: &str) {
         let texture = Texture::from_memory_alpha(bitmap.buffer(),
                                                  bitmap.width() as u32,
                                                  bitmap.rows() as u32).unwrap();
-        Image::colored(color::BLACK).draw(
+        Image::new_colored(color::BLACK).draw(
             &texture,
             default_draw_state(),
             t.trans((x + g.bitmap_left()) as f64, (y - g.bitmap_top()) as f64),
@@ -50,13 +41,9 @@ fn main() {
     let opengl = OpenGL::_3_2;
     let window = Sdl2Window::new(
         opengl,
-        WindowSettings {
-            title: "Font with Piston".to_string(),
-            size: [300, 300],
-            fullscreen: false,
-            exit_on_esc: true,
-            samples: 0,
-        }
+        WindowSettings::new("Font with Piston".to_string(),
+                            Size { width: 300, height: 300 })
+                           .exit_on_esc(true)
     );
 
     let freetype = ft::Library::init().unwrap();
@@ -64,20 +51,22 @@ fn main() {
     let mut face = freetype.new_face(&font, 0).unwrap();
     face.set_pixel_sizes(0, 48).unwrap();
 
-    let ref mut gl = Gl::new(opengl);
+    let ref mut gl = GlGraphics::new(opengl);
 
     let window = Rc::new(RefCell::new(window));
     for e in piston::events(window) {
-        match e {
-            Event::Render(args) => {
-                gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
-                    let transform = c.transform.trans(0.0, 100.0);
+        use piston::event::*;
 
-                    graphics::clear(color::WHITE, gl);
-                    render_text(&mut face, gl, transform, "Hello Piston!");
-                });
-            },
-            _ => ()
+        if let Some(args) = e.render_args() {
+            use graphics::*;
+
+            gl.draw([0, 0, args.width as i32, args.height as i32], |c, gl| {
+                let transform = c.transform.trans(0.0, 100.0);
+
+                clear(color::WHITE, gl);
+                render_text(&mut face, gl, transform, "Hello Piston!");
+            });
+
         }
     }
 }
