@@ -1,6 +1,7 @@
+use std::slice;
+use std::marker::PhantomData;
+use libc::{ c_short, c_char };
 use ffi;
-use std::{marker, mem, raw};
-use libc::{c_short, c_char};
 
 pub use ffi::FT_Vector as Vector;
 
@@ -21,15 +22,15 @@ impl<'a> Outline<'a> {
     }
 
     pub fn points(&self) -> &'a [Vector] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.points, len: self.raw.n_points as usize }) }
+        unsafe { slice::from_raw_parts(self.raw.points, self.raw.n_points as usize) }
     }
 
     pub fn tags(&self) -> &'a [c_char] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.tags, len: self.raw.n_points as usize }) }
+        unsafe { slice::from_raw_parts(self.raw.tags, self.raw.n_points as usize) }
     }
 
     pub fn contours(&self) -> &'a [c_short] {
-        unsafe { mem::transmute(raw::Slice { data: self.raw.contours, len: self.raw.n_contours as usize }) }
+        unsafe { slice::from_raw_parts(self.raw.contours, self.raw.n_contours as usize) }
     }
 
     pub fn contours_iter(&self) -> ContourIterator<'a> {
@@ -45,7 +46,7 @@ pub struct CurveIterator<'a> {
     start_tag: *const c_char,
     idx: isize,
     length: isize,
-    marker: marker::PhantomData<&'a ()>,
+    marker: PhantomData<&'a ()>,
 }
 
 impl<'a> CurveIterator<'a> {
@@ -57,12 +58,12 @@ impl<'a> CurveIterator<'a> {
             start_tag: outline.tags.offset(start_idx),
             idx: 0,
             length: end_idx - start_idx + 1,
-            marker: marker::PhantomData,
+            marker: PhantomData,
         }
     }
 
     pub fn start(&self) -> &'a Vector {
-        unsafe { mem::transmute(self.start_point) }
+        unsafe { &*self.start_point }
     }
 
     // Retrieves the point at offset i from the current point. Note that contours implicitly repeat their
@@ -148,7 +149,8 @@ impl<'a> Iterator for ContourIterator<'a> {
         } else {
             unsafe {
                 let contour_end = *self.contour_end_idx;
-                let curves = CurveIterator::from_raw(self.outline, self.contour_start as isize, contour_end as isize);
+                let curves = CurveIterator::from_raw(self.outline, self.contour_start as isize,
+                                                     contour_end as isize);
 
                 self.contour_start = contour_end + 1;
                 self.contour_end_idx = self.contour_end_idx.offset(1);

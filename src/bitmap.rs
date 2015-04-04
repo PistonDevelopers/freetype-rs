@@ -1,4 +1,4 @@
-use std;
+use std::slice;
 use ffi;
 
 /// An enumeration type used to describe the format of pixels in a given bitmap. Note that
@@ -64,9 +64,9 @@ impl Bitmap {
     /// on 32-bit boundaries in most cases.
     pub fn buffer(&self) -> &[u8] {
         unsafe {
-            std::slice::from_raw_parts(
+            slice::from_raw_parts(
                 (*self.raw).buffer,
-                (self.width() * self.rows()) as usize, 
+                (self.width() * self.rows()) as usize,
             )
         }
     }

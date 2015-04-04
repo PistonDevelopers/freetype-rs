@@ -121,4 +121,3 @@ impl TrueTypeOS2Table  {
         }
     }
 }
-

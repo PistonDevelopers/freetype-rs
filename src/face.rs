@@ -1,15 +1,6 @@
-use std;
-use std::num::FromPrimitive;
 use std::ffi::CStr;
-use std::str;
-use std::borrow::ToOwned;
-use ffi;
-use {
-    FtResult,
-    GlyphSlot,
-    Matrix,
-    Vector,
-};
+use num::FromPrimitive;
+use { ffi, FtResult, GlyphSlot, Matrix, Vector };
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
@@ -96,7 +87,8 @@ impl Face {
         }
     }
 
-    pub fn set_char_size(&self, char_width: isize, char_height: isize, horz_resolution: u32, vert_resolution: u32) -> FtResult<()> {
+    pub fn set_char_size(&self, char_width: isize, char_height: isize, horz_resolution: u32,
+                         vert_resolution: u32) -> FtResult<()> {
         unsafe {
             let err = ffi::FT_Set_Char_Size(self.raw, char_width as ffi::FT_F26Dot6,
                                             char_height as ffi::FT_F26Dot6, horz_resolution,
@@ -157,11 +149,11 @@ impl Face {
     pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
         -> FtResult<Vector> {
 
-        let vec = Vector { x: 0, y: 0 };
+        let mut vec = Vector { x: 0, y: 0 };
 
         let err_code = unsafe {
             ffi::FT_Get_Kerning(self.raw, left_char_index, right_char_index,
-                                kern_mode as u32, std::mem::transmute(&vec))
+                                kern_mode as u32, &mut vec)
         };
 
         if err_code == ffi::FT_Err_Ok {
@@ -296,11 +288,9 @@ impl Face {
         if family_name_ptr.is_null() {
             None
         } else {
-            let family_name = unsafe { CStr::from_ptr(family_name_ptr).to_bytes() };
-            match str::from_utf8(family_name) {
-                Ok(string)  => Some(string.to_owned()),
-                _           => None
-            }
+            let family_name = unsafe { CStr::from_ptr(family_name_ptr).to_bytes().to_vec() };
+
+            String::from_utf8(family_name).ok()
         }
     }
 
@@ -311,11 +301,9 @@ impl Face {
         if style_name_ptr.is_null() {
             None
         } else {
-            let style_name = unsafe { CStr::from_ptr(style_name_ptr).to_bytes() };
-            match str::from_utf8(style_name) {
-                Ok(string)  => Some(string.to_owned()),
-                _           => None
-            }
+            let style_name = unsafe { CStr::from_ptr(style_name_ptr).to_bytes().to_vec() };
+
+            String::from_utf8(style_name).ok()
         }
     }
 }

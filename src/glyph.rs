@@ -1,8 +1,7 @@
-
-use std;
-use std::num::FromPrimitive;
-use ffi;
+use std::ptr::{ null, null_mut };
+use num::FromPrimitive;
 use {
+    ffi,
     BBox,
     BitmapGlyph,
     FtResult,
@@ -30,8 +29,8 @@ impl Glyph {
 
     pub fn transform(&self, matrix: Option<Matrix>, delta: Option<Vector>) -> FtResult<()> {
         unsafe {
-            let mut p_matrix : *const Matrix = std::ptr::null();
-            let mut p_delta : *const Vector = std::ptr::null();
+            let mut p_matrix : *const Matrix = null();
+            let mut p_delta : *const Vector = null();
 
             if matrix.is_some() {
                 p_matrix = &matrix.unwrap() as *const Matrix;
@@ -65,7 +64,7 @@ impl Glyph {
 
     pub fn to_bitmap(&self, render_mode: RenderMode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         unsafe {
-            let mut p_origin = std::ptr::null();
+            let mut p_origin = null();
             if origin.is_some() {
                 p_origin = origin.as_ref().unwrap() as *const Vector;
             }
@@ -117,7 +116,7 @@ impl Glyph {
 impl Clone for Glyph {
     fn clone(&self) -> Glyph {
         unsafe {
-            let mut target = std::ptr::null_mut();
+            let mut target = null_mut();
             match ffi::FT_Glyph_Copy(self.raw, &mut target) {
                 ffi::FT_Err_Ok => Glyph::from_raw(self.library_raw, target),
                 _ => panic!("Falid to copy glyph"),
@@ -134,4 +133,3 @@ impl Drop for Glyph {
         }
     }
 }
-

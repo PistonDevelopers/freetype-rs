@@ -1,11 +1,11 @@
 #![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_derive)]
-#![feature(core)]
 
 #[macro_use]
 extern crate bitflags;
 extern crate libc;
+extern crate num;
 extern crate freetype_sys;
 
 pub use bitmap::Bitmap;

@@ -1,6 +1,5 @@
-use std::num::FromPrimitive;
 use std::fmt;
-
+use num::FromPrimitive;
 use ffi;
 
 pub type FtResult<T> = Result<T, Error>;
