@@ -1,8 +1,4 @@
-
-use ffi;
-use {
-    Bitmap,
-};
+use { ffi, Bitmap };
 
 #[derive(Copy, Clone)]
 pub struct BitmapGlyph {

@@ -1,18 +1,8 @@
-use libc::{
-    self,
-    c_void,
-    c_long,
-    size_t,
-};
-use std::ffi::CString;
-use std::num::FromPrimitive;
-use {
-    std,
-    ffi,
-    Face,
-    FtResult,
-};
-use std::path::Path;
+use std::ffi::{ CString, OsStr };
+use std::ptr::null_mut;
+use libc::{ self, c_void, c_long, size_t };
+use num::FromPrimitive;
+use { ffi, Face, FtResult };
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
     unsafe {
@@ -50,7 +40,7 @@ pub struct Library {
 impl Library {
     pub fn init() -> FtResult<Library> {
         unsafe {
-            let mut raw = std::ptr::null_mut();
+            let mut raw = null_mut();
 
             let err = ffi::FT_New_Library(&MEMORY, &mut raw);
             if err == ffi::FT_Err_Ok {
@@ -64,9 +54,9 @@ impl Library {
         }
     }
 
-    pub fn new_face<P: AsRef<Path>>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
+    pub fn new_face<P: AsRef<OsStr>>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
         unsafe {
-            let mut face = std::ptr::null_mut();
+            let mut face = null_mut();
 
             let path_str = CString::new(filepath.as_ref().to_str().unwrap()).unwrap();
 
@@ -81,7 +71,7 @@ impl Library {
 
     pub fn new_memory_face(&self, buffer: &[u8], face_index: isize) -> FtResult<Face> {
         unsafe {
-            let mut face = std::ptr::null_mut();
+            let mut face = null_mut();
             let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(),
                 buffer.len() as ffi::FT_Long, face_index as ffi::FT_Long, &mut face);
             if err == ffi::FT_Err_Ok {
@@ -107,4 +97,3 @@ impl Drop for Library {
         }
     }
 }
-

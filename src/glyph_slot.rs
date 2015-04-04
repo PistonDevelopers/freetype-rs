@@ -1,8 +1,7 @@
-
-use std;
-use std::num::FromPrimitive;
-use ffi;
+use std::ptr::null_mut;
+use num::FromPrimitive;
 use {
+    ffi,
     Bitmap,
     FtResult,
     Glyph,
@@ -47,7 +46,8 @@ impl GlyphSlot {
                 xx: 0, xy: 0,
                 yx: 0, yy: 0,
             };
-            let err = ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags, &mut arg1, &mut arg2, &mut transfrom);
+            let err = ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags,
+                                                &mut arg1, &mut arg2, &mut transfrom);
             if err == ffi::FT_Err_Ok {
                 Ok((index, flags, arg1, arg2, transfrom))
             } else {
@@ -58,7 +58,7 @@ impl GlyphSlot {
 
     pub fn get_glyph(&self) -> FtResult<Glyph> {
         unsafe {
-            let mut aglyph = std::ptr::null_mut();
+            let mut aglyph = null_mut();
             let err= ffi::FT_Get_Glyph(self.raw, &mut aglyph);
             if err == ffi::FT_Err_Ok {
                 Ok(Glyph::from_raw(self.library_raw, aglyph))
@@ -134,4 +134,3 @@ impl GlyphSlot {
         }
     }
 }
-

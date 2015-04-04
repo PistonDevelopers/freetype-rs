@@ -1,4 +1,3 @@
-
 use ffi;
 
 #[repr(u32)]
@@ -11,4 +10,3 @@ pub enum RenderMode {
     LcdV= ffi::FT_RENDER_MODE_LCD_V,
     Max= ffi::FT_RENDER_MODE_MAX,
 }
-
