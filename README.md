@@ -20,15 +20,11 @@ cargo build
 
 ## Examples
 
-To build examples, use `cargo test`. They are all built in `./target/examples/*`.
+To build examples, use `cargo test`. They are all built in `./target/debug/examples/*`.
 
-For example:
+To run examples, use `cargo run --example name`, for example:
 ```
-# build
-cargo test
-
-# run
-./target/examples/font_with_piston
+cargo run --example single_glyph examples/assets/FiraSans-Regular.ttf A
 ```
 
 [How to contribute](https://github.com/PistonDevelopers/piston/blob/master/CONTRIBUTING.md)
