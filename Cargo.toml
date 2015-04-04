@@ -23,21 +23,3 @@ num = "0.1"
 [dependencies.freetype-sys]
 git = "https://github.com/PistonDevelopers/freetype-sys"
 #version = "0.0.4"
-
-###### used for font with piston example ######
-[dev-dependencies.piston]
-git = "https://github.com/PistonDevelopers/piston"
-#version = "0.0.7"
-
-[dev-dependencies.piston2d-opengl_graphics]
-git = "https://github.com/PistonDevelopers/opengl_graphics"
-#version = "0.0.9"
-
-[dev-dependencies.piston2d-graphics]
-git = "https://github.com/PistonDevelopers/graphics"
-#version = "0.0.23"
-
-[dev-dependencies.pistoncore-sdl2_window]
-git = "https://github.com/PistonDevelopers/sdl2_window"
-#version = "0.0.5"
-###############################################
