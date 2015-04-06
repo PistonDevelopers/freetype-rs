@@ -1,6 +1,7 @@
 use std::ffi::CStr;
 use num::FromPrimitive;
 use { ffi, FtResult, GlyphSlot, Matrix, Vector };
+use std::marker::PhantomData;
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
@@ -36,14 +37,15 @@ flags LoadFlag: i32 {
 });
 
 #[derive(Eq, PartialEq, Hash)]
-pub struct Face {
+pub struct Face<'a> {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_Face,
     glyph: GlyphSlot,
+    _phantom: PhantomData<&'a ()>
 }
 
-impl Clone for Face {
-    fn clone(&self) -> Face {
+impl <'a> Clone for Face<'a> {
+    fn clone(&self) -> Face<'a> {
         unsafe {
             ffi::FT_Reference_Library(self.library_raw);
             ffi::FT_Reference_Face(self.raw);
@@ -52,8 +54,8 @@ impl Clone for Face {
     }
 }
 
-impl Face {
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Face {
+impl <'a> Face<'a> {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Face<'static> {
         unsafe {
             ffi::FT_Reference_Library(library_raw);
         }
@@ -62,6 +64,7 @@ impl Face {
             library_raw: library_raw,
             raw: raw,
             glyph: unsafe { GlyphSlot::from_raw(library_raw, (*raw).glyph) },
+            _phantom: PhantomData
         }
     }
 
@@ -308,7 +311,7 @@ impl Face {
     }
 }
 
-impl ::std::fmt::Debug for Face {
+impl <'a> ::std::fmt::Debug for Face<'a> {
     fn fmt(&self, form: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
         let name = self.style_name().unwrap_or("[unknown name]".to_string());
         try!(form.write_str("Font Face: "));
@@ -316,7 +319,7 @@ impl ::std::fmt::Debug for Face {
     }
 }
 
-impl Drop for Face {
+impl <'a> Drop for Face<'a> {
     fn drop(&mut self) {
         unsafe {
             match ffi::FT_Done_Face(self.raw) {

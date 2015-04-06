@@ -54,7 +54,7 @@ impl Library {
         }
     }
 
-    pub fn new_face<P: AsRef<OsStr>>(&self, filepath: P, face_index: isize) -> FtResult<Face> {
+    pub fn new_face<P: AsRef<OsStr>>(&self, filepath: P, face_index: isize) -> FtResult<Face<'static>> {
         unsafe {
             let mut face = null_mut();
 
@@ -69,7 +69,7 @@ impl Library {
         }
     }
 
-    pub fn new_memory_face(&self, buffer: &[u8], face_index: isize) -> FtResult<Face> {
+    pub fn new_memory_face<'a>(&self, buffer: &'a[u8], face_index: isize) -> FtResult<Face<'a>> {
         unsafe {
             let mut face = null_mut();
             let err = ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(),
