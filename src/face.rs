@@ -309,6 +309,19 @@ impl <'a> Face<'a> {
             String::from_utf8(style_name).ok()
         }
     }
+
+    pub fn size_metrics(&self) -> Option<ffi::FT_Size_Metrics> {
+        if self.raw.is_null() {
+            None
+        } else {
+            let size: *mut ffi::FT_SizeRec = unsafe { (*self.raw).size };
+            if size.is_null() {
+                None
+            } else {
+                Some(unsafe { (*size).metrics })
+            }
+        }
+    }
 }
 
 impl <'a> ::std::fmt::Debug for Face<'a> {
