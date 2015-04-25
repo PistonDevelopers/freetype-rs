@@ -13,10 +13,14 @@ homepage = "https://github.com/PistonDevelopers/freetype-rs"
 [lib]
 
 name = "freetype"
-path = "src/lib.rs"
 
 [dependencies]
+
 bitflags = "*"
 libc = "*"
 num = "0.1"
 freetype-sys = "*"
+
+[dev-dependencies]
+
+unicode-normalization = "0.1"
