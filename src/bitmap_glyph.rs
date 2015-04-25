@@ -2,13 +2,13 @@ use { ffi, Bitmap };
 
 #[derive(Copy, Clone)]
 pub struct BitmapGlyph {
-    raw: ffi::FT_BitmapGlyph,
+    raw: ffi::FT_BitmapGlyph
 }
 
 impl BitmapGlyph {
-    pub fn from_raw(raw: ffi::FT_BitmapGlyph) -> BitmapGlyph {
+    pub fn from_raw(raw: ffi::FT_BitmapGlyph) -> Self {
         BitmapGlyph {
-            raw: raw,
+            raw: raw
         }
     }
 
@@ -28,9 +28,9 @@ impl BitmapGlyph {
 
     #[inline(always)]
     pub fn bitmap(&self) -> Bitmap {
-        unsafe {
-            Bitmap::from_raw(&(*self.raw).bitmap)
-        }
+        let bitmap = unsafe { &(*self.raw).bitmap };
+
+        Bitmap::from_raw(bitmap)
     }
 
     #[inline(always)]

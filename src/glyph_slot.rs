@@ -1,5 +1,4 @@
 use std::ptr::null_mut;
-use num::FromPrimitive;
 use {
     ffi,
     Bitmap,
@@ -8,81 +7,86 @@ use {
     GlyphMetrics,
     Outline,
     RenderMode,
-    Vector,
+    Vector
 };
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct GlyphSlot {
     library_raw: ffi::FT_Library,
-    raw: ffi::FT_GlyphSlot,
+    raw: ffi::FT_GlyphSlot
 }
 
 impl GlyphSlot {
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> GlyphSlot {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> Self {
         GlyphSlot {
             library_raw: library_raw,
-            raw: raw,
+            raw: raw
         }
     }
 
     pub fn render_glyph(&self, render_mode: RenderMode) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Render_Glyph(self.raw, render_mode as u32);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Render_Glyph(self.raw, render_mode as u32)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn get_subglyph_info(&self, sub_index: u32) -> FtResult<(i32, u32, i32, i32, ffi::FT_Matrix)> {
-        unsafe {
-            let mut index = 0;
-            let mut flags = 0;
-            let mut arg1 = 0;
-            let mut arg2 = 0;
-            let mut transfrom = ffi::FT_Matrix {
-                xx: 0, xy: 0,
-                yx: 0, yy: 0,
-            };
-            let err = ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags,
-                                                &mut arg1, &mut arg2, &mut transfrom);
-            if err == ffi::FT_Err_Ok {
-                Ok((index, flags, arg1, arg2, transfrom))
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let mut index = 0;
+        let mut flags = 0;
+        let mut arg1 = 0;
+        let mut arg2 = 0;
+        let mut transfrom = ffi::FT_Matrix {
+            xx: 0, xy: 0,
+            yx: 0, yy: 0
+        };
+        let err = unsafe {
+            ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags,
+                                      &mut arg1, &mut arg2, &mut transfrom)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok((index, flags, arg1, arg2, transfrom))
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn get_glyph(&self) -> FtResult<Glyph> {
-        unsafe {
-            let mut aglyph = null_mut();
-            let err= ffi::FT_Get_Glyph(self.raw, &mut aglyph);
-            if err == ffi::FT_Err_Ok {
-                Ok(Glyph::from_raw(self.library_raw, aglyph))
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let mut aglyph = null_mut();
+
+        let err = unsafe {
+            ffi::FT_Get_Glyph(self.raw, &mut aglyph)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(Glyph::from_raw(self.library_raw, aglyph))
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn outline(&self) -> Option<Outline> {
-        unsafe {
-            if (*self.raw).format == ffi::FT_GLYPH_FORMAT_OUTLINE {
-                Some(Outline::from_raw(&(*self.raw).outline))
-            } else {
-                None
-            }
+        let outline = unsafe { &(*self.raw).outline };
+        let format = unsafe { (*self.raw).format };
+
+        if format == ffi::FT_GLYPH_FORMAT_OUTLINE {
+            let outline = unsafe {
+                Outline::from_raw(outline)
+            };
+            Some(outline)
+        } else {
+            None
         }
     }
 
     #[inline(always)]
     pub fn bitmap(&self) -> Bitmap {
-        unsafe {
-            Bitmap::from_raw(&(*self.raw).bitmap)
-        }
+        let bitmap = unsafe { &(*self.raw).bitmap };
+
+        Bitmap::from_raw(bitmap)
     }
 
     #[inline(always)]
