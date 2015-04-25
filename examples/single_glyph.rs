@@ -1,74 +1,63 @@
-#![feature(exit_status, unicode)]
-
 extern crate freetype as ft;
+extern crate unicode_normalization;
 
-use std::io::{ Write, stderr };
-use std::path::Path;
-use std::env::{ args, set_exit_status };
-use ft::ffi;
+use unicode_normalization::UnicodeNormalization;
 
 const WIDTH: usize = 32;
 const HEIGHT: usize = 24;
 
-fn draw_bitmap(bitmap: &ffi::FT_Bitmap, x: usize, y: usize) -> [[u8; WIDTH]; HEIGHT] {
-    let mut image = [[0u8; WIDTH]; HEIGHT];
+fn draw_bitmap(bitmap: ft::Bitmap, x: usize, y: usize) -> [[u8; WIDTH]; HEIGHT] {
+    let mut figure = [[0; WIDTH]; HEIGHT];
     let mut p = 0;
     let mut q = 0;
-    let x_max = x + bitmap.width as usize;
-    let y_max = y + bitmap.rows as usize;
+    let w = bitmap.width() as usize;
+    let x_max = x + w;
+    let y_max = y + bitmap.rows() as usize;
 
     for i in x .. x_max {
         for j in y .. y_max {
-            if i >= WIDTH || j >= HEIGHT {
-                continue;
+            if i < WIDTH && j < HEIGHT {
+                figure[j][i] |= bitmap.buffer()[q * w + p];
+                q += 1;
             }
-
-            unsafe {
-                image[j][i] |= *bitmap.buffer.offset((q * bitmap.width + p) as isize);
-            }
-            q += 1;
         }
         q = 0;
         p += 1;
     }
-
-    image
+    figure
 }
 
 fn main() {
-    let ref mut stderr = stderr();
-    let ref mut args = args();
-    if let (3, _) = args.size_hint() {}
-    else {
+    let ref mut args = std::env::args();
+
+    if args.len() != 3 {
         let exe = args.next().unwrap();
-        let _ = writeln!(stderr, "Usage: {} font sample-text", exe);
-        set_exit_status(1);
+        println!("Usage: {} font character", exe);
         return
     }
 
-    let filename = args.nth(1).unwrap();
-    let text = args.next().unwrap();
-
+    let ref font = args.nth(1).unwrap();
+    let character = args.next().and_then(|s| s.nfc().next()).unwrap() as usize;
     let library = ft::Library::init().unwrap();
-    let face = library.new_face(&Path::new(&filename), 0).unwrap();
+    let face = library.new_face(font, 0).unwrap();
+
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.nfc_chars().next().unwrap() as usize, ft::face::RENDER).unwrap();
+    face.load_char(character, ft::face::RENDER).unwrap();
 
-    let slot = face.glyph().raw();
-
-    let x = slot.bitmap_left as usize;
-    let y = HEIGHT - slot.bitmap_top as usize;
-    let image = draw_bitmap(&slot.bitmap, x, y);
+    let glyph = face.glyph();
+    let x = glyph.bitmap_left() as usize;
+    let y = HEIGHT - glyph.bitmap_top() as usize;
+    let figure = draw_bitmap(glyph.bitmap(), x, y);
 
     for i in 0 .. HEIGHT {
         for j in 0 .. WIDTH {
-            print!("{}", if image[i as usize][j as usize] == 0 {
-                             " "
-                         } else if image[i as usize][j as usize] < 128 {
-                             "*"
-                         } else {
-                             "+"
-                         });
+            print!("{}",
+                match figure[i][j] {
+                    p if p == 0 => " ",
+                    p if p < 128 => "*",
+                    _  => "+"
+                }
+            );
         }
         println!("");
     }

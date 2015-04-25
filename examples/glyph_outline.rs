@@ -1,53 +1,42 @@
-#![feature(exit_status)]
-
 extern crate freetype as ft;
 
-use std::io::{ Write, stderr };
-use std::path::Path;
-use std::env::{ args, set_exit_status };
-use ft::outline::Curve;
-
-fn show_curve(curve: Curve) {
+fn draw_curve(curve: ft::outline::Curve) {
     match curve {
-        Curve::Line(pt) =>
+        ft::outline::Curve::Line(pt) =>
             println!("L {} {}", pt.x, -pt.y),
-
-        Curve::Bezier2(pt1, pt2) =>
+        ft::outline::Curve::Bezier2(pt1, pt2) =>
             println!("Q {} {} {} {}", pt1.x, -pt1.y, pt2.x, -pt2.y),
-
-        Curve::Bezier3(pt1, pt2, pt3) =>
+        ft::outline::Curve::Bezier3(pt1, pt2, pt3) =>
             println!("C {} {} {} {} {} {}", pt1.x, -pt1.y,
                                             pt2.x, -pt2.y,
-                                            pt3.x, -pt3.y),
+                                            pt3.x, -pt3.y)
     }
 }
 
 fn main() {
-    let ref mut stderr = stderr();
-    let ref mut args = args();
-    if let (3, _) = args.size_hint() {}
-    else {
+    let ref mut args = std::env::args();
+
+    if args.len() != 3 {
         let exe = args.next().unwrap();
-        let _ = writeln!(stderr, "Usage: {} font character", exe);
-        set_exit_status(1);
+        println!("Usage: {} font character", exe);
         return
     }
 
-    let filename = args.nth(1).unwrap();
-    let text = args.next().unwrap();
-
+    let ref font = args.nth(1).unwrap();
+    let character = args.next().and_then(|s| s.chars().next()).unwrap() as usize;
     let library = ft::Library::init().unwrap();
-    let face = library.new_face(&Path::new(&filename), 0).unwrap();
-    face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(text.chars().next().unwrap() as usize, ft::face::NO_SCALE).unwrap();
+    let face = library.new_face(font, 0).unwrap();
 
-    let metrics = &face.glyph().raw().metrics;
+    face.set_char_size(40 * 64, 0, 50, 0).unwrap();
+    face.load_char(character, ft::face::NO_SCALE).unwrap();
+
+    let glyph = face.glyph();
+    let metrics = glyph.metrics();
     let xmin = metrics.horiBearingX - 5;
     let width = metrics.width + 10;
     let ymin = -metrics.horiBearingY - 5;
     let height = metrics.height + 10;
-
-    let outline = face.glyph().outline().unwrap();
+    let outline = glyph.outline().unwrap();
 
     println!("<?xml version=\"1.0\" standalone=\"no\"?>");
     println!("<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.1//EN\"");
@@ -59,7 +48,7 @@ fn main() {
         let start = contour.start();
         println!("<path fill=\"none\" stroke=\"black\" stroke-width=\"1\" d=\"M {} {}", start.x, -start.y);
         for curve in contour {
-            show_curve(curve);
+            draw_curve(curve);
         }
         println!("Z \" />");
     }
