@@ -2,11 +2,10 @@ use ffi;
 
 #[derive(Copy, Clone)]
 pub struct TrueTypeOS2Table {
-    raw: ffi::TT_OS2_Internal,
+    raw: ffi::TT_OS2_Internal
 }
 
 impl TrueTypeOS2Table  {
-
     #[inline(always)]
     pub fn version(&self) -> ffi::FT_UShort {
         unsafe {

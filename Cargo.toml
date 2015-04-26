@@ -18,7 +18,6 @@ name = "freetype"
 
 bitflags = "*"
 libc = "*"
-num = "0.1"
 freetype-sys = "*"
 
 [dev-dependencies]

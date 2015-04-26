@@ -1,16 +1,14 @@
-#![crate_type = "lib"]
 #![deny(missing_copy_implementations)]
 #![deny(raw_pointer_derive)]
 
 #[macro_use]
 extern crate bitflags;
 extern crate libc;
-extern crate num;
 extern crate freetype_sys;
 
 pub use bitmap::Bitmap;
 pub use bitmap_glyph::BitmapGlyph;
-pub use error::FtResult;
+pub use error::{ FtResult, Error };
 pub use face::Face;
 pub use glyph::Glyph;
 pub use glyph_slot::GlyphSlot;

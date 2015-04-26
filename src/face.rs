@@ -1,40 +1,41 @@
+use std::fmt;
 use std::ffi::CStr;
-use num::FromPrimitive;
 use { ffi, FtResult, GlyphSlot, Matrix, Vector };
 use std::marker::PhantomData;
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
 pub enum KerningMode {
-    KerningDefault = ffi::FT_KERNING_DEFAULT,
+    KerningDefault  = ffi::FT_KERNING_DEFAULT,
     KerningUnfitted = ffi::FT_KERNING_UNFITTED,
     KerningUnscaled = ffi::FT_KERNING_UNSCALED
 }
 
-bitflags!(
-flags LoadFlag: i32 {
-    const DEFAULT                    = ffi::FT_LOAD_DEFAULT,
-    const NO_SCALE                   = ffi::FT_LOAD_NO_SCALE,
-    const NO_HINTING                 = ffi::FT_LOAD_NO_HINTING,
-    const RENDER                     = ffi::FT_LOAD_RENDER,
-    const NO_BITMAP                  = ffi::FT_LOAD_NO_BITMAP,
-    const VERTICAL_LAYOUT            = ffi::FT_LOAD_VERTICAL_LAYOUT,
-    const FORCE_AUTOHINT             = ffi::FT_LOAD_FORCE_AUTOHINT,
-    const CROP_BITMAP                = ffi::FT_LOAD_CROP_BITMAP,
-    const PEDANTIC                   = ffi::FT_LOAD_PEDANTIC,
-    const IGNORE_GLOBAL_ADVANCE_WITH = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
-    const NO_RECURSE                 = ffi::FT_LOAD_NO_RECURSE,
-    const IGNORE_TRANSFORM           = ffi::FT_LOAD_IGNORE_TRANSFORM,
-    const MONOCHROME                 = ffi::FT_LOAD_MONOCHROME,
-    const LINEAR_DESIGN              = ffi::FT_LOAD_LINEAR_DESIGN,
-    const NO_AUTOHINT                = ffi::FT_LOAD_NO_AUTOHINT,
-    const TARGET_NORMAL              = ffi::FT_LOAD_TARGET_NORMAL,
-    const TARGET_LIGHT               = ffi::FT_LOAD_TARGET_LIGHT,
-    const TARGET_MONO                = ffi::FT_LOAD_TARGET_MONO,
-    const TARGET_LCD                 = ffi::FT_LOAD_TARGET_LCD,
-    const TARGET_LCD_V               = ffi::FT_LOAD_TARGET_LCD_V,
-    const COLOR                      = ffi::FT_LOAD_COLOR
-});
+bitflags! {
+    flags LoadFlag: i32 {
+        const DEFAULT                    = ffi::FT_LOAD_DEFAULT,
+        const NO_SCALE                   = ffi::FT_LOAD_NO_SCALE,
+        const NO_HINTING                 = ffi::FT_LOAD_NO_HINTING,
+        const RENDER                     = ffi::FT_LOAD_RENDER,
+        const NO_BITMAP                  = ffi::FT_LOAD_NO_BITMAP,
+        const VERTICAL_LAYOUT            = ffi::FT_LOAD_VERTICAL_LAYOUT,
+        const FORCE_AUTOHINT             = ffi::FT_LOAD_FORCE_AUTOHINT,
+        const CROP_BITMAP                = ffi::FT_LOAD_CROP_BITMAP,
+        const PEDANTIC                   = ffi::FT_LOAD_PEDANTIC,
+        const IGNORE_GLOBAL_ADVANCE_WITH = ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
+        const NO_RECURSE                 = ffi::FT_LOAD_NO_RECURSE,
+        const IGNORE_TRANSFORM           = ffi::FT_LOAD_IGNORE_TRANSFORM,
+        const MONOCHROME                 = ffi::FT_LOAD_MONOCHROME,
+        const LINEAR_DESIGN              = ffi::FT_LOAD_LINEAR_DESIGN,
+        const NO_AUTOHINT                = ffi::FT_LOAD_NO_AUTOHINT,
+        const TARGET_NORMAL              = ffi::FT_LOAD_TARGET_NORMAL,
+        const TARGET_LIGHT               = ffi::FT_LOAD_TARGET_LIGHT,
+        const TARGET_MONO                = ffi::FT_LOAD_TARGET_MONO,
+        const TARGET_LCD                 = ffi::FT_LOAD_TARGET_LCD,
+        const TARGET_LCD_V               = ffi::FT_LOAD_TARGET_LCD_V,
+        const COLOR                      = ffi::FT_LOAD_COLOR
+    }
+}
 
 #[derive(Eq, PartialEq, Hash)]
 pub struct Face<'a> {
@@ -44,22 +45,29 @@ pub struct Face<'a> {
     _phantom: PhantomData<&'a ()>
 }
 
-impl <'a> Clone for Face<'a> {
-    fn clone(&self) -> Face<'a> {
-        unsafe {
-            ffi::FT_Reference_Library(self.library_raw);
-            ffi::FT_Reference_Face(self.raw);
+impl<'a> Clone for Face<'a> {
+    fn clone(&self) -> Self {
+        let err = unsafe {
+            ffi::FT_Reference_Library(self.library_raw)
+        };
+        if err != ffi::FT_Err_Ok {
+            panic!("Failed to reference library");
+        }
+        let err = unsafe {
+            ffi::FT_Reference_Face(self.raw)
+        };
+        if err != ffi::FT_Err_Ok {
+            panic!("Failed to reference face");
         }
         Face { ..*self }
     }
 }
 
-impl <'a> Face<'a> {
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Face<'static> {
+impl<'a> Face<'a> {
+    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Self {
         unsafe {
             ffi::FT_Reference_Library(library_raw);
         }
-
         Face {
             library_raw: library_raw,
             raw: raw,
@@ -69,71 +77,71 @@ impl <'a> Face<'a> {
     }
 
     pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Attach_File(self.raw, filepathname.as_ptr() as *const i8);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Attach_File(self.raw, filepathname.as_ptr() as *const i8)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn reference(&self) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Reference_Face(self.raw);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Reference_Face(self.raw)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn set_char_size(&self, char_width: isize, char_height: isize, horz_resolution: u32,
                          vert_resolution: u32) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Set_Char_Size(self.raw, char_width as ffi::FT_F26Dot6,
-                                            char_height as ffi::FT_F26Dot6, horz_resolution,
-                                            vert_resolution);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Set_Char_Size(self.raw, char_width as ffi::FT_F26Dot6,
+                                  char_height as ffi::FT_F26Dot6, horz_resolution,
+                                  vert_resolution)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn set_pixel_sizes(&self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
     pub fn load_char(&self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
-        unsafe {
-            let err = ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits);
-            if err == ffi::FT_Err_Ok {
-                Ok(())
-            } else {
-                Err(FromPrimitive::from_i32(err).unwrap())
-            }
+        let err = unsafe {
+            ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
         }
     }
 
@@ -151,18 +159,16 @@ impl <'a> Face<'a> {
 
     pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
         -> FtResult<Vector> {
-
         let mut vec = Vector { x: 0, y: 0 };
 
-        let err_code = unsafe {
+        let err = unsafe {
             ffi::FT_Get_Kerning(self.raw, left_char_index, right_char_index,
                                 kern_mode as u32, &mut vec)
         };
-
-        if err_code == ffi::FT_Err_Ok {
+        if err == ffi::FT_Err_Ok {
             Ok(vec)
         } else {
-            Err(FromPrimitive::from_i32(err_code).unwrap())
+            Err(err.into())
         }
     }
 
@@ -285,27 +291,27 @@ impl <'a> Face<'a> {
     }
 
     pub fn family_name(&self) -> Option<String> {
+        let family_name = unsafe { (*self.raw).family_name };
 
-        let family_name_ptr = unsafe { (*self.raw).family_name };
-
-        if family_name_ptr.is_null() {
+        if family_name.is_null() {
             None
         } else {
-            let family_name = unsafe { CStr::from_ptr(family_name_ptr).to_bytes().to_vec() };
-
+            let family_name = unsafe {
+                CStr::from_ptr(family_name).to_bytes().to_vec()
+            };
             String::from_utf8(family_name).ok()
         }
     }
 
     pub fn style_name(&self) -> Option<String> {
+        let style_name = unsafe { (*self.raw).style_name };
 
-        let style_name_ptr = unsafe { (*self.raw).style_name };
-
-        if style_name_ptr.is_null() {
+        if style_name.is_null() {
             None
         } else {
-            let style_name = unsafe { CStr::from_ptr(style_name_ptr).to_bytes().to_vec() };
-
+            let style_name = unsafe {
+                CStr::from_ptr(style_name).to_bytes().to_vec()
+            };
             String::from_utf8(style_name).ok()
         }
     }
@@ -314,7 +320,7 @@ impl <'a> Face<'a> {
         if self.raw.is_null() {
             None
         } else {
-            let size: *mut ffi::FT_SizeRec = unsafe { (*self.raw).size };
+            let size = unsafe { (*self.raw).size };
             if size.is_null() {
                 None
             } else {
@@ -324,25 +330,27 @@ impl <'a> Face<'a> {
     }
 }
 
-impl <'a> ::std::fmt::Debug for Face<'a> {
-    fn fmt(&self, form: &mut ::std::fmt::Formatter) -> ::std::fmt::Result {
+impl<'a> fmt::Debug for Face<'a> {
+    fn fmt(&self, form: &mut fmt::Formatter) -> fmt::Result {
         let name = self.style_name().unwrap_or("[unknown name]".to_string());
         try!(form.write_str("Font Face: "));
         form.write_str(&name[..])
     }
 }
 
-impl <'a> Drop for Face<'a> {
+impl<'a> Drop for Face<'a> {
     fn drop(&mut self) {
-        unsafe {
-            match ffi::FT_Done_Face(self.raw) {
-                ffi::FT_Err_Ok => {
-                    if ffi::FT_Done_Library(self.library_raw) != ffi::FT_Err_Ok {
-                        panic!("Failed to deref library");
-                    }
-                },
-                _ => panic!("Failed to drop face"),
-            }
+        let err = unsafe {
+            ffi::FT_Done_Face(self.raw)
+        };
+        if err != ffi::FT_Err_Ok {
+            panic!("Failed to drop face");
+        }
+        let err = unsafe {
+            ffi::FT_Done_Library(self.library_raw)
+        };
+        if err != ffi::FT_Err_Ok {
+            panic!("Failed to drop library")
         }
     }
 }

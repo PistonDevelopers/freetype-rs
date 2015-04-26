@@ -1,5 +1,5 @@
 use std::slice;
-use ffi;
+use { ffi, FtResult, Error };
 
 /// An enumeration type used to describe the format of pixels in a given bitmap. Note that
 /// additional formats may be added in the future.
@@ -45,18 +45,18 @@ pub enum PixelMode {
     /// channels are pre-multiplied and in the sRGB colorspace. For example,
     /// full red at half-translucent opacity will be represented as
     /// `00,00,80,80`, not `00,00,FF,80`. See also FT_LOAD_COLOR.
-    Bgra,
+    Bgra
 }
 
 #[allow(missing_copy_implementations)]
 pub struct Bitmap {
-    raw: *const ffi::FT_Bitmap,
+    raw: *const ffi::FT_Bitmap
 }
 
 impl Bitmap {
-    pub fn from_raw(raw: *const ffi::FT_Bitmap) -> Bitmap {
+    pub fn from_raw(raw: *const ffi::FT_Bitmap) -> Self {
         Bitmap {
-            raw: raw,
+            raw: raw
         }
     }
 
@@ -66,7 +66,7 @@ impl Bitmap {
         unsafe {
             slice::from_raw_parts(
                 (*self.raw).buffer,
-                (self.width() * self.rows()) as usize,
+                (self.width() * self.rows()) as usize
             )
         }
     }
@@ -93,20 +93,20 @@ impl Bitmap {
 
     /// The pixel mode, i.e., how pixel bits are stored. See `PixelMode` for
     /// possible values.
-    pub fn pixel_mode(&self) -> PixelMode {
-        unsafe {
-            match (*self.raw).pixel_mode as u32 {
-                ffi::FT_PIXEL_MODE_NONE  => PixelMode::None,
-                ffi::FT_PIXEL_MODE_MONO  => PixelMode::Mono,
-                ffi::FT_PIXEL_MODE_GRAY  => PixelMode::Gray,
-                ffi::FT_PIXEL_MODE_GRAY2 => PixelMode::Gray2,
-                ffi::FT_PIXEL_MODE_GRAY4 => PixelMode::Gray4,
-                ffi::FT_PIXEL_MODE_LCD   => PixelMode::Lcd,
-                ffi::FT_PIXEL_MODE_LCD_V => PixelMode::LcdV,
-                ffi::FT_PIXEL_MODE_BGRA  => PixelMode::Bgra,
-                _ => panic!("unexpected pixel mode"),
-            }
-        }
+    pub fn pixel_mode(&self) -> FtResult<PixelMode> {
+        let pixel_mode = unsafe { (*self.raw).pixel_mode } as u32;
+
+        Ok(match pixel_mode {
+            ffi::FT_PIXEL_MODE_NONE  => PixelMode::None,
+            ffi::FT_PIXEL_MODE_MONO  => PixelMode::Mono,
+            ffi::FT_PIXEL_MODE_GRAY  => PixelMode::Gray,
+            ffi::FT_PIXEL_MODE_GRAY2 => PixelMode::Gray2,
+            ffi::FT_PIXEL_MODE_GRAY4 => PixelMode::Gray4,
+            ffi::FT_PIXEL_MODE_LCD   => PixelMode::Lcd,
+            ffi::FT_PIXEL_MODE_LCD_V => PixelMode::LcdV,
+            ffi::FT_PIXEL_MODE_BGRA  => PixelMode::Bgra,
+            _ => return Err(Error::UnexpectedPixelMode)
+        })
     }
 
     /// The pitch's absolute value is the number of bytes taken by one bitmap row, including
