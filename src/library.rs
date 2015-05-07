@@ -24,7 +24,7 @@ extern "C" fn realloc_library(_memory: ffi::FT_Memory,
     }
 }
 
-static MEMORY: ffi::FT_MemoryRec = ffi::FT_MemoryRec {
+static mut MEMORY: ffi::FT_MemoryRec = ffi::FT_MemoryRec {
     user: 0 as *mut c_void,
     alloc: alloc_library,
     free: free_library,
@@ -40,7 +40,7 @@ impl Library {
         let mut raw = null_mut();
 
         let err = unsafe {
-            ffi::FT_New_Library(&MEMORY, &mut raw)
+            ffi::FT_New_Library(&mut MEMORY, &mut raw)
         };
         if err == ffi::FT_Err_Ok {
             unsafe {

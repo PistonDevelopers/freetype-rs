@@ -1,4 +1,4 @@
-use std::ptr::{ null, null_mut };
+use std::ptr::null_mut;
 use {
     ffi,
     BBox,
@@ -25,15 +25,16 @@ impl Glyph {
         }
     }
 
-    pub fn transform(&self, matrix: Option<Matrix>, delta: Option<Vector>) -> FtResult<()> {
-        let mut p_matrix = null();
-        let mut p_delta = null();
+    pub fn transform(&self, mut matrix: Option<Matrix>, mut delta: Option<Vector>)
+                     -> FtResult<()> {
+        let mut p_matrix = null_mut();
+        let mut p_delta = null_mut();
 
-        if let Some(ref m) = matrix {
-            p_matrix = m as *const Matrix;
+        if let Some(ref mut m) = matrix {
+            p_matrix = m as *mut Matrix;
         }
-        if let Some(ref d) = delta {
-            p_delta = d as *const Vector;
+        if let Some(ref mut d) = delta {
+            p_delta = d as *mut Vector;
         }
         let err = unsafe {
             ffi::FT_Glyph_Transform(self.raw, p_matrix, p_delta)
@@ -46,27 +47,27 @@ impl Glyph {
     }
 
     pub fn get_cbox(&self, bbox_mode: ffi::FT_Glyph_BBox_Mode) -> BBox {
-        let acbox = ffi::FT_BBox {
+        let mut acbox = ffi::FT_BBox {
             xMin: 0,
             yMin: 0,
             xMax: 0,
             yMax: 0
         };
         unsafe {
-            ffi::FT_Glyph_Get_CBox(self.raw, bbox_mode, &acbox)
+            ffi::FT_Glyph_Get_CBox(self.raw, bbox_mode, &mut acbox)
         };
         acbox
     }
 
-    pub fn to_bitmap(&self, render_mode: RenderMode, origin: Option<Vector>) -> FtResult<BitmapGlyph> {
-        let the_glyph = self.raw;
-        let mut p_origin = null();
+    pub fn to_bitmap(&self, render_mode: RenderMode, mut origin: Option<Vector>) -> FtResult<BitmapGlyph> {
+        let mut the_glyph = self.raw;
+        let mut p_origin = null_mut();
 
-        if let Some(ref o) = origin {
-            p_origin = o as *const Vector;
+        if let Some(ref mut o) = origin {
+            p_origin = o as *mut Vector;
         }
         let err = unsafe {
-            ffi::FT_Glyph_To_Bitmap(&the_glyph, render_mode as u32, p_origin, 0)
+            ffi::FT_Glyph_To_Bitmap(&mut the_glyph, render_mode as u32, p_origin, 0)
         };
         if err == ffi::FT_Err_Ok {
             Ok(BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph))

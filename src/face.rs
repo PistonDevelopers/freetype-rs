@@ -145,7 +145,7 @@ impl<'a> Face<'a> {
         }
     }
 
-    pub fn set_transform(&self, matrix: &Matrix, delta: &Vector) {
+    pub fn set_transform(&self, matrix: &mut Matrix, delta: &mut Vector) {
         unsafe {
             ffi::FT_Set_Transform(self.raw, matrix, delta);
         }
