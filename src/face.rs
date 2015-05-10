@@ -242,7 +242,7 @@ impl<'a> Face<'a> {
     }
 
     #[inline(always)]
-    pub fn raw_mut(&self) -> &mut ffi::FT_FaceRec {
+    pub fn raw_mut(&mut self) -> &mut ffi::FT_FaceRec {
         unsafe {
             &mut *self.raw
         }
