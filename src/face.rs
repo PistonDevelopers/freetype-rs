@@ -242,6 +242,13 @@ impl<'a> Face<'a> {
     }
 
     #[inline(always)]
+    pub fn raw_mut(&self) -> &mut ffi::FT_FaceRec {
+        unsafe {
+            &mut *self.raw
+        }
+    }
+
+    #[inline(always)]
     pub fn ascender(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).ascender
