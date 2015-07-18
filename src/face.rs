@@ -263,6 +263,13 @@ impl<'a> Face<'a> {
     }
 
     #[inline(always)]
+    pub fn em_size(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).units_per_EM as i16
+        }
+    }
+
+    #[inline(always)]
     pub fn height(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).height
@@ -333,6 +340,18 @@ impl<'a> Face<'a> {
             } else {
                 Some(unsafe { (*size).metrics })
             }
+        }
+    }
+
+    pub fn postscript_name(&self) -> Option<String> {
+        let face_name = unsafe { ffi::FT_Get_Postscript_Name(self.raw) };
+        if face_name.is_null() {
+            None
+        } else {
+            let face_name = unsafe {
+                CStr::from_ptr(face_name).to_bytes().to_vec()
+            };
+            String::from_utf8(face_name).ok()
         }
     }
 }
