@@ -7,6 +7,7 @@ pub struct TrueTypeOS2Table {
 }
 
 impl TrueTypeOS2Table  {
+    #[cfg(any(target_os = "linux", target_os = "macos"))]
     pub fn from_face(face: &mut Face) -> Option<Self> {
         unsafe {
             let os2 = ffi::FT_Get_Sfnt_Table(face.raw_mut() as *mut ffi::FT_FaceRec, ffi::ft_sfnt_os2) as ffi::TT_OS2_Internal;
