@@ -66,7 +66,7 @@ impl Bitmap {
         unsafe {
             slice::from_raw_parts(
                 (*self.raw).buffer,
-                (self.width() * self.rows()) as usize
+                (self.pitch().abs() * self.rows()) as usize
             )
         }
     }
