@@ -10,6 +10,34 @@ use {
     Vector
 };
 
+/// A description of a given subglyph returned by `GlyphSlot::get_subglyph_info`
+/// function.
+#[derive(Copy, Clone)]
+pub struct SubGlyphInfo {
+    /// The glyph index of the subglyph.
+    pub index: i32,
+    /// The subglyph flags, see FT_SUBGLYPH_FLAG_XXX.
+    pub flags: u32,
+    /// The subglyph's first argument (if any).
+    pub arg1: i32,
+    /// The subglyph's second argument (if any).
+    pub arg2: i32,
+    /// The subglyph transformation (if any).
+    pub transfrom: ffi::FT_Matrix
+}
+
+impl Default for SubGlyphInfo {
+    fn default() -> Self {
+        SubGlyphInfo {
+            index: 0,
+            flags: 0,
+            arg1: 0,
+            arg2: 0,
+            transfrom: ffi::FT_Matrix { xx: 0, xy: 0, yx: 0, yy: 0 }
+        }
+    }
+}
+
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub struct GlyphSlot {
     library_raw: ffi::FT_Library,
@@ -35,21 +63,14 @@ impl GlyphSlot {
         }
     }
 
-    pub fn get_subglyph_info(&self, sub_index: u32) -> FtResult<(i32, u32, i32, i32, ffi::FT_Matrix)> {
-        let mut index = 0;
-        let mut flags = 0;
-        let mut arg1 = 0;
-        let mut arg2 = 0;
-        let mut transfrom = ffi::FT_Matrix {
-            xx: 0, xy: 0,
-            yx: 0, yy: 0
-        };
+    pub fn get_subglyph_info(&self, sub_index: u32) -> FtResult<SubGlyphInfo> {
+        let mut info = SubGlyphInfo::default();
         let err = unsafe {
-            ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut index, &mut flags,
-                                      &mut arg1, &mut arg2, &mut transfrom)
+            ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut info.index, &mut info.flags,
+                                      &mut info.arg1, &mut info.arg2, &mut info.transfrom)
         };
         if err == ffi::FT_Err_Ok {
-            Ok((index, flags, arg1, arg2, transfrom))
+            Ok(info)
         } else {
             Err(err.into())
         }
