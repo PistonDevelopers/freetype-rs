@@ -1,5 +1,4 @@
 #![deny(missing_copy_implementations)]
-#![deny(raw_pointer_derive)]
 
 #[macro_use]
 extern crate bitflags;
