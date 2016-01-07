@@ -311,7 +311,7 @@ impl<'a> Face<'a> {
             None
         } else {
             let family_name = unsafe {
-                CStr::from_ptr(family_name).to_bytes().to_vec()
+                CStr::from_ptr(family_name as *const _).to_bytes().to_vec()
             };
             String::from_utf8(family_name).ok()
         }
@@ -324,7 +324,7 @@ impl<'a> Face<'a> {
             None
         } else {
             let style_name = unsafe {
-                CStr::from_ptr(style_name).to_bytes().to_vec()
+                CStr::from_ptr(style_name as *const _).to_bytes().to_vec()
             };
             String::from_utf8(style_name).ok()
         }
@@ -349,7 +349,7 @@ impl<'a> Face<'a> {
             None
         } else {
             let face_name = unsafe {
-                CStr::from_ptr(face_name).to_bytes().to_vec()
+                CStr::from_ptr(face_name as *const _).to_bytes().to_vec()
             };
             String::from_utf8(face_name).ok()
         }

@@ -65,7 +65,7 @@ impl Library {
                             .and_then(|s| CString::new(s).ok())
                             .ok_or(Error::InvalidPath));
         let err = unsafe {
-            ffi::FT_New_Face(self.raw, path.as_ptr(), face_index as ffi::FT_Long, &mut face)
+            ffi::FT_New_Face(self.raw, path.as_ptr() as *const _, face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
             Ok(Face::from_raw(self.raw, face))
