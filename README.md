@@ -4,11 +4,35 @@ Rust bindings for FreeType library
 
 ## Requirements
 
-  * *Rust*: We currently compile against the *master* branch. The releases on
-    http://www.rust-lang.org tend to not work.
-  * *Cargo*: We use Cargo to compile the project.
-  * *FreeType2 development libraries*: install through your favourite package
-    management tool, or via http://www.freetype.org/download.html
+### Linux
+
+Install FreeType via your package manager. For example in Debian-based distributions:
+
+```
+sudo apt install libfreetype6-dev
+```
+
+### Mac
+
+Use [Homebrew](http://brew.sh/) to install FreeType:
+
+```
+brew install freetype
+```
+
+### Windows
+
+Install [MSYS2](http://sourceforge.net/p/msys2/wiki/MSYS2%20installation/) and run one of the
+following two commands depending on your Rust version in a MSYS2 Shell:
+
+```sh
+pacman -S mingw-w64-i686-freetype   # 32 bit Rust
+pacman -S mingw-w64-x86_64-freetype # 64 bit Rust
+```
+
+Now add `C:\msys32\mingw32\bin` or `C:\msys64\mingw64\bin` to your PATH and copy the
+`libfreetype-6.dll` file from that folder to
+`<Rust's install path>\bin\rustlib\<arch>-pc-windows-gnu\lib`.
 
 ## Build
 
