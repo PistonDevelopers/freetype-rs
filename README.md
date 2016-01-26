@@ -4,11 +4,9 @@ Rust bindings for FreeType library
 
 ## Requirements
 
-  * *Rust*: We currently compile against the *master* branch. The releases on
-    http://www.rust-lang.org tend to not work.
   * *Cargo*: We use Cargo to compile the project.
-  * *FreeType2 development libraries*: install through your favourite package
-    management tool, or via http://www.freetype.org/download.html
+  * *FreeType2 development libraries*: For installation instructions see
+    [freetype-sys](https://github.com/PistonDevelopers/freetype-sys).
 
 ## Build
 
