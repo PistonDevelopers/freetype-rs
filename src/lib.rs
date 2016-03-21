@@ -3,7 +3,7 @@
 #[macro_use]
 extern crate bitflags;
 extern crate libc;
-extern crate freetype_sys;
+pub extern crate freetype_sys;
 
 pub use bitmap::Bitmap;
 pub use bitmap_glyph::BitmapGlyph;
