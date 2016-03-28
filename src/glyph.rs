@@ -9,12 +9,16 @@ use {
     Vector
 };
 
+/// Represents a retrieved glyph from the library
+///
+/// Note that when this glyph is dropped, so is the library
 pub struct Glyph {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_Glyph
 }
 
 impl Glyph {
+    /// Create a freetype-rs glyph object from c constituent parts
     pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Self {
         unsafe {
             ffi::FT_Reference_Library(library_raw);
@@ -25,6 +29,7 @@ impl Glyph {
         }
     }
 
+    /// Transform a glyph image if its format is scalable.
     pub fn transform(&self, mut matrix: Option<Matrix>, mut delta: Option<Vector>)
                      -> FtResult<()> {
         let mut p_matrix = null_mut();
@@ -46,6 +51,14 @@ impl Glyph {
         }
     }
 
+    /// Return a glyph's ‘control box’. The control box encloses all the outline's points,
+    /// including Bézier control points. Though it coincides with the exact bounding box for most
+    /// glyphs, it can be slightly larger in some situations (like when rotating an outline that
+    /// contains Bézier outside arcs).
+    ///
+    /// Computing the control box is very fast, while getting the bounding box can take much more
+    /// time as it needs to walk over all segments and arcs in the outline. To get the latter, you
+    /// can use the ‘ftbbox’ component, which is dedicated to this single task.
     pub fn get_cbox(&self, bbox_mode: ffi::FT_Glyph_BBox_Mode) -> BBox {
         let mut acbox = ffi::FT_BBox {
             xMin: 0,
@@ -59,6 +72,7 @@ impl Glyph {
         acbox
     }
 
+    /// Convert a given glyph object to a bitmap glyph object.
     pub fn to_bitmap(&self, render_mode: RenderMode, mut origin: Option<Vector>) -> FtResult<BitmapGlyph> {
         let mut the_glyph = self.raw;
         let mut p_origin = null_mut();
@@ -88,6 +102,9 @@ impl Glyph {
         }
     }
 
+    /// An enumeration type used to describe the format of a given glyph image. Note that this
+    /// version of FreeType only supports two image formats, even though future font drivers will
+    /// be able to register their own format.
     #[inline(always)]
     pub fn format(&self) -> ffi::FT_Glyph_Format {
         unsafe {
@@ -95,6 +112,8 @@ impl Glyph {
         }
     }
 
+    /// Get the underlying c glyph struct (The system actually calls this a GlyphRec because it can
+    /// be a different struct in different circumstances)
     #[inline(always)]
     pub fn raw(&self) -> &ffi::FT_GlyphRec {
         unsafe {

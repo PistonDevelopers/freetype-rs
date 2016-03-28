@@ -1,3 +1,40 @@
+//!
+//! Rust wrapper around freetype 2 library
+//!
+//! # Initialization
+//!
+//! To create a new freetype context, instantiate the Library struct as below.
+//! The Library (along with other objects) obeys RAII and is dropped when the struct goes out of
+//! scope.
+//!
+//! # Example
+//!
+//! ```
+//! extern crate freetype;
+//!
+//! fn main() {
+//!     use freetype::Library;
+//!
+//!     // Init the library
+//!     let lib = Library::init().unwrap();
+//!     // Load a font face
+//!     let face = lib.new_face("/path/to/a/font/file.ttf", 0).unwrap();
+//!     // Set the font size
+//!     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
+//!     // Load a character
+//!     face.load_char('A').unwrap();
+//!     // Get the glyph instance
+//!     let glyph = face.glyph();
+//!     do_something_with_bitmap(glyph.bitmap().buffer());
+//! }
+//! ```
+//!
+//! See in the `examples/` folder for more examples.
+//!
+//! # External links
+//! - See [freetype docs](http://www.freetype.org/freetype2/docs/reference/ft2-index.html)
+//!   for more information
+
 #![deny(missing_copy_implementations)]
 
 #[macro_use]
