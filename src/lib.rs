@@ -9,7 +9,7 @@
 //!
 //! # Example
 //!
-//! ```no_run
+//! ```ignore
 //! extern crate freetype;
 //!
 //! fn main() {
