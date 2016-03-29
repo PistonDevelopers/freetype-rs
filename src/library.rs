@@ -37,6 +37,9 @@ pub struct Library {
 }
 
 impl Library {
+    /// This function is used to create a new FreeType library instance and add the default
+    /// modules. It returns a struct encapsulating the freetype library. The library is correctly
+    /// discarded when the struct is dropped.
     pub fn init() -> FtResult<Self> {
         let mut raw = null_mut();
 
@@ -55,6 +58,8 @@ impl Library {
         }
     }
 
+    /// Open a font file using its pathname. `face_index` should be 0 if there is only 1 font
+    /// in the file.
     pub fn new_face<P>(&self, path: P, face_index: isize) -> FtResult<Face<'static>>
         where P: AsRef<OsStr>
     {
@@ -74,6 +79,7 @@ impl Library {
         }
     }
 
+    /// Similar to `new_face`, but loads file data from a byte array in memory
     pub fn new_memory_face<'a>(&self, buffer: &'a [u8], face_index: isize) -> FtResult<Face<'a>> {
         let mut face = null_mut();
 
@@ -88,14 +94,17 @@ impl Library {
         }
     }
 
+    /// Get the underlying library object
     pub fn raw(&self) -> ffi::FT_Library {
         self.raw
     }
 
+    /// Get the underlying memory management object
     pub fn get_memory(&self) -> &ffi::FT_MemoryRec {
         unsafe { &MEMORY }
     }
 
+    /// Set a new memory management object
     pub fn new_memory(&self, alloc: Option<FT_Alloc_Func>,
                              free: Option<FT_Free_Func>,
                              realloc: Option<FT_Realloc_Func>,
