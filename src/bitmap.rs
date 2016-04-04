@@ -3,7 +3,7 @@ use { ffi, FtResult, Error };
 
 /// An enumeration type used to describe the format of pixels in a given bitmap. Note that
 /// additional formats may be added in the future.
-#[derive(Copy, Clone, Debug)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub enum PixelMode {
     /// This value is reserved.
     None,
