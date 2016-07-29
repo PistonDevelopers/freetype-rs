@@ -64,14 +64,12 @@ impl<'a> Clone for Face<'a> {
 }
 
 impl<'a> Face<'a> {
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Self {
-        unsafe {
-            ffi::FT_Reference_Library(library_raw);
-        }
+    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Self {
+        ffi::FT_Reference_Library(library_raw);
         Face {
             library_raw: library_raw,
             raw: raw,
-            glyph: unsafe { GlyphSlot::from_raw(library_raw, (*raw).glyph) },
+            glyph: GlyphSlot::from_raw(library_raw, (*raw).glyph),
             _phantom: PhantomData
         }
     }

@@ -19,10 +19,8 @@ pub struct Glyph {
 
 impl Glyph {
     /// Create a freetype-rs glyph object from c constituent parts
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Self {
-        unsafe {
-            ffi::FT_Reference_Library(library_raw);
-        }
+    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Self {
+        ffi::FT_Reference_Library(library_raw);
         Glyph {
             library_raw: library_raw,
             raw: raw
@@ -84,7 +82,7 @@ impl Glyph {
             ffi::FT_Glyph_To_Bitmap(&mut the_glyph, render_mode as u32, p_origin, 0)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph))
+            Ok(unsafe { BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph) })
         } else {
             Err(err.into())
         }
@@ -130,7 +128,7 @@ impl Clone for Glyph {
             ffi::FT_Glyph_Copy(self.raw, &mut target)
         };
         if err == ffi::FT_Err_Ok {
-            Glyph::from_raw(self.library_raw, target)
+            unsafe { Glyph::from_raw(self.library_raw, target) }
         } else {
             panic!("Failed to copy glyph")
         }

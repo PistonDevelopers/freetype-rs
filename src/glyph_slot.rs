@@ -47,7 +47,7 @@ pub struct GlyphSlot {
 
 impl GlyphSlot {
     /// Create a `GlyphSlot` from its constituent C parts
-    pub fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> Self {
+    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> Self {
         GlyphSlot {
             library_raw: library_raw,
             raw: raw
@@ -90,7 +90,7 @@ impl GlyphSlot {
             ffi::FT_Get_Glyph(self.raw, &mut aglyph)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(Glyph::from_raw(self.library_raw, aglyph))
+            Ok(unsafe { Glyph::from_raw(self.library_raw, aglyph) })
         } else {
             Err(err.into())
         }
@@ -118,9 +118,7 @@ impl GlyphSlot {
     /// FT_Load_Glyph and a few other functions.
     #[inline(always)]
     pub fn bitmap(&self) -> Bitmap {
-        let bitmap = unsafe { &(*self.raw).bitmap };
-
-        Bitmap::from_raw(bitmap)
+        unsafe { Bitmap::from_raw(&(*self.raw).bitmap) }
     }
 
     /// The bitmap's left bearing expressed in integer pixels. Only valid if the format is

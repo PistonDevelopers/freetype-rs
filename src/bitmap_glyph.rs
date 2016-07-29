@@ -6,7 +6,7 @@ pub struct BitmapGlyph {
 }
 
 impl BitmapGlyph {
-    pub fn from_raw(raw: ffi::FT_BitmapGlyph) -> Self {
+    pub unsafe fn from_raw(raw: ffi::FT_BitmapGlyph) -> Self {
         BitmapGlyph {
             raw: raw
         }
@@ -28,9 +28,7 @@ impl BitmapGlyph {
 
     #[inline(always)]
     pub fn bitmap(&self) -> Bitmap {
-        let bitmap = unsafe { &(*self.raw).bitmap };
-
-        Bitmap::from_raw(bitmap)
+        unsafe { Bitmap::from_raw(&(*self.raw).bitmap) }
     }
 
     #[inline(always)]
