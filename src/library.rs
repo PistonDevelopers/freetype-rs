@@ -2,7 +2,7 @@ use std::ffi::{ CString, OsStr };
 use std::ptr::null_mut;
 use libc::{ self, c_void, c_long, size_t };
 use { Face, FtResult, Error };
-use ffi::{ self, FT_Alloc_Func, FT_Free_Func, FT_Realloc_Func };
+use ffi;
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
     unsafe {
@@ -97,26 +97,6 @@ impl Library {
     /// Get the underlying library object
     pub fn raw(&self) -> ffi::FT_Library {
         self.raw
-    }
-
-    /// Get the underlying memory management object
-    pub fn get_memory(&self) -> &ffi::FT_MemoryRec {
-        unsafe { &MEMORY }
-    }
-
-    /// Set a new memory management object
-    pub fn new_memory(&self, alloc: Option<FT_Alloc_Func>,
-                             free: Option<FT_Free_Func>,
-                             realloc: Option<FT_Realloc_Func>,
-                             user: Option<*mut c_void>) {
-        unsafe {
-            MEMORY = ffi::FT_MemoryRec {
-                user: user.unwrap_or(0 as *mut c_void),
-                alloc: alloc.unwrap_or(alloc_library),
-                free: free.unwrap_or(free_library),
-                realloc: realloc.unwrap_or(realloc_library)
-            };
-        }
     }
 }
 
