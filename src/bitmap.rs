@@ -54,7 +54,7 @@ pub struct Bitmap {
 }
 
 impl Bitmap {
-    pub fn from_raw(raw: *const ffi::FT_Bitmap) -> Self {
+    pub unsafe fn from_raw(raw: *const ffi::FT_Bitmap) -> Self {
         Bitmap {
             raw: raw
         }

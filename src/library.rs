@@ -73,7 +73,7 @@ impl Library {
             ffi::FT_New_Face(self.raw, path.as_ptr() as *const _, face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(Face::from_raw(self.raw, face))
+            Ok(unsafe { Face::from_raw(self.raw, face) })
         } else {
             Err(err.into())
         }
@@ -88,7 +88,7 @@ impl Library {
                                     face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(Face::from_raw(self.raw, face))
+            Ok(unsafe { Face::from_raw(self.raw, face) })
         } else {
             Err(err.into())
         }
