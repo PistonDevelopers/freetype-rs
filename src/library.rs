@@ -25,6 +25,15 @@ extern "C" fn realloc_library(_memory: ffi::FT_Memory,
     }
 }
 
+#[repr(u32)]
+#[derive(Copy, Clone)]
+pub enum LcdFilter {
+    LcdFilterNone    = ffi::FT_LCD_FILTER_NONE,
+    LcdFilterDefault = ffi::FT_LCD_FILTER_DEFAULT,
+    LcdFilterLight   = ffi::FT_LCD_FILTER_LIGHT,
+    LcdFilterLegacy  = ffi::FT_LCD_FILTER_LEGACY
+}
+
 static mut MEMORY: ffi::FT_MemoryRec = ffi::FT_MemoryRec {
     user: 0 as *mut c_void,
     alloc: alloc_library,
@@ -89,6 +98,17 @@ impl Library {
         };
         if err == ffi::FT_Err_Ok {
             Ok(unsafe { Face::from_raw(self.raw, face) })
+        } else {
+            Err(err.into())
+        }
+    }
+
+    pub fn set_lcd_filter(&self, lcd_filter: LcdFilter) -> FtResult<()> {
+        let err = unsafe {
+            ffi::FT_Library_SetLcdFilter(self.raw, lcd_filter as u32)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
         } else {
             Err(err.into())
         }
