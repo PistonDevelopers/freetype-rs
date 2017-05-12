@@ -48,7 +48,7 @@ pub use error::{ FtResult, Error };
 pub use face::Face;
 pub use glyph::Glyph;
 pub use glyph_slot::GlyphSlot;
-pub use library::Library;
+pub use library::{ Library, LcdFilter };
 pub use outline::Outline;
 pub use render_mode::RenderMode;
 pub use freetype_sys as ffi;
