@@ -12,28 +12,28 @@ pub enum KerningMode {
 }
 
 bitflags! {
-    pub flags LoadFlag: i32 {
-        const DEFAULT                    = ::ffi::FT_LOAD_DEFAULT,
-        const NO_SCALE                   = ::ffi::FT_LOAD_NO_SCALE,
-        const NO_HINTING                 = ::ffi::FT_LOAD_NO_HINTING,
-        const RENDER                     = ::ffi::FT_LOAD_RENDER,
-        const NO_BITMAP                  = ::ffi::FT_LOAD_NO_BITMAP,
-        const VERTICAL_LAYOUT            = ::ffi::FT_LOAD_VERTICAL_LAYOUT,
-        const FORCE_AUTOHINT             = ::ffi::FT_LOAD_FORCE_AUTOHINT,
-        const CROP_BITMAP                = ::ffi::FT_LOAD_CROP_BITMAP,
-        const PEDANTIC                   = ::ffi::FT_LOAD_PEDANTIC,
-        const IGNORE_GLOBAL_ADVANCE_WITH = ::ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH,
-        const NO_RECURSE                 = ::ffi::FT_LOAD_NO_RECURSE,
-        const IGNORE_TRANSFORM           = ::ffi::FT_LOAD_IGNORE_TRANSFORM,
-        const MONOCHROME                 = ::ffi::FT_LOAD_MONOCHROME,
-        const LINEAR_DESIGN              = ::ffi::FT_LOAD_LINEAR_DESIGN,
-        const NO_AUTOHINT                = ::ffi::FT_LOAD_NO_AUTOHINT,
-        const TARGET_NORMAL              = ::ffi::FT_LOAD_TARGET_NORMAL,
-        const TARGET_LIGHT               = ::ffi::FT_LOAD_TARGET_LIGHT,
-        const TARGET_MONO                = ::ffi::FT_LOAD_TARGET_MONO,
-        const TARGET_LCD                 = ::ffi::FT_LOAD_TARGET_LCD,
-        const TARGET_LCD_V               = ::ffi::FT_LOAD_TARGET_LCD_V,
-        const COLOR                      = ::ffi::FT_LOAD_COLOR
+    pub struct LoadFlag: i32 {
+        const DEFAULT                    = ::ffi::FT_LOAD_DEFAULT;
+        const NO_SCALE                   = ::ffi::FT_LOAD_NO_SCALE;
+        const NO_HINTING                 = ::ffi::FT_LOAD_NO_HINTING;
+        const RENDER                     = ::ffi::FT_LOAD_RENDER;
+        const NO_BITMAP                  = ::ffi::FT_LOAD_NO_BITMAP;
+        const VERTICAL_LAYOUT            = ::ffi::FT_LOAD_VERTICAL_LAYOUT;
+        const FORCE_AUTOHINT             = ::ffi::FT_LOAD_FORCE_AUTOHINT;
+        const CROP_BITMAP                = ::ffi::FT_LOAD_CROP_BITMAP;
+        const PEDANTIC                   = ::ffi::FT_LOAD_PEDANTIC;
+        const IGNORE_GLOBAL_ADVANCE_WITH = ::ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH;
+        const NO_RECURSE                 = ::ffi::FT_LOAD_NO_RECURSE;
+        const IGNORE_TRANSFORM           = ::ffi::FT_LOAD_IGNORE_TRANSFORM;
+        const MONOCHROME                 = ::ffi::FT_LOAD_MONOCHROME;
+        const LINEAR_DESIGN              = ::ffi::FT_LOAD_LINEAR_DESIGN;
+        const NO_AUTOHINT                = ::ffi::FT_LOAD_NO_AUTOHINT;
+        const TARGET_NORMAL              = ::ffi::FT_LOAD_TARGET_NORMAL;
+        const TARGET_LIGHT               = ::ffi::FT_LOAD_TARGET_LIGHT;
+        const TARGET_MONO                = ::ffi::FT_LOAD_TARGET_MONO;
+        const TARGET_LCD                 = ::ffi::FT_LOAD_TARGET_LCD;
+        const TARGET_LCD_V               = ::ffi::FT_LOAD_TARGET_LCD_V;
+        const COLOR                      = ::ffi::FT_LOAD_COLOR;
     }
 }
 
