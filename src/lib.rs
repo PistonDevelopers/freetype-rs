@@ -22,10 +22,10 @@
 //!     // Set the font size
 //!     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
 //!     // Load a character
-//!     face.load_char('A').unwrap();
+//!     face.load_char('A' as usize, freetype::face::RENDER).unwrap();
 //!     // Get the glyph instance
 //!     let glyph = face.glyph();
-//!     do_something_with_bitmap(glyph.bitmap().buffer());
+//!     do_something_with_bitmap(glyph.bitmap());
 //! }
 //! ```
 //!
