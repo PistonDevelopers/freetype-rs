@@ -28,7 +28,7 @@ fn main() {
     let face = library.new_face(font, 0).unwrap();
 
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(character, ft::face::NO_SCALE).unwrap();
+    face.load_char(character, ft::face::LoadFlag::NO_SCALE).unwrap();
 
     let glyph = face.glyph();
     let metrics = glyph.metrics();

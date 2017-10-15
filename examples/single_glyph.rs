@@ -42,7 +42,7 @@ fn main() {
     let face = library.new_face(font, 0).unwrap();
 
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(character, ft::face::RENDER).unwrap();
+    face.load_char(character, ft::face::LoadFlag::RENDER).unwrap();
 
     let glyph = face.glyph();
     let x = glyph.bitmap_left() as usize;
