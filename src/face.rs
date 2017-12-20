@@ -1,7 +1,7 @@
 use std::fmt;
 use std::ffi::CStr;
+use std::rc::Rc;
 use { ffi, FtResult, GlyphSlot, Matrix, Vector };
-use std::marker::PhantomData;
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
@@ -38,14 +38,14 @@ bitflags! {
 }
 
 #[derive(Eq, PartialEq, Hash)]
-pub struct Face<'a> {
+pub struct Face {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_Face,
     glyph: GlyphSlot,
-    _phantom: PhantomData<&'a ()>
+    bytes: Option<Rc<Vec<u8>>>
 }
 
-impl<'a> Clone for Face<'a> {
+impl Clone for Face {
     fn clone(&self) -> Self {
         let err = unsafe {
             ffi::FT_Reference_Library(self.library_raw)
@@ -59,18 +59,23 @@ impl<'a> Clone for Face<'a> {
         if err != ffi::FT_Err_Ok {
             panic!("Failed to reference face");
         }
-        Face { ..*self }
+        Face {
+            library_raw: self.library_raw,
+            raw: self.raw,
+            glyph: self.glyph,
+            bytes: self.bytes.clone()
+        }
     }
 }
 
-impl<'a> Face<'a> {
-    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face) -> Self {
+impl Face {
+    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face, bytes: Option<Rc<Vec<u8>>>) -> Self {
         ffi::FT_Reference_Library(library_raw);
         Face {
             library_raw: library_raw,
             raw: raw,
             glyph: GlyphSlot::from_raw(library_raw, (*raw).glyph),
-            _phantom: PhantomData
+            bytes: bytes,
         }
     }
 
@@ -354,7 +359,7 @@ impl<'a> Face<'a> {
     }
 }
 
-impl<'a> fmt::Debug for Face<'a> {
+impl fmt::Debug for Face {
     fn fmt(&self, form: &mut fmt::Formatter) -> fmt::Result {
         let name = self.style_name().unwrap_or("[unknown name]".to_owned());
         try!(form.write_str("Font Face: "));
@@ -362,7 +367,7 @@ impl<'a> fmt::Debug for Face<'a> {
     }
 }
 
-impl<'a> Drop for Face<'a> {
+impl Drop for Face {
     fn drop(&mut self) {
         let err = unsafe {
             ffi::FT_Done_Face(self.raw)
@@ -376,5 +381,6 @@ impl<'a> Drop for Face<'a> {
         if err != ffi::FT_Err_Ok {
             panic!("Failed to drop library")
         }
+        self.bytes = None;
     }
 }

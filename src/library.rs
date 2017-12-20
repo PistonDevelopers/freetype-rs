@@ -1,5 +1,6 @@
 use std::ffi::{ CString, OsStr };
 use std::ptr::null_mut;
+use std::rc::Rc;
 use libc::{ self, c_void, c_long, size_t };
 use { Face, FtResult, Error };
 use ffi;
@@ -69,7 +70,7 @@ impl Library {
 
     /// Open a font file using its pathname. `face_index` should be 0 if there is only 1 font
     /// in the file.
-    pub fn new_face<P>(&self, path: P, face_index: isize) -> FtResult<Face<'static>>
+    pub fn new_face<P>(&self, path: P, face_index: isize) -> FtResult<Face>
         where P: AsRef<OsStr>
     {
         let mut face = null_mut();
@@ -82,22 +83,26 @@ impl Library {
             ffi::FT_New_Face(self.raw, path.as_ptr() as *const _, face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(unsafe { Face::from_raw(self.raw, face) })
+            Ok(unsafe { Face::from_raw(self.raw, face, None) })
         } else {
             Err(err.into())
         }
     }
 
     /// Similar to `new_face`, but loads file data from a byte array in memory
-    pub fn new_memory_face<'a>(&self, buffer: &'a [u8], face_index: isize) -> FtResult<Face<'a>> {
+    pub fn new_memory_face<T>(&self, buffer: T, face_index: isize) -> FtResult<Face>
+    where
+        T: Into<Rc<Vec<u8>>>
+    {
         let mut face = null_mut();
+        let buffer = buffer.into();
 
         let err = unsafe {
             ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as ffi::FT_Long,
                                     face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(unsafe { Face::from_raw(self.raw, face) })
+            Ok(unsafe { Face::from_raw(self.raw, face, Some(buffer)) })
         } else {
             Err(err.into())
         }
