@@ -82,7 +82,7 @@ impl Glyph {
             ffi::FT_Glyph_To_Bitmap(&mut the_glyph, render_mode as u32, p_origin, 0)
         };
         if err == ffi::FT_Err_Ok {
-            Ok(unsafe { BitmapGlyph::from_raw(the_glyph as ffi::FT_BitmapGlyph) })
+            Ok(unsafe { BitmapGlyph::from_raw(self.library_raw, the_glyph as ffi::FT_BitmapGlyph) })
         } else {
             Err(err.into())
         }
