@@ -2,7 +2,7 @@ use std::ffi::{ CString, OsStr };
 use std::ptr::null_mut;
 use std::rc::Rc;
 use libc::{ self, c_void, c_long, size_t };
-use { Face, FtResult, Error };
+use { Face, FtResult, Error, Stroker };
 use ffi;
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
@@ -84,6 +84,20 @@ impl Library {
         };
         if err == ffi::FT_Err_Ok {
             Ok(unsafe { Face::from_raw(self.raw, face, None) })
+        } else {
+            Err(err.into())
+        }
+    }
+
+    pub fn new_stroker(&self) -> FtResult<Stroker> {
+        let mut stroker = null_mut();
+
+        let err = unsafe {
+            ffi::FT_Stroker_New(self.raw, &mut stroker)
+        };
+
+        if err == ffi::FT_Err_Ok {
+            Ok(unsafe { Stroker::from_raw(self.raw, stroker) })
         } else {
             Err(err.into())
         }
