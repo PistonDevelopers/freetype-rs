@@ -6,6 +6,7 @@ use {
     FtResult,
     Matrix,
     RenderMode,
+    Stroker,
     Vector
 };
 
@@ -83,6 +84,34 @@ impl Glyph {
         };
         if err == ffi::FT_Err_Ok {
             Ok(unsafe { BitmapGlyph::from_raw(self.library_raw, the_glyph as ffi::FT_BitmapGlyph) })
+        } else {
+            Err(err.into())
+        }
+    }
+
+    pub fn stroke(&self, stroker: &Stroker) -> FtResult<Glyph> {
+        let mut the_glyph = self.raw;
+
+        let err = unsafe {
+            ffi::FT_Glyph_Stroke(&mut the_glyph, stroker.raw_stroker(), false as ffi::FT_Bool)
+        };
+
+        if err == ffi::FT_Err_Ok {
+            Ok(unsafe { Glyph::from_raw(self.library_raw, the_glyph) })
+        } else {
+            Err(err.into())
+        }
+    }
+
+    pub fn stroke_border(&self, stroker: &Stroker, inside: bool) -> FtResult<Glyph> {
+        let mut the_glyph = self.raw;
+
+        let err = unsafe {
+            ffi::FT_Glyph_StrokeBorder(&mut the_glyph, stroker.raw_stroker(), inside as ffi::FT_Bool, false as ffi::FT_Bool)
+        };
+
+        if err == ffi::FT_Err_Ok {
+            Ok(unsafe { Glyph::from_raw(self.library_raw, the_glyph) })
         } else {
             Err(err.into())
         }
