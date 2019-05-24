@@ -37,6 +37,13 @@ bitflags! {
     }
 }
 
+bitflags! {
+    pub struct StyleFlag: ffi::FT_Long {
+        const BOLD   = ::ffi::FT_STYLE_FLAG_BOLD;
+        const ITALIC = ::ffi::FT_STYLE_FLAG_ITALIC;
+    }
+}
+
 #[derive(Eq, PartialEq, Hash)]
 pub struct Face {
     library_raw: ffi::FT_Library,
@@ -331,6 +338,11 @@ impl Face {
             };
             String::from_utf8(style_name).ok()
         }
+    }
+
+    pub fn style_flags(&self) -> StyleFlag {
+        let style_flags = unsafe { (*self.raw).style_flags };
+        StyleFlag::from_bits_truncate(style_flags)
     }
 
     pub fn size_metrics(&self) -> Option<ffi::FT_Size_Metrics> {
