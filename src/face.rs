@@ -314,6 +314,13 @@ impl Face {
         }
     }
 
+    #[inline(always)]
+    pub fn num_faces(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).num_faces as i16
+        }
+    }
+
     pub fn family_name(&self) -> Option<String> {
         let family_name = unsafe { (*self.raw).family_name };
 
