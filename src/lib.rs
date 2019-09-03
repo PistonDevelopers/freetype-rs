@@ -65,6 +65,7 @@ pub mod outline;
 pub mod render_mode;
 pub mod stroker;
 pub mod tt_os2;
+pub mod tt_postscript;
 
 pub type BBox = ffi::FT_BBox;
 pub type GlyphMetrics = ffi::FT_Glyph_Metrics;
