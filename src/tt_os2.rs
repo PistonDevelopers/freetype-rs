@@ -49,7 +49,7 @@ impl TrueTypeOS2Table  {
     }
 
     #[inline(always)]
-    pub fn fs_type(&self) -> ffi::FT_Short {
+    pub fn fs_type(&self) -> ffi::FT_UShort {
         unsafe {
             (*self.raw).fsType
         }
@@ -135,9 +135,61 @@ impl TrueTypeOS2Table  {
     }
 
     #[inline(always)]
+    pub fn fs_selection(&self) -> ffi::FT_UShort {
+        unsafe {
+            (*self.raw).fsSelection
+        }
+    }
+
+    #[inline(always)]
+    pub fn s_typo_ascender(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).sTypoAscender
+        }
+    }
+
+    #[inline(always)]
+    pub fn s_typo_descender(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).sTypoDescender
+        }
+    }
+
+    #[inline(always)]
+    pub fn s_typo_line_gap(&self) -> ffi::FT_Short {
+        unsafe {
+            (*self.raw).sTypoLineGap
+        }
+    }
+
+    #[inline(always)]
     pub fn x_height(&self) -> ffi::FT_Short {
         unsafe {
             (*self.raw).sxHeight
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::path::PathBuf;
+
+    use library::Library;
+
+    use super::*;
+
+    /// Sanity-check reading basic line metrics from the OS/2 table.
+    #[test]
+    fn line_metrics() {
+        let mut fira_path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        fira_path.push("examples/assets/FiraSans-Regular.ttf");
+
+        let library = Library::init().unwrap();
+        let mut face = library.new_face(fira_path, 0).unwrap();
+        let os2 = TrueTypeOS2Table::from_face(&mut face).unwrap();
+
+        assert_eq!(os2.s_typo_ascender(), 785);
+        assert_eq!(os2.s_typo_descender(), -215);
+        assert_eq!(os2.s_typo_line_gap(), 400);
     }
 }
