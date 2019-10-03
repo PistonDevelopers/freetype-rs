@@ -75,10 +75,10 @@ impl Library {
     {
         let mut face = null_mut();
 
-        let path = try!(path.as_ref()
-                            .to_str()
-                            .and_then(|s| CString::new(s).ok())
-                            .ok_or(Error::InvalidPath));
+        let path = path.as_ref()
+                        .to_str()
+                        .and_then(|s| CString::new(s).ok())
+                        .ok_or(Error::InvalidPath)?;
         let err = unsafe {
             ffi::FT_New_Face(self.raw, path.as_ptr() as *const _, face_index as ffi::FT_Long, &mut face)
         };
