@@ -381,7 +381,7 @@ impl Face {
 impl fmt::Debug for Face {
     fn fmt(&self, form: &mut fmt::Formatter) -> fmt::Result {
         let name = self.style_name().unwrap_or("[unknown name]".to_owned());
-        try!(form.write_str("Font Face: "));
+        form.write_str("Font Face: ")?;
         form.write_str(&name[..])
     }
 }
