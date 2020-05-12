@@ -1,7 +1,7 @@
 [package]
 
 name = "freetype-rs"
-version = "0.24.0"
+version = "0.25.0"
 authors = ["Coeuvre <coeuvre@gmail.com>"]
 keywords = ["freetype", "font", "glyph"]
 description = "Bindings for FreeType font library"
