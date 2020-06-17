@@ -14,6 +14,7 @@
 //!
 //! fn main() {
 //!     use freetype::Library;
+//!     use freetype::face::LoadFlag;
 //!
 //!     // Init the library
 //!     let lib = Library::init().unwrap();
@@ -22,7 +23,7 @@
 //!     // Set the font size
 //!     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
 //!     // Load a character
-//!     face.load_char('A' as usize, freetype::face::RENDER).unwrap();
+//!     face.load_char('A' as usize, LoadFlag::RENDER).unwrap();
 //!     // Get the glyph instance
 //!     let glyph = face.glyph();
 //!     do_something_with_bitmap(glyph.bitmap());
