@@ -25,10 +25,7 @@ pub struct Stroker {
 impl Stroker {
     pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Stroker) -> Self {
         ffi::FT_Reference_Library(library_raw);
-        Stroker {
-            library_raw: library_raw,
-            raw: raw,
-        }
+        Stroker { library_raw, raw }
     }
 
     pub fn set(&self, radius: ffi::FT_Fixed, line_cap: StrokerLineCap, line_join: StrokerLineJoin, miter_limit: ffi::FT_Fixed) {

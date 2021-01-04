@@ -79,10 +79,10 @@ impl Face {
     pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face, bytes: Option<Rc<Vec<u8>>>) -> Self {
         ffi::FT_Reference_Library(library_raw);
         Face {
-            library_raw: library_raw,
-            raw: raw,
+            library_raw,
+            raw,
             glyph: GlyphSlot::from_raw(library_raw, (*raw).glyph),
-            bytes: bytes,
+            bytes,
         }
     }
 

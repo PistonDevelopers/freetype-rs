@@ -60,9 +60,7 @@ impl Library {
             unsafe {
                 ffi::FT_Add_Default_Modules(raw);
             }
-            Ok(Library {
-                raw: raw
-            })
+            Ok(Library { raw })
         } else {
             Err(err.into())
         }

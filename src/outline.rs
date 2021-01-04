@@ -16,9 +16,7 @@ pub struct Outline<'a> {
 
 impl<'a> Outline<'a> {
     pub unsafe fn from_raw(raw: &'a ffi::FT_Outline) -> Self {
-        Outline {
-            raw: raw
-        }
+        Outline { raw }
     }
 
     pub fn points(&self) -> &'a [Vector] {
@@ -144,7 +142,7 @@ pub struct ContourIterator<'a> {
 impl<'a> ContourIterator<'a> {
     pub unsafe fn from_raw(outline: &'a ffi::FT_Outline) -> Self {
         ContourIterator {
-            outline: outline,
+            outline,
             contour_start: 0,
             contour_end_idx: outline.contours,
             last_end_idx: outline.contours.offset(outline.n_contours as isize - 1)
