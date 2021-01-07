@@ -22,10 +22,7 @@ impl Glyph {
     /// Create a freetype-rs glyph object from c constituent parts
     pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Glyph) -> Self {
         ffi::FT_Reference_Library(library_raw);
-        Glyph {
-            library_raw: library_raw,
-            raw: raw
-        }
+        Glyph { library_raw, raw }
     }
 
     /// Transform a glyph image if its format is scalable.

@@ -23,7 +23,7 @@ pub struct SubGlyphInfo {
     /// The subglyph's second argument (if any).
     pub arg2: i32,
     /// The subglyph transformation (if any).
-    pub transfrom: ffi::FT_Matrix
+    pub transform: ffi::FT_Matrix
 }
 
 impl Default for SubGlyphInfo {
@@ -33,7 +33,7 @@ impl Default for SubGlyphInfo {
             flags: 0,
             arg1: 0,
             arg2: 0,
-            transfrom: ffi::FT_Matrix { xx: 0, xy: 0, yx: 0, yy: 0 }
+            transform: ffi::FT_Matrix { xx: 0, xy: 0, yx: 0, yy: 0 }
         }
     }
 }
@@ -48,10 +48,7 @@ pub struct GlyphSlot {
 impl GlyphSlot {
     /// Create a `GlyphSlot` from its constituent C parts
     pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_GlyphSlot) -> Self {
-        GlyphSlot {
-            library_raw: library_raw,
-            raw: raw
-        }
+        GlyphSlot { library_raw, raw }
     }
 
     /// Convert a given glyph image to a bitmap. It does so by inspecting the glyph image format,
@@ -73,7 +70,7 @@ impl GlyphSlot {
         let mut info = SubGlyphInfo::default();
         let err = unsafe {
             ffi::FT_Get_SubGlyph_Info(self.raw, sub_index, &mut info.index, &mut info.flags,
-                                      &mut info.arg1, &mut info.arg2, &mut info.transfrom)
+                                      &mut info.arg1, &mut info.arg2, &mut info.transform)
         };
         if err == ffi::FT_Err_Ok {
             Ok(info)

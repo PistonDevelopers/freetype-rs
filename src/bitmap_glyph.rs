@@ -9,10 +9,7 @@ pub struct BitmapGlyph {
 impl BitmapGlyph {
     pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_BitmapGlyph) -> Self {
         ffi::FT_Reference_Library(library_raw);
-        BitmapGlyph {
-            library_raw: library_raw,
-            raw: raw
-        }
+        BitmapGlyph { library_raw, raw }
     }
 
     #[inline(always)]
