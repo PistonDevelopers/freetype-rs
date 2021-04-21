@@ -321,6 +321,13 @@ impl Face {
         }
     }
 
+    #[inline(always)]
+    pub fn num_glyphs(&self) -> ffi::FT_Long {
+        unsafe {
+            (*self.raw).num_glyphs
+        }
+    }
+
     pub fn family_name(&self) -> Option<String> {
         let family_name = unsafe { (*self.raw).family_name };
 
