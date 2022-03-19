@@ -1,5 +1,4 @@
 use std::fmt;
-use std::error;
 use ffi;
 
 pub type FtResult<T> = Result<T, Error>;
@@ -204,14 +203,8 @@ impl From<i32> for Error {
 
 impl fmt::Display for Error {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.write_str(&self.to_string())
-    }
-}
-
-impl error::Error for Error {
-    fn description(&self) -> &str {
         use self::Error::*;
-        match *self {
+        f.write_str(match *self {
             Ok                           => "Ok",
             CannotOpenResource           => "Cannot open resource",
             UnknownFileFormat            => "Unknown file format",
@@ -306,6 +299,16 @@ impl error::Error for Error {
             UnexpectedPixelMode          => "Unexpected pixel mode",
             InvalidPath                  => "Invalid path",
             Unknown                      => "Unknown",
-        }
+        })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    
+    #[test]
+    fn print_should_halt() {
+        Error::Ok.to_string();
     }
 }
