@@ -45,24 +45,20 @@ bitflags! {
 }
 
 #[derive(Eq, PartialEq, Hash)]
-pub struct Face {
+pub struct Face<BYTES = Rc<Vec<u8>>> {
     library_raw: ffi::FT_Library,
     raw: ffi::FT_Face,
     glyph: GlyphSlot,
-    bytes: Option<Rc<Vec<u8>>>
+    bytes: Option<BYTES>,
 }
 
-impl Clone for Face {
+impl<BYTES: Clone> Clone for Face<BYTES> {
     fn clone(&self) -> Self {
-        let err = unsafe {
-            ffi::FT_Reference_Library(self.library_raw)
-        };
+        let err = unsafe { ffi::FT_Reference_Library(self.library_raw) };
         if err != ffi::FT_Err_Ok {
             panic!("Failed to reference library");
         }
-        let err = unsafe {
-            ffi::FT_Reference_Face(self.raw)
-        };
+        let err = unsafe { ffi::FT_Reference_Face(self.raw) };
         if err != ffi::FT_Err_Ok {
             panic!("Failed to reference face");
         }
@@ -70,13 +66,13 @@ impl Clone for Face {
             library_raw: self.library_raw,
             raw: self.raw,
             glyph: self.glyph,
-            bytes: self.bytes.clone()
+            bytes: self.bytes.clone(),
         }
     }
 }
 
-impl Face {
-    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face, bytes: Option<Rc<Vec<u8>>>) -> Self {
+impl<BYTES> Face<BYTES> {
+    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face, bytes: Option<BYTES>) -> Self {
         ffi::FT_Reference_Library(library_raw);
         Face {
             library_raw,
@@ -385,7 +381,7 @@ impl Face {
     }
 }
 
-impl fmt::Debug for Face {
+impl<BYTES> fmt::Debug for Face<BYTES> {
     fn fmt(&self, form: &mut fmt::Formatter) -> fmt::Result {
         let name = self.style_name().unwrap_or("[unknown name]".to_owned());
         form.write_str("Font Face: ")?;
@@ -393,17 +389,13 @@ impl fmt::Debug for Face {
     }
 }
 
-impl Drop for Face {
+impl<BYTES> Drop for Face<BYTES> {
     fn drop(&mut self) {
-        let err = unsafe {
-            ffi::FT_Done_Face(self.raw)
-        };
+        let err = unsafe { ffi::FT_Done_Face(self.raw) };
         if err != ffi::FT_Err_Ok {
             panic!("Failed to drop face");
         }
-        let err = unsafe {
-            ffi::FT_Done_Library(self.library_raw)
-        };
+        let err = unsafe { ffi::FT_Done_Library(self.library_raw) };
         if err != ffi::FT_Err_Ok {
             panic!("Failed to drop library")
         }

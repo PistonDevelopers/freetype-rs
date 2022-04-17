@@ -1,3 +1,4 @@
+use std::borrow::Borrow;
 use std::ffi::{ CString, OsStr };
 use std::ptr::null_mut;
 use std::rc::Rc;
@@ -111,6 +112,25 @@ impl Library {
 
         let err = unsafe {
             ffi::FT_New_Memory_Face(self.raw, buffer.as_ptr(), buffer.len() as ffi::FT_Long,
+                                    face_index as ffi::FT_Long, &mut face)
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(unsafe { Face::from_raw(self.raw, face, Some(buffer)) })
+        } else {
+            Err(err.into())
+        }
+    }
+
+    /// Similar to `new_face`, but loads file data from a byte array in memory
+    pub fn new_memory_face2<T>(&self, buffer: T, face_index: isize) -> FtResult<Face<T>>
+    where
+        T: Borrow<[u8]>
+    {
+        let mut face = null_mut();
+        let buf = buffer.borrow();
+
+        let err = unsafe {
+            ffi::FT_New_Memory_Face(self.raw, buf.as_ptr(), buf.len() as ffi::FT_Long,
                                     face_index as ffi::FT_Long, &mut face)
         };
         if err == ffi::FT_Err_Ok {
