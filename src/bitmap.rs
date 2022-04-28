@@ -63,11 +63,14 @@ impl Bitmap {
     /// A typeless pointer to the bitmap buffer. This value should be aligned
     /// on 32-bit boundaries in most cases.
     pub fn buffer(&self) -> &[u8] {
-        unsafe {
-            slice::from_raw_parts(
-                (*self.raw).buffer,
-                (self.pitch().abs() * self.rows()) as usize
-            )
+        let buffer_size = (self.pitch().abs() * self.rows()) as usize;
+        if buffer_size > 0 {
+            unsafe {
+                slice::from_raw_parts((*self.raw).buffer, buffer_size)
+            }
+        } else {
+            // When buffer_size is 0, the buffer pointer will be null.
+            &[]
         }
     }
 
