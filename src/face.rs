@@ -138,7 +138,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
-        let err = unsafe { ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits) };
+        let err = unsafe { ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits()) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -148,7 +148,7 @@ impl<BYTES> Face<BYTES> {
 
     pub fn load_char(&self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
         let err =
-            unsafe { ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits) };
+            unsafe { ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits()) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
