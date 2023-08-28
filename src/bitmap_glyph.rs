@@ -1,9 +1,9 @@
 use std::ptr::null_mut;
-use { ffi, Bitmap };
+use {ffi, Bitmap};
 
 pub struct BitmapGlyph {
     library_raw: ffi::FT_Library,
-    raw: ffi::FT_BitmapGlyph
+    raw: ffi::FT_BitmapGlyph,
 }
 
 impl BitmapGlyph {
@@ -14,16 +14,12 @@ impl BitmapGlyph {
 
     #[inline(always)]
     pub fn left(&self) -> i32 {
-        unsafe {
-            (*self.raw).left
-        }
+        unsafe { (*self.raw).left }
     }
 
     #[inline(always)]
     pub fn top(&self) -> i32 {
-        unsafe {
-            (*self.raw).top
-        }
+        unsafe { (*self.raw).top }
     }
 
     #[inline(always)]
@@ -33,9 +29,7 @@ impl BitmapGlyph {
 
     #[inline(always)]
     pub fn raw(&self) -> &ffi::FT_BitmapGlyphRec {
-        unsafe {
-            &*self.raw
-        }
+        unsafe { &*self.raw }
     }
 }
 
@@ -43,9 +37,7 @@ impl Clone for BitmapGlyph {
     fn clone(&self) -> Self {
         let mut target = null_mut();
 
-        let err = unsafe {
-            ffi::FT_Glyph_Copy(self.raw as ffi::FT_Glyph, &mut target)
-        };
+        let err = unsafe { ffi::FT_Glyph_Copy(self.raw as ffi::FT_Glyph, &mut target) };
         if err == ffi::FT_Err_Ok {
             unsafe { BitmapGlyph::from_raw(self.library_raw, target as ffi::FT_BitmapGlyph) }
         } else {

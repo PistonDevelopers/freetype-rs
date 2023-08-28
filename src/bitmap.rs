@@ -1,5 +1,5 @@
 use std::slice;
-use { ffi, FtResult, Error };
+use {ffi, Error, FtResult};
 
 /// An enumeration type used to describe the format of pixels in a given bitmap. Note that
 /// additional formats may be added in the future.
@@ -45,19 +45,17 @@ pub enum PixelMode {
     /// channels are pre-multiplied and in the sRGB colorspace. For example,
     /// full red at half-translucent opacity will be represented as
     /// `00,00,80,80`, not `00,00,FF,80`. See also FT_LOAD_COLOR.
-    Bgra
+    Bgra,
 }
 
 #[allow(missing_copy_implementations)]
 pub struct Bitmap {
-    raw: *const ffi::FT_Bitmap
+    raw: *const ffi::FT_Bitmap,
 }
 
 impl Bitmap {
     pub unsafe fn from_raw(raw: *const ffi::FT_Bitmap) -> Self {
-        Bitmap {
-            raw: raw
-        }
+        Bitmap { raw: raw }
     }
 
     /// A typeless pointer to the bitmap buffer. This value should be aligned
@@ -65,9 +63,7 @@ impl Bitmap {
     pub fn buffer(&self) -> &[u8] {
         let buffer_size = (self.pitch().abs() * self.rows()) as usize;
         if buffer_size > 0 {
-            unsafe {
-                slice::from_raw_parts((*self.raw).buffer, buffer_size)
-            }
+            unsafe { slice::from_raw_parts((*self.raw).buffer, buffer_size) }
         } else {
             // When buffer_size is 0, the buffer pointer will be null.
             &[]
@@ -76,22 +72,16 @@ impl Bitmap {
 
     /// The number of pixels in bitmap row.
     pub fn width(&self) -> i32 {
-        unsafe {
-            (*self.raw).width
-        }
+        unsafe { (*self.raw).width }
     }
 
     /// The number of bitmap rows.
     pub fn rows(&self) -> i32 {
-        unsafe {
-            (*self.raw).rows
-        }
+        unsafe { (*self.raw).rows }
     }
 
     pub fn raw(&self) -> &ffi::FT_Bitmap {
-        unsafe {
-            &*self.raw
-        }
+        unsafe { &*self.raw }
     }
 
     /// The pixel mode, i.e., how pixel bits are stored. See `PixelMode` for
@@ -100,15 +90,15 @@ impl Bitmap {
         let pixel_mode = unsafe { (*self.raw).pixel_mode } as u32;
 
         Ok(match pixel_mode {
-            ffi::FT_PIXEL_MODE_NONE  => PixelMode::None,
-            ffi::FT_PIXEL_MODE_MONO  => PixelMode::Mono,
-            ffi::FT_PIXEL_MODE_GRAY  => PixelMode::Gray,
+            ffi::FT_PIXEL_MODE_NONE => PixelMode::None,
+            ffi::FT_PIXEL_MODE_MONO => PixelMode::Mono,
+            ffi::FT_PIXEL_MODE_GRAY => PixelMode::Gray,
             ffi::FT_PIXEL_MODE_GRAY2 => PixelMode::Gray2,
             ffi::FT_PIXEL_MODE_GRAY4 => PixelMode::Gray4,
-            ffi::FT_PIXEL_MODE_LCD   => PixelMode::Lcd,
+            ffi::FT_PIXEL_MODE_LCD => PixelMode::Lcd,
             ffi::FT_PIXEL_MODE_LCD_V => PixelMode::LcdV,
-            ffi::FT_PIXEL_MODE_BGRA  => PixelMode::Bgra,
-            _ => return Err(Error::UnexpectedPixelMode)
+            ffi::FT_PIXEL_MODE_BGRA => PixelMode::Bgra,
+            _ => return Err(Error::UnexpectedPixelMode),
         })
     }
 
@@ -125,8 +115,6 @@ impl Bitmap {
     /// Alternatively, you might use callback functions to directly render to the application's
     /// surface; see the file ‘example2.cpp’ in the tutorial for a demonstration.
     pub fn pitch(&self) -> i32 {
-        unsafe {
-            (*self.raw).pitch
-        }
+        unsafe { (*self.raw).pitch }
     }
 }

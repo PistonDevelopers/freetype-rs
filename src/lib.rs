@@ -40,20 +40,20 @@
 
 #[macro_use]
 extern crate bitflags;
-extern crate libc;
 pub extern crate freetype_sys;
+extern crate libc;
 
 pub use bitmap::Bitmap;
 pub use bitmap_glyph::BitmapGlyph;
-pub use error::{ FtResult, Error };
+pub use error::{Error, FtResult};
 pub use face::Face;
+pub use freetype_sys as ffi;
 pub use glyph::Glyph;
 pub use glyph_slot::GlyphSlot;
-pub use library::{ Library, LcdFilter };
+pub use library::{LcdFilter, Library};
 pub use outline::Outline;
 pub use render_mode::RenderMode;
-pub use stroker::{Stroker, StrokerLineCap, StrokerLineJoin };
-pub use freetype_sys as ffi;
+pub use stroker::{Stroker, StrokerLineCap, StrokerLineJoin};
 
 pub mod bitmap;
 pub mod bitmap_glyph;
