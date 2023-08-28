@@ -1,5 +1,6 @@
 use std::fmt;
 use std::ffi::CStr;
+use std::num::NonZeroU32;
 use std::rc::Rc;
 use { ffi, FtResult, GlyphSlot, Matrix, Vector };
 
@@ -157,10 +158,14 @@ impl<BYTES> Face<BYTES> {
         }
     }
 
-    pub fn get_char_index(&self, charcode: usize) -> u32 {
-        unsafe {
+    pub fn get_char_index(&self, charcode: usize) -> FtResult<NonZeroU32> {
+        let res = unsafe {
             ffi::FT_Get_Char_Index(self.raw, charcode as ffi::FT_ULong)
-        }
+        };
+
+        // Per freetype.h, 0 means 'undefined character code' (in #return) and 'missing glyph' (in notes)
+        // TODO: Should this be Error::InvalidCharacterCode instead?
+        NonZeroU32::new(res).ok_or(crate::Error::InvalidGlyphIndex)
     }
 
     pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
