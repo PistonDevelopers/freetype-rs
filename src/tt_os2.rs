@@ -1,19 +1,19 @@
-use ffi;
 use face::Face;
+use ffi;
 
 #[derive(Copy, Clone)]
 pub struct TrueTypeOS2Table {
-    raw: ffi::TT_OS2_Internal
+    raw: ffi::TT_OS2_Internal,
 }
 
-impl TrueTypeOS2Table  {
+impl TrueTypeOS2Table {
     pub fn from_face(face: &mut Face) -> Option<Self> {
         unsafe {
-            let os2 = ffi::FT_Get_Sfnt_Table(face.raw_mut() as *mut ffi::FT_FaceRec, ffi::ft_sfnt_os2) as ffi::TT_OS2_Internal;
+            let os2 =
+                ffi::FT_Get_Sfnt_Table(face.raw_mut() as *mut ffi::FT_FaceRec, ffi::ft_sfnt_os2)
+                    as ffi::TT_OS2_Internal;
             if !os2.is_null() && (*os2).version != 0xffff {
-                Some(TrueTypeOS2Table {
-                    raw: os2
-                })
+                Some(TrueTypeOS2Table { raw: os2 })
             } else {
                 None
             }
@@ -22,151 +22,107 @@ impl TrueTypeOS2Table  {
 
     #[inline(always)]
     pub fn version(&self) -> ffi::FT_UShort {
-        unsafe {
-            (*self.raw).version
-        }
+        unsafe { (*self.raw).version }
     }
 
     #[inline(always)]
     pub fn avg_char_width(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).xAvgCharWidth
-        }
+        unsafe { (*self.raw).xAvgCharWidth }
     }
 
     #[inline(always)]
     pub fn us_weight_class(&self) -> ffi::FT_UShort {
-        unsafe {
-            (*self.raw).usWeightClass
-        }
+        unsafe { (*self.raw).usWeightClass }
     }
 
     #[inline(always)]
     pub fn us_width_class(&self) -> ffi::FT_UShort {
-        unsafe {
-            (*self.raw).usWidthClass
-        }
+        unsafe { (*self.raw).usWidthClass }
     }
 
     #[inline(always)]
     pub fn fs_type(&self) -> ffi::FT_UShort {
-        unsafe {
-            (*self.raw).fsType
-        }
+        unsafe { (*self.raw).fsType }
     }
-
 
     #[inline(always)]
     pub fn y_subscript_x_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySubscriptXSize
-        }
+        unsafe { (*self.raw).ySubscriptXSize }
     }
 
     #[inline(always)]
     pub fn y_subscript_y_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySubscriptYSize
-        }
+        unsafe { (*self.raw).ySubscriptYSize }
     }
 
     #[inline(always)]
     pub fn y_subscript_x_offset(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySubscriptXOffset
-        }
+        unsafe { (*self.raw).ySubscriptXOffset }
     }
-
 
     #[inline(always)]
     pub fn y_subscript_y_offset(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySubscriptYOffset
-        }
+        unsafe { (*self.raw).ySubscriptYOffset }
     }
 
     #[inline(always)]
     pub fn y_superscript_x_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySuperscriptXSize
-        }
+        unsafe { (*self.raw).ySuperscriptXSize }
     }
 
     #[inline(always)]
     pub fn y_superscript_y_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySuperscriptYSize
-        }
+        unsafe { (*self.raw).ySuperscriptYSize }
     }
 
     #[inline(always)]
     pub fn y_superscript_x_offset(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySuperscriptXOffset
-        }
+        unsafe { (*self.raw).ySuperscriptXOffset }
     }
 
     #[inline(always)]
     pub fn y_superscript_y_offset(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ySuperscriptYOffset
-        }
+        unsafe { (*self.raw).ySuperscriptYOffset }
     }
 
     #[inline(always)]
     pub fn y_strikeout_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).yStrikeoutSize
-        }
+        unsafe { (*self.raw).yStrikeoutSize }
     }
 
     #[inline(always)]
     pub fn y_strikeout_position(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).yStrikeoutPosition
-        }
+        unsafe { (*self.raw).yStrikeoutPosition }
     }
 
     #[inline(always)]
     pub fn s_family_class(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).sFamilyClass
-        }
+        unsafe { (*self.raw).sFamilyClass }
     }
 
     #[inline(always)]
     pub fn fs_selection(&self) -> ffi::FT_UShort {
-        unsafe {
-            (*self.raw).fsSelection
-        }
+        unsafe { (*self.raw).fsSelection }
     }
 
     #[inline(always)]
     pub fn s_typo_ascender(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).sTypoAscender
-        }
+        unsafe { (*self.raw).sTypoAscender }
     }
 
     #[inline(always)]
     pub fn s_typo_descender(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).sTypoDescender
-        }
+        unsafe { (*self.raw).sTypoDescender }
     }
 
     #[inline(always)]
     pub fn s_typo_line_gap(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).sTypoLineGap
-        }
+        unsafe { (*self.raw).sTypoLineGap }
     }
 
     #[inline(always)]
     pub fn x_height(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).sxHeight
-        }
+        unsafe { (*self.raw).sxHeight }
     }
 }
 

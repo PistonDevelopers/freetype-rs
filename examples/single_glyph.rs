@@ -14,8 +14,8 @@ fn draw_bitmap(bitmap: ft::Bitmap, x: usize, y: usize) -> [[u8; WIDTH]; HEIGHT] 
     let x_max = x + w;
     let y_max = y + bitmap.rows() as usize;
 
-    for i in x .. x_max {
-        for j in y .. y_max {
+    for i in x..x_max {
+        for j in y..y_max {
             if i < WIDTH && j < HEIGHT {
                 figure[j][i] |= bitmap.buffer()[q * w + p];
                 q += 1;
@@ -33,7 +33,7 @@ fn main() {
     if args.len() != 3 {
         let exe = args.next().unwrap();
         println!("Usage: {} font character", exe);
-        return
+        return;
     }
 
     let ref font = args.nth(1).unwrap();
@@ -42,20 +42,22 @@ fn main() {
     let face = library.new_face(font, 0).unwrap();
 
     face.set_char_size(40 * 64, 0, 50, 0).unwrap();
-    face.load_char(character, ft::face::LoadFlag::RENDER).unwrap();
+    face.load_char(character, ft::face::LoadFlag::RENDER)
+        .unwrap();
 
     let glyph = face.glyph();
     let x = glyph.bitmap_left() as usize;
     let y = HEIGHT - glyph.bitmap_top() as usize;
     let figure = draw_bitmap(glyph.bitmap(), x, y);
 
-    for i in 0 .. HEIGHT {
-        for j in 0 .. WIDTH {
-            print!("{}",
+    for i in 0..HEIGHT {
+        for j in 0..WIDTH {
+            print!(
+                "{}",
                 match figure[i][j] {
                     p if p == 0 => " ",
                     p if p < 128 => "*",
-                    _  => "+"
+                    _ => "+",
                 }
             );
         }

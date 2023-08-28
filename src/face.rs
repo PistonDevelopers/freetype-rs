@@ -1,15 +1,15 @@
-use std::fmt;
 use std::ffi::CStr;
+use std::fmt;
 use std::num::NonZeroU32;
 use std::rc::Rc;
-use { ffi, FtResult, GlyphSlot, Matrix, Vector };
+use {ffi, FtResult, GlyphSlot, Matrix, Vector};
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
 pub enum KerningMode {
-    KerningDefault  = ffi::FT_KERNING_DEFAULT,
+    KerningDefault = ffi::FT_KERNING_DEFAULT,
     KerningUnfitted = ffi::FT_KERNING_UNFITTED,
-    KerningUnscaled = ffi::FT_KERNING_UNSCALED
+    KerningUnscaled = ffi::FT_KERNING_UNSCALED,
 }
 
 bitflags! {
@@ -73,7 +73,11 @@ impl<BYTES: Clone> Clone for Face<BYTES> {
 }
 
 impl<BYTES> Face<BYTES> {
-    pub unsafe fn from_raw(library_raw: ffi::FT_Library, raw: ffi::FT_Face, bytes: Option<BYTES>) -> Self {
+    pub unsafe fn from_raw(
+        library_raw: ffi::FT_Library,
+        raw: ffi::FT_Face,
+        bytes: Option<BYTES>,
+    ) -> Self {
         ffi::FT_Reference_Library(library_raw);
         Face {
             library_raw,
@@ -84,9 +88,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn attach_file(&self, filepathname: &str) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Attach_File(self.raw, filepathname.as_ptr() as *const _)
-        };
+        let err = unsafe { ffi::FT_Attach_File(self.raw, filepathname.as_ptr() as *const _) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -95,9 +97,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn reference(&self) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Reference_Face(self.raw)
-        };
+        let err = unsafe { ffi::FT_Reference_Face(self.raw) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -105,12 +105,21 @@ impl<BYTES> Face<BYTES> {
         }
     }
 
-    pub fn set_char_size(&self, char_width: isize, char_height: isize, horz_resolution: u32,
-                         vert_resolution: u32) -> FtResult<()> {
+    pub fn set_char_size(
+        &self,
+        char_width: isize,
+        char_height: isize,
+        horz_resolution: u32,
+        vert_resolution: u32,
+    ) -> FtResult<()> {
         let err = unsafe {
-            ffi::FT_Set_Char_Size(self.raw, char_width as ffi::FT_F26Dot6,
-                                  char_height as ffi::FT_F26Dot6, horz_resolution,
-                                  vert_resolution)
+            ffi::FT_Set_Char_Size(
+                self.raw,
+                char_width as ffi::FT_F26Dot6,
+                char_height as ffi::FT_F26Dot6,
+                horz_resolution,
+                vert_resolution,
+            )
         };
         if err == ffi::FT_Err_Ok {
             Ok(())
@@ -120,9 +129,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn set_pixel_sizes(&self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height)
-        };
+        let err = unsafe { ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -131,9 +138,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn load_glyph(&self, glyph_index: u32, load_flags: LoadFlag) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits)
-        };
+        let err = unsafe { ffi::FT_Load_Glyph(self.raw, glyph_index, load_flags.bits) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -142,9 +147,8 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn load_char(&self, char_code: usize, load_flags: LoadFlag) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits)
-        };
+        let err =
+            unsafe { ffi::FT_Load_Char(self.raw, char_code as ffi::FT_ULong, load_flags.bits) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
@@ -159,22 +163,29 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn get_char_index(&self, charcode: usize) -> FtResult<NonZeroU32> {
-        let res = unsafe {
-            ffi::FT_Get_Char_Index(self.raw, charcode as ffi::FT_ULong)
-        };
+        let res = unsafe { ffi::FT_Get_Char_Index(self.raw, charcode as ffi::FT_ULong) };
 
         // Per freetype.h, 0 means 'undefined character code' (in #return) and 'missing glyph' (in notes)
         // TODO: Should this be Error::InvalidCharacterCode instead?
         NonZeroU32::new(res).ok_or(crate::Error::InvalidGlyphIndex)
     }
 
-    pub fn get_kerning(&self, left_char_index: u32, right_char_index: u32, kern_mode: KerningMode)
-        -> FtResult<Vector> {
+    pub fn get_kerning(
+        &self,
+        left_char_index: u32,
+        right_char_index: u32,
+        kern_mode: KerningMode,
+    ) -> FtResult<Vector> {
         let mut vec = Vector { x: 0, y: 0 };
 
         let err = unsafe {
-            ffi::FT_Get_Kerning(self.raw, left_char_index, right_char_index,
-                                kern_mode as u32, &mut vec)
+            ffi::FT_Get_Kerning(
+                self.raw,
+                left_char_index,
+                right_char_index,
+                kern_mode as u32,
+                &mut vec,
+            )
         };
         if err == ffi::FT_Err_Ok {
             Ok(vec)
@@ -247,86 +258,62 @@ impl<BYTES> Face<BYTES> {
 
     #[inline(always)]
     pub fn raw(&self) -> &ffi::FT_FaceRec {
-        unsafe {
-            &*self.raw
-        }
+        unsafe { &*self.raw }
     }
 
     #[inline(always)]
     pub fn raw_mut(&mut self) -> &mut ffi::FT_FaceRec {
-        unsafe {
-            &mut *self.raw
-        }
+        unsafe { &mut *self.raw }
     }
 
     #[inline(always)]
     pub fn ascender(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).ascender
-        }
+        unsafe { (*self.raw).ascender }
     }
 
     #[inline(always)]
     pub fn descender(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).descender
-        }
+        unsafe { (*self.raw).descender }
     }
 
     #[inline(always)]
     pub fn em_size(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).units_per_EM as i16
-        }
+        unsafe { (*self.raw).units_per_EM as i16 }
     }
 
     #[inline(always)]
     pub fn height(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).height
-        }
+        unsafe { (*self.raw).height }
     }
 
     #[inline(always)]
     pub fn max_advance_width(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).max_advance_width
-        }
+        unsafe { (*self.raw).max_advance_width }
     }
 
     #[inline(always)]
     pub fn max_advance_height(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).max_advance_height
-        }
+        unsafe { (*self.raw).max_advance_height }
     }
 
     #[inline(always)]
     pub fn underline_position(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).underline_position
-        }
+        unsafe { (*self.raw).underline_position }
     }
 
     #[inline(always)]
     pub fn underline_thickness(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).underline_thickness
-        }
+        unsafe { (*self.raw).underline_thickness }
     }
 
     #[inline(always)]
     pub fn num_faces(&self) -> ffi::FT_Short {
-        unsafe {
-            (*self.raw).num_faces as i16
-        }
+        unsafe { (*self.raw).num_faces as i16 }
     }
 
     #[inline(always)]
     pub fn num_glyphs(&self) -> ffi::FT_Long {
-        unsafe {
-            (*self.raw).num_glyphs
-        }
+        unsafe { (*self.raw).num_glyphs }
     }
 
     pub fn family_name(&self) -> Option<String> {
@@ -335,9 +322,8 @@ impl<BYTES> Face<BYTES> {
         if family_name.is_null() {
             None
         } else {
-            let family_name = unsafe {
-                CStr::from_ptr(family_name as *const _).to_bytes().to_vec()
-            };
+            let family_name =
+                unsafe { CStr::from_ptr(family_name as *const _).to_bytes().to_vec() };
             String::from_utf8(family_name).ok()
         }
     }
@@ -348,9 +334,7 @@ impl<BYTES> Face<BYTES> {
         if style_name.is_null() {
             None
         } else {
-            let style_name = unsafe {
-                CStr::from_ptr(style_name as *const _).to_bytes().to_vec()
-            };
+            let style_name = unsafe { CStr::from_ptr(style_name as *const _).to_bytes().to_vec() };
             String::from_utf8(style_name).ok()
         }
     }
@@ -378,9 +362,7 @@ impl<BYTES> Face<BYTES> {
         if face_name.is_null() {
             None
         } else {
-            let face_name = unsafe {
-                CStr::from_ptr(face_name as *const _).to_bytes().to_vec()
-            };
+            let face_name = unsafe { CStr::from_ptr(face_name as *const _).to_bytes().to_vec() };
             String::from_utf8(face_name).ok()
         }
     }
