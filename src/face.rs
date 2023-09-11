@@ -45,6 +45,54 @@ bitflags! {
     }
 }
 
+pub struct CharIterator<'a, BYTES> {
+    started: bool,
+    face: &'a Face<BYTES>,
+    gindex: u32,
+    charcode: u64,
+}
+
+impl<'a, BYTES> CharIterator<'a, BYTES> {
+    fn new(face: &'a Face<BYTES>) -> Self {
+        CharIterator {
+            started: false,
+            face,
+            gindex: 0,
+            charcode: 0,
+        }
+    }
+}
+
+impl<'a, BYTES> Iterator for CharIterator<'a, BYTES> {
+    type Item = (usize, NonZeroU32);
+
+    fn next(&mut self) -> Option<Self::Item> {
+        // Implementing per https://freetype.org/freetype2/docs/reference/ft2-character_mapping.html#ft_get_first_char
+        //  FT_UInt   gindex;
+        //  FT_ULong charcode = FT_Get_First_Char( face, &gindex );
+        //  while ( gindex != 0 ) {
+        //    ... do something with (charcode,gindex) pair ...
+        //    charcode = FT_Get_Next_Char( face, charcode, &gindex );
+        //  }
+
+        if self.started {
+            self.charcode =
+                unsafe { ffi::FT_Get_Next_Char(self.face.raw, self.charcode, &mut self.gindex) };
+        } else if self.gindex != 0 {
+            self.started = true;
+            self.charcode = unsafe { ffi::FT_Get_First_Char(self.face.raw, &mut self.gindex) };
+        }
+
+        if self.gindex == 0 {
+            None
+        } else {
+            NonZeroU32::new(self.gindex).map(|gindex| (self.charcode as usize, gindex))
+        }
+    }
+
+    // TODO: implement size_hint
+}
+
 #[derive(Eq, PartialEq, Hash)]
 pub struct Face<BYTES = Rc<Vec<u8>>> {
     library_raw: ffi::FT_Library,
@@ -168,6 +216,10 @@ impl<BYTES> Face<BYTES> {
         // Per freetype.h, 0 means 'undefined character code' (in #return) and 'missing glyph' (in notes)
         // TODO: Should this be Error::InvalidCharacterCode instead?
         NonZeroU32::new(res).ok_or(crate::Error::InvalidGlyphIndex)
+    }
+
+    pub fn chars(&self) -> CharIterator<'_, BYTES> {
+        CharIterator::new(self)
     }
 
     pub fn get_kerning(
