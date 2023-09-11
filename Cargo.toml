@@ -1,5 +1,4 @@
 [package]
-
 name = "freetype-rs"
 version = "0.32.0"
 authors = ["Coeuvre <coeuvre@gmail.com>"]
@@ -11,15 +10,12 @@ repository = "https://github.com/PistonDevelopers/freetype-rs.git"
 homepage = "https://github.com/PistonDevelopers/freetype-rs"
 
 [lib]
-
 name = "freetype"
 
 [dependencies]
-
-bitflags = "1.0.0"
+bitflags = "2.4.0"
 libc = "0.2.1"
 freetype-sys = "0.17.0"
 
 [dev-dependencies]
-
 unicode-normalization = "0.1.0"
