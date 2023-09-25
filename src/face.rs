@@ -48,8 +48,8 @@ bitflags! {
 pub struct CharIterator<'a, BYTES> {
     started: bool,
     face: &'a Face<BYTES>,
-    gindex: u32,
-    charcode: u64,
+    gindex: ffi::FT_UInt,
+    charcode: ffi::FT_ULong,
 }
 
 impl<'a, BYTES> CharIterator<'a, BYTES> {
