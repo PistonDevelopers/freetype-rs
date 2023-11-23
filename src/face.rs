@@ -13,6 +13,7 @@ pub enum KerningMode {
 }
 
 bitflags! {
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct LoadFlag: i32 {
         const DEFAULT                    = ::ffi::FT_LOAD_DEFAULT;
         const NO_SCALE                   = ::ffi::FT_LOAD_NO_SCALE;
@@ -39,6 +40,7 @@ bitflags! {
 }
 
 bitflags! {
+    #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct StyleFlag: ffi::FT_Long {
         const BOLD   = ::ffi::FT_STYLE_FLAG_BOLD;
         const ITALIC = ::ffi::FT_STYLE_FLAG_ITALIC;
