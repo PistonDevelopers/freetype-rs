@@ -14,7 +14,7 @@ fn draw_curve(curve: ft::outline::Curve) {
 }
 
 fn main() {
-    let ref mut args = std::env::args();
+    let mut args = std::env::args();
 
     if args.len() != 3 {
         let exe = args.next().unwrap();
@@ -22,7 +22,7 @@ fn main() {
         return;
     }
 
-    let ref font = args.nth(1).unwrap();
+    let font = args.nth(1).unwrap();
     let character = args.next().and_then(|s| s.chars().next()).unwrap() as usize;
     let library = ft::Library::init().unwrap();
     let face = library.new_face(font, 0).unwrap();

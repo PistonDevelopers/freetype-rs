@@ -80,7 +80,7 @@ impl<'a, BYTES> Iterator for CharIterator<'a, BYTES> {
         if self.started {
             self.charcode =
                 unsafe { ffi::FT_Get_Next_Char(self.face.raw, self.charcode, &mut self.gindex) };
-        } else if self.gindex != 0 {
+        } else {
             self.started = true;
             self.charcode = unsafe { ffi::FT_Get_First_Char(self.face.raw, &mut self.gindex) };
         }
