@@ -1,4 +1,4 @@
-use std::ffi::CStr;
+use std::ffi::{CStr, CString};
 use std::fmt;
 use std::num::NonZeroU32;
 use std::rc::Rc;
@@ -218,6 +218,19 @@ impl<BYTES> Face<BYTES> {
         // Per freetype.h, 0 means 'undefined character code' (in #return) and 'missing glyph' (in notes)
         // TODO: Should this be Error::InvalidCharacterCode instead?
         NonZeroU32::new(res).ok_or(crate::Error::InvalidGlyphIndex)
+    }
+
+    pub fn get_name_index(&self, glyph_name: &str) -> Option<u32> {
+        if !ffi::FT_HAS_GLYPH_NAMES(self.raw) {
+            return None;
+        }
+
+        match CString::new(glyph_name) {
+            Ok(name) => {
+                Some(unsafe { ffi::FT_Get_Name_Index(self.raw, name.as_ptr() as *const _) })
+            }
+            Err(_) => None,
+        }
     }
 
     pub fn chars(&self) -> CharIterator<'_, BYTES> {
