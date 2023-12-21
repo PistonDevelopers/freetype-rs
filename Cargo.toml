@@ -15,7 +15,7 @@ name = "freetype"
 [dependencies]
 bitflags = "2.4.0"
 libc = "0.2.1"
-freetype-sys = "0.19.0"
+freetype-sys = {git = "https://github.com/rockyzhengwu/freetype-sys.git"}
 
 [dev-dependencies]
 unicode-normalization = "0.1.0"
