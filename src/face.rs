@@ -2,6 +2,8 @@ use std::ffi::{CStr, CString};
 use std::fmt;
 use std::num::NonZeroU32;
 use std::rc::Rc;
+
+use crate::charmap::CharMap;
 use {ffi, FtResult, GlyphSlot, Matrix, Vector};
 
 #[repr(u32)]
@@ -261,6 +263,11 @@ impl<BYTES> Face<BYTES> {
         }
     }
 
+    pub fn get_charmap(&self, charmap_index: isize) -> CharMap {
+        let charmap = unsafe { *self.raw().charmaps.offset(charmap_index) };
+        CharMap::new(charmap)
+    }
+
     // According to FreeType doc, each time you load a new glyph image,
     // the previous one is erased from the glyph slot.
     #[inline(always)]
@@ -336,6 +343,11 @@ impl<BYTES> Face<BYTES> {
     #[inline(always)]
     pub fn ascender(&self) -> ffi::FT_Short {
         unsafe { (*self.raw).ascender }
+    }
+
+    #[inline(always)]
+    pub fn num_charmaps(&self) -> i32 {
+        unsafe { (*self.raw).num_charmaps }
     }
 
     #[inline(always)]
