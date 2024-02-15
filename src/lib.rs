@@ -57,6 +57,7 @@ pub use stroker::{Stroker, StrokerLineCap, StrokerLineJoin};
 
 pub mod bitmap;
 pub mod bitmap_glyph;
+pub mod charmap;
 pub mod error;
 pub mod face;
 pub mod glyph;

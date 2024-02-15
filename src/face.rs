@@ -2,6 +2,8 @@ use std::ffi::{CStr, CString};
 use std::fmt;
 use std::num::NonZeroU32;
 use std::rc::Rc;
+
+use crate::charmap::CharMap;
 use {ffi, FtResult, GlyphSlot, Matrix, Vector};
 
 #[repr(u32)]
@@ -212,12 +214,13 @@ impl<BYTES> Face<BYTES> {
         }
     }
 
-    pub fn get_char_index(&self, charcode: usize) -> FtResult<NonZeroU32> {
+    pub fn get_char_index(&self, charcode: usize) -> Option<u32> {
         let res = unsafe { ffi::FT_Get_Char_Index(self.raw, charcode as ffi::FT_ULong) };
-
-        // Per freetype.h, 0 means 'undefined character code' (in #return) and 'missing glyph' (in notes)
-        // TODO: Should this be Error::InvalidCharacterCode instead?
-        NonZeroU32::new(res).ok_or(crate::Error::InvalidGlyphIndex)
+        if res == 0 {
+            None
+        } else {
+            Some(res)
+        }
     }
 
     pub fn get_name_index(&self, glyph_name: &str) -> Option<u32> {
@@ -256,6 +259,20 @@ impl<BYTES> Face<BYTES> {
         };
         if err == ffi::FT_Err_Ok {
             Ok(vec)
+        } else {
+            Err(err.into())
+        }
+    }
+
+    pub fn get_charmap(&self, charmap_index: isize) -> CharMap {
+        let charmap = unsafe { *self.raw().charmaps.offset(charmap_index) };
+        CharMap::new(charmap)
+    }
+
+    pub fn set_charmap(&self, charmap: &CharMap) -> FtResult<()> {
+        let err = unsafe { ffi::FT_Set_Charmap(self.raw, charmap.raw()) };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
         } else {
             Err(err.into())
         }
@@ -336,6 +353,11 @@ impl<BYTES> Face<BYTES> {
     #[inline(always)]
     pub fn ascender(&self) -> ffi::FT_Short {
         unsafe { (*self.raw).ascender }
+    }
+
+    #[inline(always)]
+    pub fn num_charmaps(&self) -> i32 {
+        unsafe { (*self.raw).num_charmaps }
     }
 
     #[inline(always)]
