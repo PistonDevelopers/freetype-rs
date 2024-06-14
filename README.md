@@ -8,6 +8,13 @@ Rust bindings for FreeType library
   * *FreeType2 development libraries*: For installation instructions see
     [freetype-sys](https://github.com/PistonDevelopers/freetype-sys).
 
+If the building fails, then it is likely that pkg-config does not find a FreeType library it can bind to. Use the feature "bundled" to build a static version of the library (requires a C compiler):
+
+```text
+[dependencies]
+freetype-rs = { version = "*", features = ["bundled"] }
+```
+
 ## Build
 
 Clone this repo then run
