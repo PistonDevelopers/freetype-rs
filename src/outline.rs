@@ -142,7 +142,7 @@ impl<'a> Iterator for ContourIterator<'a> {
     type Item = CurveIterator<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.contour_end_idx > self.last_end_idx {
+        if self.contour_end_idx.is_null() || self.contour_end_idx > self.last_end_idx {
             None
         } else {
             unsafe {
