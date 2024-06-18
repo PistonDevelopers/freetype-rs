@@ -34,6 +34,10 @@ impl<'a> Outline<'a> {
     pub fn contours_iter(&self) -> ContourIterator<'a> {
         unsafe { ContourIterator::from_raw(self.raw) }
     }
+
+    pub fn flags(&self) -> i32 {
+        i32::from(self.raw.flags)
+    }
 }
 
 const TAG_ONCURVE: c_char = 0x01;
