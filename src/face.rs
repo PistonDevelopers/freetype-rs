@@ -180,6 +180,20 @@ impl<BYTES> Face<BYTES> {
         }
     }
 
+    pub fn select_size(&self, strike_index: i32) -> FtResult<()> {
+        let err = unsafe {
+            ffi::FT_Select_Size(
+                self.raw,
+                strike_index,
+            )
+        };
+        if err == ffi::FT_Err_Ok {
+            Ok(())
+        } else {
+            Err(err.into())
+        }
+    }
+
     pub fn set_pixel_sizes(&self, pixel_width: u32, pixel_height: u32) -> FtResult<()> {
         let err = unsafe { ffi::FT_Set_Pixel_Sizes(self.raw, pixel_width, pixel_height) };
         if err == ffi::FT_Err_Ok {
