@@ -181,12 +181,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn select_size(&self, strike_index: i32) -> FtResult<()> {
-        let err = unsafe {
-            ffi::FT_Select_Size(
-                self.raw,
-                strike_index,
-            )
-        };
+        let err = unsafe { ffi::FT_Select_Size(self.raw, strike_index) };
         if err == ffi::FT_Err_Ok {
             Ok(())
         } else {
