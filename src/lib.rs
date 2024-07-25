@@ -38,22 +38,19 @@
 
 #![deny(missing_copy_implementations)]
 
-#[macro_use]
-extern crate bitflags;
-pub extern crate freetype_sys;
-extern crate libc;
+pub use freetype_sys;
 
-pub use bitmap::Bitmap;
-pub use bitmap_glyph::BitmapGlyph;
-pub use error::{Error, FtResult};
-pub use face::Face;
+pub use crate::bitmap::Bitmap;
+pub use crate::bitmap_glyph::BitmapGlyph;
+pub use crate::error::{Error, FtResult};
+pub use crate::face::Face;
+pub use crate::glyph::Glyph;
+pub use crate::glyph_slot::GlyphSlot;
+pub use crate::library::{LcdFilter, Library};
+pub use crate::outline::Outline;
+pub use crate::render_mode::RenderMode;
+pub use crate::stroker::{Stroker, StrokerLineCap, StrokerLineJoin};
 pub use freetype_sys as ffi;
-pub use glyph::Glyph;
-pub use glyph_slot::GlyphSlot;
-pub use library::{LcdFilter, Library};
-pub use outline::Outline;
-pub use render_mode::RenderMode;
-pub use stroker::{Stroker, StrokerLineCap, StrokerLineJoin};
 
 pub mod bitmap;
 pub mod bitmap_glyph;

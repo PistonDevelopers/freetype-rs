@@ -1,5 +1,5 @@
+use crate::{ffi, Bitmap};
 use std::ptr::null_mut;
-use {ffi, Bitmap};
 
 pub struct BitmapGlyph {
     library_raw: ffi::FT_Library,

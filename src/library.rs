@@ -1,10 +1,10 @@
-use ffi;
+use crate::ffi;
+use crate::{Error, Face, FtResult, Stroker};
 use libc::{self, c_long, c_void, size_t};
 use std::borrow::Borrow;
 use std::ffi::{CString, OsStr};
 use std::ptr::null_mut;
 use std::rc::Rc;
-use {Error, Face, FtResult, Stroker};
 
 extern "C" fn alloc_library(_memory: ffi::FT_Memory, size: c_long) -> *mut c_void {
     unsafe { libc::malloc(size as size_t) }
