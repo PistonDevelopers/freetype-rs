@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 use std::error;
 use std::fmt;
 

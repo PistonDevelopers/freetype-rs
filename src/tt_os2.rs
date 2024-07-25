@@ -1,5 +1,5 @@
-use face::Face;
-use ffi;
+use crate::face::Face;
+use crate::ffi;
 
 #[derive(Copy, Clone)]
 pub struct TrueTypeOS2Table {
@@ -130,7 +130,7 @@ impl TrueTypeOS2Table {
 mod tests {
     use std::path::PathBuf;
 
-    use library::Library;
+    use crate::library::Library;
 
     use super::*;
 

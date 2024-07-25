@@ -1,5 +1,5 @@
+use crate::{ffi, BBox, BitmapGlyph, FtResult, Matrix, RenderMode, Stroker, Vector};
 use std::ptr::null_mut;
-use {ffi, BBox, BitmapGlyph, FtResult, Matrix, RenderMode, Stroker, Vector};
 
 /// Represents a retrieved glyph from the library
 ///
