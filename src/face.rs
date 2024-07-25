@@ -238,7 +238,7 @@ impl<BYTES> Face<BYTES> {
     }
 
     pub fn get_name_index(&self, glyph_name: &str) -> Option<u32> {
-        if !ffi::FT_HAS_GLYPH_NAMES(self.raw) {
+        if !unsafe { ffi::FT_HAS_GLYPH_NAMES(self.raw) } {
             return None;
         }
 
@@ -301,57 +301,57 @@ impl<BYTES> Face<BYTES> {
 
     #[inline(always)]
     pub fn has_horizontal(&self) -> bool {
-        ffi::FT_HAS_HORIZONTAL(self.raw)
+        unsafe { ffi::FT_HAS_HORIZONTAL(self.raw) }
     }
 
     #[inline(always)]
     pub fn has_vertical(&self) -> bool {
-        ffi::FT_HAS_VERTICAL(self.raw)
+        unsafe { ffi::FT_HAS_VERTICAL(self.raw) }
     }
 
     #[inline(always)]
     pub fn has_kerning(&self) -> bool {
-        ffi::FT_HAS_KERNING(self.raw)
+        unsafe {ffi::FT_HAS_KERNING(self.raw) }
     }
 
     #[inline(always)]
     pub fn is_scalable(&self) -> bool {
-        ffi::FT_IS_SCALABLE(self.raw)
+        unsafe {ffi::FT_IS_SCALABLE(self.raw) }
     }
 
     #[inline(always)]
     pub fn is_sfnt(&self) -> bool {
-        ffi::FT_IS_SFNT(self.raw)
+        unsafe {ffi::FT_IS_SFNT(self.raw) }
     }
 
     #[inline(always)]
     pub fn is_fixed_width(&self) -> bool {
-        ffi::FT_IS_FIXED_WIDTH(self.raw)
+        unsafe {ffi::FT_IS_FIXED_WIDTH(self.raw) }
     }
 
     #[inline(always)]
     pub fn has_fixed_sizes(&self) -> bool {
-        ffi::FT_HAS_FIXED_SIZES(self.raw)
+        unsafe {ffi::FT_HAS_FIXED_SIZES(self.raw) }
     }
 
     #[inline(always)]
     pub fn has_glyph_names(&self) -> bool {
-        ffi::FT_HAS_GLYPH_NAMES(self.raw)
+        unsafe {ffi::FT_HAS_GLYPH_NAMES(self.raw) }
     }
 
     #[inline(always)]
     pub fn is_cid_keyed(&self) -> bool {
-        ffi::FT_IS_CID_KEYED(self.raw)
+        unsafe {ffi::FT_IS_CID_KEYED(self.raw) }
     }
 
     #[inline(always)]
     pub fn is_tricky(&self) -> bool {
-        ffi::FT_IS_TRICKY(self.raw)
+        unsafe {ffi::FT_IS_TRICKY(self.raw) }
     }
 
     #[inline(always)]
     pub fn has_color(&self) -> bool {
-        ffi::FT_HAS_COLOR(self.raw)
+        unsafe {ffi::FT_HAS_COLOR(self.raw) }
     }
 
     #[inline(always)]
