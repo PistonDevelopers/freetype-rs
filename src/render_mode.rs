@@ -1,4 +1,4 @@
-use ffi;
+use crate::ffi;
 
 #[repr(u32)]
 #[derive(Copy, Clone)]

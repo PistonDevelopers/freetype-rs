@@ -1,7 +1,7 @@
+use crate::{ffi, Vector};
 use libc::{c_char, c_short};
 use std::marker::PhantomData;
 use std::slice;
-use {ffi, Vector};
 
 #[derive(Copy, Clone)]
 pub enum Curve {

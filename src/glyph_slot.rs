@@ -1,5 +1,5 @@
+use crate::{ffi, Bitmap, FtResult, Glyph, GlyphMetrics, Outline, RenderMode, Vector};
 use std::ptr::null_mut;
-use {ffi, Bitmap, FtResult, Glyph, GlyphMetrics, Outline, RenderMode, Vector};
 
 /// A description of a given subglyph returned by `GlyphSlot::get_subglyph_info`
 /// function.

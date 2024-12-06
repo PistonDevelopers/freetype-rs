@@ -4,7 +4,7 @@ use std::num::NonZeroU32;
 use std::rc::Rc;
 
 use crate::charmap::CharMap;
-use {ffi, FtResult, GlyphSlot, Matrix, Vector};
+use crate::{ffi, FtResult, GlyphSlot, Matrix, Vector};
 
 #[repr(u32)]
 #[derive(Copy, Clone)]
@@ -14,38 +14,38 @@ pub enum KerningMode {
     KerningUnscaled = ffi::FT_KERNING_UNSCALED,
 }
 
-bitflags! {
+bitflags::bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct LoadFlag: i32 {
-        const DEFAULT                    = ::ffi::FT_LOAD_DEFAULT;
-        const NO_SCALE                   = ::ffi::FT_LOAD_NO_SCALE;
-        const NO_HINTING                 = ::ffi::FT_LOAD_NO_HINTING;
-        const RENDER                     = ::ffi::FT_LOAD_RENDER;
-        const NO_BITMAP                  = ::ffi::FT_LOAD_NO_BITMAP;
-        const VERTICAL_LAYOUT            = ::ffi::FT_LOAD_VERTICAL_LAYOUT;
-        const FORCE_AUTOHINT             = ::ffi::FT_LOAD_FORCE_AUTOHINT;
-        const CROP_BITMAP                = ::ffi::FT_LOAD_CROP_BITMAP;
-        const PEDANTIC                   = ::ffi::FT_LOAD_PEDANTIC;
-        const IGNORE_GLOBAL_ADVANCE_WITH = ::ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH;
-        const NO_RECURSE                 = ::ffi::FT_LOAD_NO_RECURSE;
-        const IGNORE_TRANSFORM           = ::ffi::FT_LOAD_IGNORE_TRANSFORM;
-        const MONOCHROME                 = ::ffi::FT_LOAD_MONOCHROME;
-        const LINEAR_DESIGN              = ::ffi::FT_LOAD_LINEAR_DESIGN;
-        const NO_AUTOHINT                = ::ffi::FT_LOAD_NO_AUTOHINT;
-        const TARGET_NORMAL              = ::ffi::FT_LOAD_TARGET_NORMAL;
-        const TARGET_LIGHT               = ::ffi::FT_LOAD_TARGET_LIGHT;
-        const TARGET_MONO                = ::ffi::FT_LOAD_TARGET_MONO;
-        const TARGET_LCD                 = ::ffi::FT_LOAD_TARGET_LCD;
-        const TARGET_LCD_V               = ::ffi::FT_LOAD_TARGET_LCD_V;
-        const COLOR                      = ::ffi::FT_LOAD_COLOR;
+        const DEFAULT                    = crate::ffi::FT_LOAD_DEFAULT;
+        const NO_SCALE                   = crate::ffi::FT_LOAD_NO_SCALE;
+        const NO_HINTING                 = crate::ffi::FT_LOAD_NO_HINTING;
+        const RENDER                     = crate::ffi::FT_LOAD_RENDER;
+        const NO_BITMAP                  = crate::ffi::FT_LOAD_NO_BITMAP;
+        const VERTICAL_LAYOUT            = crate::ffi::FT_LOAD_VERTICAL_LAYOUT;
+        const FORCE_AUTOHINT             = crate::ffi::FT_LOAD_FORCE_AUTOHINT;
+        const CROP_BITMAP                = crate::ffi::FT_LOAD_CROP_BITMAP;
+        const PEDANTIC                   = crate::ffi::FT_LOAD_PEDANTIC;
+        const IGNORE_GLOBAL_ADVANCE_WITH = crate::ffi::FT_LOAD_IGNORE_GLOBAL_ADVANCE_WIDTH;
+        const NO_RECURSE                 = crate::ffi::FT_LOAD_NO_RECURSE;
+        const IGNORE_TRANSFORM           = crate::ffi::FT_LOAD_IGNORE_TRANSFORM;
+        const MONOCHROME                 = crate::ffi::FT_LOAD_MONOCHROME;
+        const LINEAR_DESIGN              = crate::ffi::FT_LOAD_LINEAR_DESIGN;
+        const NO_AUTOHINT                = crate::ffi::FT_LOAD_NO_AUTOHINT;
+        const TARGET_NORMAL              = crate::ffi::FT_LOAD_TARGET_NORMAL;
+        const TARGET_LIGHT               = crate::ffi::FT_LOAD_TARGET_LIGHT;
+        const TARGET_MONO                = crate::ffi::FT_LOAD_TARGET_MONO;
+        const TARGET_LCD                 = crate::ffi::FT_LOAD_TARGET_LCD;
+        const TARGET_LCD_V               = crate::ffi::FT_LOAD_TARGET_LCD_V;
+        const COLOR                      = crate::ffi::FT_LOAD_COLOR;
     }
 }
 
-bitflags! {
+bitflags::bitflags! {
     #[derive(Debug, Clone, Copy, PartialEq, Eq)]
     pub struct StyleFlag: ffi::FT_Long {
-        const BOLD   = ::ffi::FT_STYLE_FLAG_BOLD;
-        const ITALIC = ::ffi::FT_STYLE_FLAG_ITALIC;
+        const BOLD   = crate::ffi::FT_STYLE_FLAG_BOLD;
+        const ITALIC = crate::ffi::FT_STYLE_FLAG_ITALIC;
     }
 }
 

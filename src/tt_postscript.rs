@@ -1,5 +1,5 @@
-use face::Face;
-use ffi;
+use crate::face::Face;
+use crate::ffi;
 
 #[derive(Copy, Clone)]
 pub struct TrueTypePostscriptTable {
