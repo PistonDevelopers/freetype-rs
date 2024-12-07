@@ -1,4 +1,4 @@
-extern crate freetype as ft;
+use freetype as ft;
 
 fn draw_curve(curve: ft::outline::Curve) {
     match curve {
