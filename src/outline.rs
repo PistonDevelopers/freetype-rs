@@ -36,7 +36,7 @@ impl<'a> Outline<'a> {
     }
 
     pub fn flags(&self) -> i32 {
-        i32::from(self.raw.flags)
+        self.raw.flags
     }
 }
 
