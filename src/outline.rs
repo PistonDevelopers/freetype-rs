@@ -85,7 +85,7 @@ impl<'a> CurveIterator<'a> {
     }
 }
 
-impl<'a> Iterator for CurveIterator<'a> {
+impl Iterator for CurveIterator<'_> {
     type Item = Curve;
 
     fn next(&mut self) -> Option<Self::Item> {
