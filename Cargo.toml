@@ -19,7 +19,7 @@ bundled = ["freetype-sys/bundled"]
 [dependencies]
 bitflags = "2.4.0"
 libc = "0.2.1"
-freetype-sys = "0.21.0"
+freetype-sys = "0.23.0"
 
 [dev-dependencies]
 unicode-normalization = "0.1.0"
