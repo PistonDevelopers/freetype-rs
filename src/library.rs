@@ -164,6 +164,9 @@ impl Library {
     }
 }
 
+unsafe impl Send for Library {}
+unsafe impl Sync for Library {}
+
 impl Drop for Library {
     fn drop(&mut self) {
         let err = unsafe { ffi::FT_Done_Library(self.raw) };
