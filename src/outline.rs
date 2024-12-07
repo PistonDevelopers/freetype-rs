@@ -36,7 +36,7 @@ impl<'a> Outline<'a> {
     }
 
     pub fn flags(&self) -> i32 {
-        i32::from(self.raw.flags)
+        self.raw.flags
     }
 }
 
@@ -85,7 +85,7 @@ impl<'a> CurveIterator<'a> {
     }
 }
 
-impl<'a> Iterator for CurveIterator<'a> {
+impl Iterator for CurveIterator<'_> {
     type Item = Curve;
 
     fn next(&mut self) -> Option<Self::Item> {

@@ -36,6 +36,7 @@
 //! - See [freetype docs](http://www.freetype.org/freetype2/docs/reference/ft2-index.html)
 //!   for more information
 
+#![allow(clippy::missing_safety_doc)]
 #![deny(missing_copy_implementations)]
 
 pub use freetype_sys;
