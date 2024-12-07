@@ -55,7 +55,7 @@ pub struct Bitmap {
 
 impl Bitmap {
     pub unsafe fn from_raw(raw: *const ffi::FT_Bitmap) -> Self {
-        Bitmap { raw: raw }
+        Bitmap { raw }
     }
 
     /// A typeless pointer to the bitmap buffer. This value should be aligned
