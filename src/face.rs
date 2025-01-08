@@ -67,7 +67,7 @@ impl<'a, BYTES> CharIterator<'a, BYTES> {
     }
 }
 
-impl<'a, BYTES> Iterator for CharIterator<'a, BYTES> {
+impl<BYTES> Iterator for CharIterator<'_, BYTES> {
     type Item = (usize, NonZeroU32);
 
     fn next(&mut self) -> Option<Self::Item> {
