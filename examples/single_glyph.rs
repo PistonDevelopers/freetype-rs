@@ -1,5 +1,4 @@
-extern crate freetype as ft;
-extern crate unicode_normalization;
+use freetype as ft;
 
 use unicode_normalization::UnicodeNormalization;
 
