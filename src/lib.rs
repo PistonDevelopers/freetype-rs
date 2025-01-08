@@ -9,9 +9,7 @@
 //!
 //! # Example
 //!
-//! ```ignore
-//! extern crate freetype;
-//!
+//! ```no_run
 //! fn main() {
 //!     use freetype::Library;
 //!     use freetype::face::LoadFlag;
@@ -28,6 +26,7 @@
 //!     let glyph = face.glyph();
 //!     do_something_with_bitmap(glyph.bitmap());
 //! }
+//! # fn do_something_with_bitmap(_bitmap: freetype::Bitmap) {}
 //! ```
 //!
 //! See in the `examples/` folder for more examples.
@@ -36,6 +35,7 @@
 //! - See [freetype docs](http://www.freetype.org/freetype2/docs/reference/ft2-index.html)
 //!   for more information
 
+#![allow(clippy::missing_safety_doc)]
 #![deny(missing_copy_implementations)]
 
 pub use freetype_sys;
